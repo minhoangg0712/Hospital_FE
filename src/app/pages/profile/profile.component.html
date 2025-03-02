@@ -1,0 +1,45 @@
+<!-- Nội dung chính: Quản lý hồ sơ cá nhân -->
+<div class="profile-container">
+    <h2>Quản lý hồ sơ cá nhân</h2>
+    
+
+    <!-- Form cập nhật thông tin cá nhân -->
+    <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+      <h3>Cập nhật thông tin cá nhân</h3>
+
+      <label>Họ và tên:</label>
+      <input type="text" formControlName="name" placeholder="Nhập họ và tên">
+
+      <label>Tuổi:</label>
+      <input type="number" formControlName="age" placeholder="Nhập tuổi">
+
+      <label>Email:</label>
+      <input type="email" formControlName="email" placeholder="Nhập email">
+
+      <label>Số điện thoại:</label>
+      <input type="text" formControlName="phone" placeholder="Nhập số điện thoại">
+
+      <label>Địa chỉ:</label>
+      <input type="text" formControlName="address" placeholder="Nhập địa chỉ">
+
+      <button type="submit" [disabled]="profileForm.invalid">Cập nhật thông tin</button>
+    </form>
+
+    <div class="content">
+      <!-- Form đổi mật khẩu -->
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+        <h3>Đổi mật khẩu</h3>
+
+        <label>Mật khẩu cũ:</label>
+        <input type="password" formControlName="currentPassword" placeholder="Nhập mật khẩu cũ">
+
+        <label>Mật khẩu mới:</label>
+        <input type="password" formControlName="newPassword" placeholder="Nhập mật khẩu mới">
+
+        <label>Xác nhận mật khẩu mới:</label>
+        <input type="password" formControlName="confirmPassword" placeholder="Nhập lại mật khẩu mới">
+
+        <button type="submit" [disabled]="passwordForm.invalid">Đổi mật khẩu</button>
+      </form>
+    </div>
+  </div>

@@ -1,11 +1,9 @@
-/* Định dạng thanh top-bar */
 .top-bar {
     background-color: #14656E;
     height: 70px;
     width: auto;
 }
 
-/* Định dạng header */
 .layout {
     display: flex;
     justify-content: space-between;
@@ -19,7 +17,6 @@
 
 }
 
-/* Ô tìm kiếm */
 .search-box {
     display: flex;
     align-items: center;
@@ -52,7 +49,6 @@
     background: #0f4a52;
 }
 
-/* Logo */
 .logo {
     display: flex;
     align-items: center;
@@ -66,7 +62,10 @@
     height: 60px;
 }
 
-/* Khu vực tài khoản và giỏ hàng */
+.logo span {
+    font-size: 45px;
+}
+
 .account-cart {
     display: flex;
     align-items: center;
@@ -90,7 +89,24 @@
     margin-right: 8px;
 }
 
-/* Thanh điều hướng */
+.account i, .cart i {
+    font-size: 18px;
+    color: #333;
+}
+
+.account button {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.cart span {
+    font-size: 16px;
+    color: #333;
+}
+
 .nav {
     background-color: white;
     border-top: 1px solid #ccc;

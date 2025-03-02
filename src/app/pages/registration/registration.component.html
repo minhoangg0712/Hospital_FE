@@ -1,0 +1,56 @@
+<div class="register-container">
+  <h2>Tạo tài khoản</h2>
+  
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Họ và Tên</label>
+      <input type="text" formControlName="name" placeholder="Nhập tên của bạn" required />
+      <small *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+        Tên không được để trống
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label>Tên đăng nhập</label>
+      <input type="text" formControlName="username" placeholder="Nhập tên đăng nhập" required />
+      <small *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+        Tên đăng nhập không hợp lệ
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" formControlName="email" placeholder="Nhập email" required />
+      <small *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+        Email không hợp lệ
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label>Số điện thoại</label>
+      <input type="text" formControlName="phone" placeholder="Nhập số điện thoại" required />
+      <small *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched">
+        Số điện thoại không hợp lệ
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label>Mật khẩu</label>
+      <input type="password" formControlName="password" placeholder="Nhập mật khẩu" required />
+      <small *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+        Mật khẩu phải có ít nhất 6 ký tự
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label>Giới tính</label>
+      <select formControlName="gender">
+        <option value="Male">Nam</option>
+        <option value="Female">Nữ</option>
+        <option value="Other">Khác</option>
+      </select>
+    </div>
+
+    <button type="submit" [disabled]="registerForm.invalid">Tạo tài khoản</button>
+  </form>
+</div>
