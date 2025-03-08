@@ -14,11 +14,17 @@ import { CommonModule } from '@angular/common';
 export class AppComponent {
   title = 'Project-angular';
   isAuthPage: boolean = false;
+  role: string | null = null;  // Thêm biến role
 
   constructor(private router: Router) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.isAuthPage = event.url.includes('/login') || event.url.includes('/register');
+        this.isAuthPage = event.url.includes('/login') 
+          || event.url.includes('/register')
+          || event.url.includes('/doctor');
+
+        // 🔹 Lấy role từ localStorage (hoặc bạn có thể thay bằng API call)
+        this.role = localStorage.getItem('userRole');  
       }
     });
   }

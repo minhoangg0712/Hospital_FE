@@ -19,6 +19,9 @@ export class RegistrationComponent {
       username: ['', [Validators.required, Validators.minLength(4)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10,15}$')]],
+      address: ['', [Validators.required]],
+      idCard: ['', Validators.required],
+      insurance: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       gender: ['Male', Validators.required]
     });
