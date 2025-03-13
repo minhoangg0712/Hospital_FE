@@ -1,6 +1,6 @@
 <header class="header">
-    <nav class = "top-bar"></nav>
-    <div class = "layout">
+    <nav class="top-bar"></nav>
+    <div class="layout">
         <div class="search-box">
             <input type="text" placeholder="Tìm kiếm..." class="search-input"/>
             <button class="search-button">
@@ -14,7 +14,7 @@
         <div class="account-cart">
             <div class="account">
                 <i class="fas fa-user"></i>
-                <button routerLink="/login">Đăng nhập</button>
+                <button (click)="openLogoutModal()">Đăng xuất</button>
             </div>
             <div class="cart">
                 <i class="fas fa-shopping-cart"></i>
@@ -22,13 +22,15 @@
             </div>
         </div>
     </div>    
+
+    <div class="modal-overlay" *ngIf="isLogoutModalOpen" (click)="closeLogoutModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()"> 
+            <!-- Ngăn sự kiện click bên trong modal -->
+            <h3>Xác nhận đăng xuất</h3>
+            <p>Bạn có chắc chắn muốn đăng xuất không?</p>
+            <div class="modal-buttons">
+                <button class="confirm" (click)="logout()">Đăng xuất</button>
+            </div>
+        </div>
+    </div>    
 </header>
-<nav class="nav">
-    <ul>
-        <li><a routerLink="/home-doctor">Trang chủ</a></li>
-        <li><a routerLink="/patient-record">Xem hồ sơ bệnh nhân</a></li>
-        <li><a routerLink="">Tạo hồ sơ khám</a></li>
-        <li><a routerLink="">Xem lịch hẹn</a></li>
-        <li><a routerLink="">Kê đơn thuốc</a></li>
-    </ul>
-</nav>

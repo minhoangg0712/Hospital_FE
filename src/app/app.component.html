@@ -1,9 +1,13 @@
 <main class="main">
-  <app-header *ngIf="!isAuthPage"></app-header>  
+  <!-- Nếu là trang bệnh nhân thì chỉ hiển thị header bệnh nhân -->
+  <app-header-patient *ngIf="isPatientPage"></app-header-patient>
+
+  <!-- Nếu không phải trang bệnh nhân & không phải trang auth thì hiển thị header mặc định -->
+  <app-header *ngIf="!isAuthPage && !isPatientPage"></app-header>
 
   <div class="content">
     <router-outlet></router-outlet>  
   </div>
 
-  <app-footer *ngIf="!isAuthPage"></app-footer>  
+  <app-footer *ngIf="!isAuthPage"></app-footer>
 </main>
