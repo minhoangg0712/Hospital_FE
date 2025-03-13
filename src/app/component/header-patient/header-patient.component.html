@@ -13,7 +13,7 @@
         </div>
         <div class="account-cart">
             <div class="account">
-                <i class="fas fa-user"></i>
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 <button (click)="openLogoutModal()">Đăng xuất</button>
             </div>
             <div class="cart">
@@ -30,6 +30,7 @@
             <p>Bạn có chắc chắn muốn đăng xuất không?</p>
             <div class="modal-buttons">
                 <button class="confirm" (click)="logout()">Đăng xuất</button>
+                <button class="cancel" (click)="closeLogoutModal()">Hủy</button>
             </div>
         </div>
     </div>    

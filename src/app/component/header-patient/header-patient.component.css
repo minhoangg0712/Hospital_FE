@@ -138,7 +138,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Màu xám mờ */
+    background: rgba(0, 0, 0, 0.5); 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -159,15 +159,27 @@
 }
 
 .confirm {
-    background: red;
+    background: #14656E;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 50px;
+}
+.confirm:hover {
+    background: #14656eec;
+}
+
+.cancel:hover{
+    background: rgba(255, 0, 0, 0.641);
+}
+
+.cancel {
+    background-color: red;
     color: white;
     padding: 10px 20px;
     border: none;
     cursor: pointer;
     border-radius: 5px;
 }
-.confirm:hover {
-    background: darkred;
-}
-
-  
