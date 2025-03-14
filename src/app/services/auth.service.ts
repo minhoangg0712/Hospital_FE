@@ -1,26 +1,38 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import axios from 'axios';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/auth/login';
+  private baseUrl = 'http://localhost:8080/api/auth';
 
   constructor(private http: HttpClient) { }
-  
-  async login(username: string, password: string): Promise<any> {
-    try {
-      const response = await axios.post(this.apiUrl, { username, password });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+
+  login(username: string, password: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+
+    const options = {
+      headers: headers
+    };
+
+    return this.http.post(`${this.baseUrl}/login`, { username, password }, options);
   }
 
-  saveUser(token: string, role: string) {
-    localStorage.setItem('token', token);
-    localStorage.setItem('role', role);
+  register(username: string, password: string, email: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+
+    const options = {
+      headers: headers
+    };
+
+    return this.http.post(`${this.baseUrl}/register`, { username, password, email }, options);
   }
 }

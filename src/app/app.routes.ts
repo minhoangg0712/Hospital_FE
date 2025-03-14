@@ -10,5 +10,5 @@ export const appRoutes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegistrationComponent},
   {path: 'doctor', component:HomeDoctorComponent},
-  {path: 'patient', component:HomePatientComponent}
+  {path: 'patient', component:HomePatientComponent }
 ];
