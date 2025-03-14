@@ -1,0 +1,31 @@
+<div class="cart-container">
+    <h1>🛒 Giỏ hàng của bạn</h1>
+  
+    <!-- Giỏ hàng trống -->
+    <div *ngIf="cartItems.length === 0" class="empty-cart">
+      <h2>Giỏ hàng trống</h2>
+    </div>
+  
+    <!-- Danh sách sản phẩm trong giỏ -->
+    <div *ngIf="cartItems.length > 0">
+      <div class="cart-item" *ngFor="let item of cartItems; let i = index">
+        <img [src]="item.image" [alt]="item.name" class="cart-item-image" />
+        <div class="cart-item-info">
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.description }}</p>
+          <p>Giá: {{ formatPrice(item.price) }}</p>
+          <p>Số lượng: {{ item.quantity }}</p>
+        </div>
+        <button (click)="removeFromCart(i)">Xóa</button>
+      </div>
+  
+      <!-- Tổng tiền -->
+      <div class="cart-total">
+        <h2>Tổng tiền: {{ formatPrice(getTotalPrice()) }}</h2>
+        <button class="checkout-btn" (click)="checkout()">Thanh toán</button>
+      </div>
+    </div>
+  
+    <!-- Nút cố định "Tiếp tục mua hàng" -->
+    <button class="continue-shopping" (click)="goToShop()">⬅️ Tiếp tục mua hàng</button>
+  </div>

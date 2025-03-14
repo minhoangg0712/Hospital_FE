@@ -14,17 +14,25 @@ export class HeaderPatientComponent {
 
   constructor(private router: Router) {} 
 
-  openLogoutModal() {
+  /** ✅ Mở modal xác nhận đăng xuất */
+  openLogoutModal(): void {
     this.isLogoutModalOpen = true;
   }
 
-  closeLogoutModal() {
+  /** ✅ Đóng modal xác nhận đăng xuất */
+  closeLogoutModal(): void {
     this.isLogoutModalOpen = false;
   }
 
-  logout() {
-    console.log("Người dùng đã đăng xuất");
+  /** ✅ Xử lý đăng xuất và điều hướng về trang chủ */
+  logout(): void {
+    console.log('Người dùng đã đăng xuất');
     this.isLogoutModalOpen = false;
     this.router.navigate(['']);
+  }
+
+  /** ✅ Điều hướng đến trang giỏ hàng */
+  goToCart(): void {
+    this.router.navigate(['/cart']);
   }
 }

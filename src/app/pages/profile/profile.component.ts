@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-profile',
@@ -13,28 +12,50 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class ProfileComponent {
   profileForm: FormGroup;
   passwordForm: FormGroup;
+  avatarUrl: string = 'assets/avatar.jpg'; // Đường dẫn mặc định
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0]; // Lấy file người dùng tải lên
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.avatarUrl = e.target.result; // Hiển thị ảnh mới
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  refreshImage() {
+    this.avatarUrl = 'assets/avatar.jpg'; // Reset về ảnh mặc định
+  }
 
   constructor(private fb: FormBuilder) {
+    // Form thông tin cá nhân
     this.profileForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      age: [null, [Validators.required, Validators.min(1)]],
+      Id: ['', Validators.required],
+      fullName: ['', Validators.required],
+      dob: ['', Validators.required],
+      major: ['', Validators.required],
+      class: ['', Validators.required],
+      phone: [''],
+      mobile: [''],
+      address: [''],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern('[0-9]{10}')]],
-      address: ['', Validators.required],
+      facebook: [''],
     });
 
+    // Form thay đổi mật khẩu
     this.passwordForm = this.fb.group({
-      currentPassword: ['', [Validators.required]],
+      oldPassword: ['', Validators.required],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
+      confirmPassword: ['', Validators.required],
     });
   }
 
   updateProfile() {
     if (this.profileForm.valid) {
       console.log('Thông tin cá nhân:', this.profileForm.value);
-    } else {
-      console.log('Form cập nhật không hợp lệ!');
+      alert('Cập nhật thông tin thành công!');
     }
   }
 
@@ -42,12 +63,11 @@ export class ProfileComponent {
     if (this.passwordForm.valid) {
       const { newPassword, confirmPassword } = this.passwordForm.value;
       if (newPassword !== confirmPassword) {
-        alert('Mật khẩu xác nhận không trùng khớp!');
+        alert('Mật khẩu mới không khớp!');
         return;
       }
-      console.log('Đổi mật khẩu thành công:', this.passwordForm.value);
-    } else {
-      console.log('Form đổi mật khẩu không hợp lệ!');
+      console.log('Mật khẩu mới:', newPassword);
+      alert('Đổi mật khẩu thành công!');
     }
   }
 }

@@ -1,0 +1,53 @@
+<nav class="nav">
+    <ul>
+      <li><a routerLink="/">Trang chủ</a></li>
+      <li><a routerLink="/profile">Hồ sơ</a></li>
+      <li><a routerLink="/appointment">Đặt lịch khám</a></li>
+      <li><a routerLink="/medicine">Mua thuốc</a></li>
+      <li><a routerLink="/result">Kết quả khám bệnh</a></li>
+    </ul>
+  </nav>
+
+<!-- Tiêu đề chính -->
+<h2 class="page-title">Danh mục thuốc</h2>
+
+<div class="medicine-container">
+  <!-- Bộ lọc -->
+  <aside class="filter-sidebar">
+    <h3>Bộ lọc nâng cao</h3>
+
+    <!-- Giá bán -->
+    <div class="filter-group">
+      <h4>Giá bán</h4>
+      <label *ngFor="let price of priceRanges">
+        <input type="radio" name="price" (change)="filterByPrice(price)" />
+        {{ price.label }}
+      </label>
+    </div>
+  </aside>
+
+  <!-- Danh sách thuốc -->
+  <section class="medicine-list">
+    <div class="medicine-card" *ngFor="let medicine of filteredMedicines">
+      <img [src]="medicine.image"  />
+      <div class="medicine-info">
+        <h3>{{ medicine.name }}</h3>
+        <p>{{ medicine.description }}</p>
+    
+        <!-- Hiển thị giá và giảm giá -->
+        <p class="price">
+          <span [class.discount]="medicine.discount">{{ formatPrice(medicine.price) }}đ</span>
+          <span *ngIf="medicine.discount" class="original-price">{{ formatPrice(medicine.originalPrice) }}đ</span>
+        </p>
+
+        <!-- Nhãn thông tin -->
+        <div class="tags">
+          <span *ngFor="let tag of medicine.tags">{{ tag }}</span>
+          <h4></h4>
+        </div>
+
+        <button (click)="addToCart(medicine)">Thêm vào giỏ hàng</button>
+      </div>
+    </div>
+  </section>
+</div>
