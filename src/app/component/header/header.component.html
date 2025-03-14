@@ -1,6 +1,6 @@
 <header class="header">
-    <nav class = "top-bar"></nav>
-    <div class = "layout">
+    <nav class="top-bar"></nav>
+    <div class="layout">
         <div class="search-box">
             <input type="text" placeholder="Tìm kiếm..." class="search-input"/>
             <button class="search-button">
@@ -14,12 +14,35 @@
         <div class="account-cart">
             <div class="account">
                 <i class="fas fa-user"></i>
-                <button routerLink="/login">Đăng nhập</button>
+                <button *ngIf="!isLoggedIn" routerLink="/login">Đăng nhập</button>
+                <button *ngIf="isLoggedIn" (click)="openLogoutModal()">Đăng xuất</button>
             </div>
             <div class="cart">
                 <i class="fas fa-shopping-cart"></i>
-                <span>Giỏ hàng</span>
+                <button routerLink="/cart">Giỏ hàng</button>
             </div>
         </div>
     </div>    
+    <nav class="nav">
+        <ul>
+            <li><a routerLink="/">Trang chủ</a></li>
+            <li><a routerLink="/about">Giới thiệu</a></li>
+            <li *ngIf="isLoggedIn"><a routerLink="/profile">Hồ sơ cá nhân</a></li>
+            <li *ngIf="isLoggedIn"><a routerLink="/appointment">Đặt lịch khám</a></li>
+            <li *ngIf="isLoggedIn"><a routerLink="/medicine">Mua thuốc</a></li>
+            <li *ngIf="isLoggedIn"><a routerLink="/result">Kết quả khám bệnh</a></li>
+            <li><a routerLink="/customer-guide">Hướng dẫn khách hàng</a></li>
+        </ul>
+    </nav>
 </header>
+
+<div class="modal-overlay" *ngIf="isLogoutModalOpen" (click)="closeLogoutModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()"> 
+        <h3>Xác nhận đăng xuất</h3>
+        <p>Bạn có chắc chắn muốn đăng xuất không?</p>
+        <div class="modal-buttons">
+            <button class="confirm" (click)="logout()">Đăng xuất</button>
+            <button class="cancel" (click)="closeLogoutModal()">Hủy</button>
+        </div>
+    </div>
+</div>

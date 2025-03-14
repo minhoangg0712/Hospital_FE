@@ -1,0 +1,232 @@
+.appointment-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: #fff;
+  }
+  
+  /* Tiêu đề */
+  h2 {
+    text-align: center;
+    color: #4a7c82;
+  }
+  
+  /* Label */
+  label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+  }
+  
+  /* Input & Select */
+  input,
+  select {
+    max-width: 200%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  /* Datepicker */
+  .mat-mdc-datepicker-content {
+    background-color: rgb(0, 0, 0) !important; /* Nền */
+    opacity: 1 !important; /* Không bị trong suốt */
+    border-radius: 8px; /* Bo góc */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Đổ bóng */
+    max-width: 50%; /* Giới hạn chiều rộng */
+    height: auto; /* Chiều cao tự động */
+  }
+  
+  .mat-mdc-calendar-header {
+    background-color: #0c1516 !important; /* Màu header */
+    color: white !important; /* Màu chữ */
+  }
+  
+  .mat-calendar {
+    background-color: white !important;
+    opacity: 1 !important; /* Không bị trong suốt */
+  }
+  
+  /* Ngày được chọn */
+  .mat-calendar-body-selected {
+    background-color: #1e88e5 !important; /* Màu xanh */
+    color: white !important;
+  }
+  
+  /* Hover ngày */
+  .mat-calendar-body-cell:hover {
+    background-color: #e3f2fd !important; /* Màu nhạt khi hover */
+  }
+  
+  /* Button chính */
+  button {
+    padding: 10px;
+    width: 100%;
+    background-color: #4a7c82;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    background-color: #ccc;
+  }
+  
+  /* Hiệu ứng hover */
+  button:hover:not(:disabled) {
+    background-color: #3a5f62;
+  }
+  
+  /* Chọn giờ khám */
+  .time-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .time-slots button {
+    width: 80px;
+    padding: 8px;
+    border: 1px solid #000000;
+    background: #ffffff;
+    color: #000000;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .selected-time {
+    background: #14656ed9 !important;
+    color: rgb(0, 0, 0) !important;
+  }
+  
+  /* Mở rộng ô chọn chuyên khoa */
+  .specialty-select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    max-height: 500px; /* Giới hạn chiều cao */
+    overflow-y: auto; /* Hiện thanh cuộn khi nhiều mục */
+    box-sizing: border-box;
+  }
+  
+  /* Tăng kích thước các lựa chọn */
+  .specialty-select option {
+    padding: 10px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  
+  .specialty-select option:hover {
+    background-color: #e3f2fd; /* Hover trong dropdown */
+  }
+  
+  /* Cải thiện focus */
+  .specialty-select:focus {
+    border-color: #4a7c82;
+    outline: none;
+    box-shadow: 0 0 5px rgba(74, 124, 130, 0.5);
+  }
+  
+ /* Ô nhập lý do khám - Bỏ khung */
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: none; /* Bỏ viền */
+    border-radius: 8px;
+    max-height: 400px;
+    font-size: 14px;
+    background: #fff; /* Nền trắng */
+  }
+  
+  /* Placeholder trong textarea */
+  textarea::placeholder {
+    color: #888; /* Màu placeholder */
+    font-style: italic; /* Chữ nghiêng */
+  }
+  
+  /* Khi focus vào textarea - Bỏ hiệu ứng border */
+  textarea:focus {
+    outline: none; /* Bỏ viền focus */
+    box-shadow: none; /* Không có hiệu ứng */
+  }
+  /* ✅ Style cho phần "Đăng ký cho ai" */
+  .register-for-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+  }
+  
+  /* Custom radio button */
+  .register-for-container label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  
+  input[type="radio"] {
+    accent-color: #4a7c82; /* Màu radio button */
+  }
+  
+  /* ✅ Style cho phần nhập thông tin người thân */
+  .relative-info {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f9f9f9;
+  }
+  
+  /* Tăng độ rõ cho placeholder */
+  input::placeholder {
+    color: #888;
+    font-style: italic;
+  }
+  
+  /* Hiệu ứng khi focus vào input */
+  input:focus {
+    border-color: #0f282b;
+    outline: none;
+    box-shadow: 0 0 5px rgba(74, 124, 130, 0.5);
+  }
+  
+  /* Ẩn phần thông tin người thân mặc định */
+  .hidden {
+    display: none;
+  }
+
+  .reason-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+  }
+
+  
+  /* Responsive: Dưới 600px */
+  @media (max-width: 600px) {
+    .appointment-container {
+      padding: 15px;
+    }
+  
+    .time-slots {
+      gap: 5px;
+    }
+  
+    .time-slots button {
+      width: 60px; /* Nhỏ hơn cho màn hình nhỏ */
+    }
+  
+    textarea {
+      font-size: 12px; /* Giảm kích thước chữ */
+    }
+  }

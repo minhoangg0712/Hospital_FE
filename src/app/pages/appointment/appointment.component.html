@@ -1,0 +1,96 @@
+<div class="appointment-container">
+    <h2>Đăng ký lịch khám bệnh</h2>
+    <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+  
+      <label>Đăng ký khám cho:</label>
+      <div class="register-for">
+        <label>
+          <input
+            type="radio"
+            formControlName="registerFor"
+            value="self"
+            (change)="onRegisterForChange()"
+          />
+          Bản thân
+        </label>
+  
+        <label>
+          <input
+            type="radio"
+            formControlName="registerFor"
+            value="relative"
+            (change)="onRegisterForChange()"
+          />
+          Người thân
+        </label>
+      </div>
+  
+      <!-- Nếu chọn "Người thân" hiển thị thêm 2 trường -->
+      <div *ngIf="isRegisterForRelative">
+        <label for="relativeName">Tên người thân:</label>
+        <input
+          id="relativeName"
+          type="text"
+          formControlName="relativeName"
+          placeholder="Nhập tên người thân"
+        />
+  
+        <label for="relativeCCCD">CCCD:</label>
+        <input
+          id="relativeCCCD"
+          type="text"
+          formControlName="relativeCCCD"
+          placeholder="Nhập CCCD"
+        />
+      </div>
+  
+      <!-- Chọn chuyên khoa -->
+      <label for="specialty">Chuyên khoa:</label>
+      <select id="specialty" formControlName="specialty" class="specialty-select">
+        <option value="">Chọn chuyên khoa</option>
+        <option *ngFor="let specialty of specialties" [value]="specialty">
+          {{ specialty }}
+        </option>
+      </select>
+  
+      <!-- Chọn ngày khám trực tiếp trên trang -->
+      <div class="date-picker-container">
+        <label>Ngày khám:</label>
+        <mat-calendar (selectedChange)="onDateSelect($event)"></mat-calendar>
+      </div>
+  
+      <!-- Chọn giờ khám -->
+      <label for="time">Giờ khám:</label>
+      <div class="time-slots">
+        <button
+          mat-raised-button
+          *ngFor="let time of getSelectedSlots()"
+          [disabled]="appointmentForm.controls['time'].value === time"
+          (click)="appointmentForm.controls['time'].setValue(time)"
+          [ngClass]="{
+            'selected-time': appointmentForm.controls['time'].value === time
+          }"
+        >
+          {{ time }}
+        </button>
+      </div>
+  
+      <!-- Ô nhập "Lý do khám" -->
+      <label for="reason">Lý do khám:</label>
+      <mat-form-field appearance="outline" class="reason-container">
+        <textarea
+          matInput
+          id="reason"
+          formControlName="reason"
+          placeholder="Nhập lý do khám bệnh"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+  
+      <!-- Nút Đăng ký -->
+      <button type="submit" [disabled]="appointmentForm.invalid">
+        Đăng ký
+      </button>
+  
+    </form>
+  </div>

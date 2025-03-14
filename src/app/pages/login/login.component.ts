@@ -62,30 +62,24 @@ export class LoginComponent implements OnInit {
               
               // Lưu role vào localStorage
               if (payload.role) {
-                localStorage.setItem('userRole', payload.role);
-                console.log('Role đã lưu:', payload.role);
-
-                // Chuyển hướng dựa vào role từ token
                 const role = payload.role.toUpperCase();
+                console.log('Role từ payload:', role);
+
                 if (role === 'DOCTOR' || role === 'ROLE_DOCTOR') {
-                  console.log('Đang chuyển hướng đến trang bác sĩ...');
-                  this.router.navigate(['/doctor']).then(
-                    () => console.log('Chuyển hướng thành công đến trang bác sĩ'),
-                    (err) => console.error('Lỗi chuyển hướng:', err)
-                  );
+                  console.log('Đang set role DOCTOR...');
+                  localStorage.setItem('userRole', 'DOCTOR');
+                  this.router.navigate(['/doctor']);
                 } else if (role === 'MGR' || role === 'ROLE_MGR') {
-                  console.log('Đang chuyển hướng đến trang bác sĩ (MGR)...');
-                  this.router.navigate(['/doctor']).then(
-                    () => console.log('Chuyển hướng thành công đến trang bác sĩ'),
-                    (err) => console.error('Lỗi chuyển hướng:', err)
-                  );
+                  console.log('Đang set role MGR...');
+                  localStorage.setItem('userRole', 'MGR');
+                  this.router.navigate(['/doctor']);
                 } else {
-                  console.log('Đang chuyển hướng đến trang chủ...');
-                  this.router.navigate(['']).then(
-                    () => console.log('Chuyển hướng thành công đến trang chủ'),
-                    (err) => console.error('Lỗi chuyển hướng:', err)
-                  );
+                  console.log('Đang set role PATIENT...');
+                  localStorage.setItem('userRole', 'PATIENT');
+                  this.router.navigate(['/patient']);
                 }
+                
+                console.log('Role sau khi lưu:', localStorage.getItem('userRole'));
               } else {
                 throw new Error('Không tìm thấy role trong token');
               }

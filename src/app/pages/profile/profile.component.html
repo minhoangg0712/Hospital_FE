@@ -1,45 +1,63 @@
-<!-- Nội dung chính: Quản lý hồ sơ cá nhân -->
 <div class="profile-container">
-    <h2>Quản lý hồ sơ cá nhân</h2>
-    
+  <h2>THÔNG TIN BỆNH NHÂN</h2>
+    <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="info-section">
+      <div class="row">
+        <label>Mã só CCCD:</label>
+        <input type="text" formControlName="Id" [disabled]="true" />
+      </div>
 
-    <!-- Form cập nhật thông tin cá nhân -->
-    <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
-      <h3>Cập nhật thông tin cá nhân</h3>
+      <div class="row">
+        <label>Họ tên:</label>
+        <input type="text" formControlName="fullName" />
+      </div>
 
-      <label>Họ và tên:</label>
-      <input type="text" formControlName="name" placeholder="Nhập họ và tên">
+      <div class="row">
+        <label>Ngày sinh:</label>
+        <input type="date" formControlName="dob" />
+      </div>
 
-      <label>Tuổi:</label>
-      <input type="number" formControlName="age" placeholder="Nhập tuổi">
+      <div class="row">
+        <label>Địa chỉ:</label>
+        <input type="text" formControlName="class" />
+      </div>
 
-      <label>Email:</label>
-      <input type="email" formControlName="email" placeholder="Nhập email">
+      <div class="row">
+        <label>Điện thoại:</label>
+        <input type="text" formControlName="phone" />
+      </div>
 
-      <label>Số điện thoại:</label>
-      <input type="text" formControlName="phone" placeholder="Nhập số điện thoại">
+      <div class="row">
+        <label>Địa chỉ:</label>
+        <textarea formControlName="address"></textarea>
+      </div>
 
-      <label>Địa chỉ:</label>
-      <input type="text" formControlName="address" placeholder="Nhập địa chỉ">
+      <div class="row">
+        <label>Email (*):</label>
+        <input type="email" formControlName="email" />
+      </div>
 
-      <button type="submit" [disabled]="profileForm.invalid">Cập nhật thông tin</button>
+      <button type="submit" class="save-changes-btn">Lưu thay đổi</button>
     </form>
+  </div>
 
-    <div class="content">
-      <!-- Form đổi mật khẩu -->
-      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
-        <h3>Đổi mật khẩu</h3>
-
+  <div class="password-section">
+    <h3>THAY ĐỔI MẬT KHẨU</h3>
+    <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+      <div class="row">
         <label>Mật khẩu cũ:</label>
-        <input type="password" formControlName="currentPassword" placeholder="Nhập mật khẩu cũ">
+        <input type="password" formControlName="oldPassword" />
+      </div>
 
+      <div class="row">
         <label>Mật khẩu mới:</label>
-        <input type="password" formControlName="newPassword" placeholder="Nhập mật khẩu mới">
+        <input type="password" formControlName="newPassword" />
+      </div>
 
-        <label>Xác nhận mật khẩu mới:</label>
-        <input type="password" formControlName="confirmPassword" placeholder="Nhập lại mật khẩu mới">
+      <div class="row">
+        <label>Nhập lại mật khẩu mới:</label>
+        <input type="password" formControlName="confirmPassword" />
+      </div>
 
-        <button type="submit" [disabled]="passwordForm.invalid">Đổi mật khẩu</button>
-      </form>
-    </div>
+      <button type="submit" class="save-password-btn">Lưu mật khẩu</button>
+    </form>
   </div>
