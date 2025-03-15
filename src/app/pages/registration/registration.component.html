@@ -64,8 +64,8 @@
     <div class="form-group">
       <label>Căn cước công dân</label>
       <div class="input-container">
-        <input type="text" formControlName="idCard" placeholder="Nhập CCCD" required />
-        <small *ngIf="registerForm.get('idCard')?.invalid && registerForm.get('idCard')?.touched" class="error-message">
+        <input type="text" formControlName="cccd" placeholder="Nhập CCCD" required />
+        <small *ngIf="registerForm.get('cccd')?.invalid && registerForm.get('cccd')?.touched" class="error-message">
           Căn cước công dân không được để trống
         </small>
       </div>
@@ -74,8 +74,8 @@
     <div class="form-group">
       <label>Mã số bảo hiểm y tế</label>
       <div class="input-container">
-        <input type="text" formControlName="insurance" placeholder="Nhập mã số BHYT" required />
-        <small *ngIf="registerForm.get('insurance')?.invalid && registerForm.get('insurance')?.touched" class="error-message">
+        <input type="text" formControlName="insuranceNumber" placeholder="Nhập mã số BHYT" required />
+        <small *ngIf="registerForm.get('insuranceNumber')?.invalid && registerForm.get('insuranceNumber')?.touched" class="error-message">
           Mã số BHYT không được để trống
         </small>
       </div>
@@ -92,6 +92,14 @@
       </div>
     </div>
 
-    <button type="submit" [disabled]="registerForm.invalid">Tạo tài khoản</button>
+    <!-- Thêm hiển thị thông báo lỗi từ API nếu có -->
+    <div class="error-container" *ngIf="errorMessage">
+      <p class="api-error">{{ errorMessage }}</p>
+    </div>
+
+    <button type="submit" [disabled]="registerForm.invalid || loading">
+      <span *ngIf="loading">Đang xử lý...</span>
+      <span *ngIf="!loading">Tạo tài khoản</span>
+    </button>
   </form>
 </div>
