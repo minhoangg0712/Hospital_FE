@@ -1,63 +1,60 @@
 <div class="profile-container">
-  <h2>THÔNG TIN BỆNH NHÂN</h2>
-    <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="info-section">
-      <div class="row">
-        <label>Mã só CCCD:</label>
-        <input type="text" formControlName="Id" [disabled]="true" />
-      </div>
+  <h2>THÔNG TIN CÁ NHÂN</h2>
 
-      <div class="row">
-        <label>Họ tên:</label>
-        <input type="text" formControlName="fullName" />
-      </div>
-
-      <div class="row">
-        <label>Ngày sinh:</label>
-        <input type="date" formControlName="dob" />
-      </div>
-
-      <div class="row">
-        <label>Địa chỉ:</label>
-        <input type="text" formControlName="class" />
-      </div>
-
-      <div class="row">
-        <label>Điện thoại:</label>
-        <input type="text" formControlName="phone" />
-      </div>
-
-      <div class="row">
-        <label>Địa chỉ:</label>
-        <textarea formControlName="address"></textarea>
-      </div>
-
-      <div class="row">
-        <label>Email (*):</label>
-        <input type="email" formControlName="email" />
-      </div>
-
-      <button type="submit" class="save-changes-btn">Lưu thay đổi</button>
-    </form>
+  <div *ngIf="isLoading" class="loading">
+    <i class="fas fa-spinner fa-spin"></i>
+    <p>Đang tải thông tin...</p>
   </div>
 
-  <div class="password-section">
-    <h3>THAY ĐỔI MẬT KHẨU</h3>
-    <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
-      <div class="row">
-        <label>Mật khẩu cũ:</label>
-        <input type="password" formControlName="oldPassword" />
-      </div>
-
-      <div class="row">
-        <label>Mật khẩu mới:</label>
-        <input type="password" formControlName="newPassword" />
-      </div>
-
-      <div class="row">
-        <label>Nhập lại mật khẩu mới:</label>
-        <input type="password" formControlName="confirmPassword" />
-      </div>
-
-      <button type="submit" class="save-password-btn">Lưu mật khẩu</button>
-    </form>
+  <div *ngIf="errorMessage" class="error">
+    <i class="fas fa-exclamation-circle"></i>
+    <p>{{ errorMessage }}</p>
   </div>
+
+  <div *ngIf="!isLoading && currentUser" class="info-section">
+    <div class="row">
+      <label>Mã số CCCD:</label>
+      <span>{{ currentUser.cccd }}</span>
+    </div>
+
+    <div class="row">
+      <label>Họ tên:</label>
+      <span>{{ currentUser.name }}</span>
+    </div>
+
+    <div class="row">
+      <label>Số điện thoại:</label>
+      <span>{{ currentUser.phone }}</span>
+    </div>
+
+    <div class="row">
+      <label>Email:</label>
+      <span>{{ currentUser.email }}</span>
+    </div>
+
+    <div class="row">
+      <label>Địa chỉ:</label>
+      <span>{{ currentUser.address }}</span>
+    </div>
+
+    <div class="row">
+      <label>Số BHYT:</label>
+      <span>{{ currentUser.insuranceNumber }}</span>
+    </div>
+
+    <div class="row">
+      <label>Giới tính:</label>
+      <span>{{ currentUser.gender === 'MALE' ? 'Nam' : 'Nữ' }}</span>
+    </div>
+
+    <div class="row">
+      <label>Ngày tạo:</label>
+      <span>{{ currentUser.createdAt | date:'dd/MM/yyyy' }}</span>
+    </div>
+
+    <div class="row">
+      <label>Cập nhật lần cuối:</label>
+      <span>{{ currentUser.updatedAt | date:'dd/MM/yyyy' }}</span>
+    </div>
+  </div>
+</div>

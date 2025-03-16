@@ -20,6 +20,7 @@ export class AppComponent {
       if (event instanceof NavigationEnd) {
         this.isAuthPage = event.url.includes('/login') 
           || event.url.includes('/register')
+          || event.url.includes('/forgot-password')
           || event.url.includes('/doctor');
       }
     });

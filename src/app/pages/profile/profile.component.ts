@@ -1,94 +1,152 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { UserService, UserDTO } from '../../services/user.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css'],
+  styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent {
-  profileForm: FormGroup;
-  passwordForm: FormGroup;
-  avatarUrl: string = 'assets/avatar.jpg'; // Đường dẫn mặc định
+export class ProfileComponent implements OnInit {
+  currentUser: UserDTO | null = null;
+  isLoading: boolean = false;
+  errorMessage: string = '';
+  successMessage: string = '';
+  profileForm!: FormGroup;
+  passwordForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router) {
-    // Form thông tin cá nhân
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.initializeForms();
+  }
+
+  private initializeForms(): void {
     this.profileForm = this.fb.group({
-      Id: ['', Validators.required],
+      cccd: ['', Validators.required],
       fullName: ['', Validators.required],
-      dob: ['', Validators.required],
-      major: ['', Validators.required],
-      class: ['', Validators.required],
-      phone: [''],
-      mobile: [''],
-      address: [''],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       email: ['', [Validators.required, Validators.email]],
-      facebook: [''],
+      address: ['', Validators.required],
+      insuranceNumber: ['', Validators.required]
     });
 
-    // Form thay đổi mật khẩu
     this.passwordForm = this.fb.group({
       oldPassword: ['', Validators.required],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required],
+      confirmPassword: ['', Validators.required]
+    }, {
+      validator: this.passwordMatchValidator
     });
   }
 
-  // Xử lý chọn ảnh đại diện
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.avatarUrl = e.target.result;
+  private passwordMatchValidator(g: FormGroup) {
+    return g.get('newPassword')?.value === g.get('confirmPassword')?.value
+      ? null
+      : { mismatch: true };
+  }
+
+  ngOnInit(): void {
+    this.loadUserProfile();
+  }
+
+  loadUserProfile(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    try {
+      this.userService.getCurrentUserProfile().subscribe({
+        next: (data: UserDTO) => {
+          this.currentUser = data;
+          this.updateProfileForm(data);
+          this.isLoading = false;
+        },
+        error: (error: any) => {
+          console.error('Lỗi khi tải thông tin:', error);
+          if (error.status === 401) {
+            this.errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
+            this.router.navigate(['/login']);
+          } else {
+            this.errorMessage = 'Không thể tải thông tin cá nhân. Vui lòng thử lại sau.';
+          }
+          this.isLoading = false;
+        }
+      });
+    } catch (error: any) {
+      console.error('Lỗi:', error);
+      this.errorMessage = error.message || 'Có lỗi xảy ra';
+      this.isLoading = false;
+    }
+  }
+
+  private updateProfileForm(user: UserDTO): void {
+    this.profileForm.patchValue({
+      cccd: user.cccd,
+      fullName: user.name,
+      phone: user.phone,
+      email: user.email,
+      address: user.address,
+      insuranceNumber: user.insuranceNumber
+    });
+  }
+
+  updateProfile(): void {
+    if (this.profileForm.valid && this.currentUser) {
+      this.isLoading = true;
+      this.errorMessage = '';
+
+      const updatedUser: UserDTO = {
+        ...this.currentUser,
+        ...this.profileForm.value,
+        name: this.profileForm.value.fullName
       };
-      reader.readAsDataURL(file);
+
+      this.userService.updateUserProfile(updatedUser).subscribe({
+        next: (response: UserDTO) => {
+          this.currentUser = response;
+          this.successMessage = 'Cập nhật thông tin thành công!';
+          this.isLoading = false;
+          setTimeout(() => this.successMessage = '', 3000);
+        },
+        error: (error: any) => {
+          console.error('Lỗi khi cập nhật:', error);
+          this.errorMessage = 'Không thể cập nhật thông tin. Vui lòng thử lại sau.';
+          this.isLoading = false;
+        }
+      });
     }
   }
 
-  // Reset ảnh đại diện
-  refreshImage() {
-    this.avatarUrl = 'assets/avatar.jpg';
-  }
-
-  // Cập nhật thông tin cá nhân
-  updateProfile() {
-    if (this.profileForm.valid) {
-      console.log('Thông tin cá nhân:', this.profileForm.value);
-      alert('Cập nhật thông tin thành công!');
-    }
-  }
-
-  // Đổi mật khẩu
-  changePassword() {
+  changePassword(): void {
     if (this.passwordForm.valid) {
-      const { newPassword, confirmPassword } = this.passwordForm.value;
-      if (newPassword !== confirmPassword) {
-        alert('Mật khẩu mới không khớp!');
-        return;
-      }
-      console.log('Mật khẩu mới:', newPassword);
-      alert('Đổi mật khẩu thành công!');
+      this.isLoading = true;
+      this.errorMessage = '';
+
+      const { oldPassword, newPassword } = this.passwordForm.value;
+
+      this.userService.changePassword(oldPassword, newPassword).subscribe({
+        next: () => {
+          this.successMessage = 'Đổi mật khẩu thành công!';
+          this.passwordForm.reset();
+          this.isLoading = false;
+          setTimeout(() => this.successMessage = '', 3000);
+        },
+        error: (error: any) => {
+          console.error('Lỗi khi đổi mật khẩu:', error);
+          if (error.status === 401) {
+            this.errorMessage = 'Mật khẩu cũ không đúng!';
+          } else {
+            this.errorMessage = 'Không thể đổi mật khẩu. Vui lòng thử lại sau.';
+          }
+          this.isLoading = false;
+        }
+      });
     }
-  }
-
-  gotoPatient(){
-    this.router.navigate(['/patient']);
-  }
-
-  goToMedicine() {
-    this.router.navigate(['/medicine']);
-  }
-
-  goToAppointment() {
-    this.router.navigate(['/appointment']);
-  }
-
-  goToCartComponent() {
-    this.router.navigate(['/cart']);
   }
 }
