@@ -1,0 +1,159 @@
+.profile-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 600;
+  }
+  
+  .loading, .error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    gap: 0.5rem;
+  }
+  
+  .loading {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  .error {
+    background-color: #ffebee;
+    color: #d32f2f;
+  }
+  
+  .info-section {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+  
+  .row {
+    display: flex;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid #e1e8ed;
+  }
+  
+  .row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+  
+  label {
+    flex: 0 0 200px;
+    color: #34495e;
+    font-weight: 500;
+  }
+  
+  span {
+    flex: 1;
+    color: #2c3e50;
+  }
+  
+  @media (max-width: 768px) {
+    .profile-container {
+      margin: 1rem;
+      padding: 1rem;
+    }
+  
+    .row {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  
+    label {
+      flex: none;
+    }
+  }
+  
+  .profile-section {
+    display: flex;
+    border: 2px solid #101010;
+    padding: 20px;
+  }
+  
+  .row input,
+  textarea {
+    flex: 1;
+    padding: 5px;
+  }
+  
+  button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .password-section {
+    border: 2px solid #101010;
+    margin-right: 100px;
+    margin-bottom: 50px;
+  }
+  
+  .password-section{
+    margin-top: 20px;
+    padding: 20px;
+    margin-left: 100px;
+    
+  }
+  
+  .password-section h3 {
+    color: #008b8b;
+  }
+  
+  /* Hiệu ứng chung cho tất cả các nút */
+  button {
+    background-color: #4caf50; /* Màu nền mặc định */
+    color: white; /* Màu chữ */
+    padding: 10px 20px; /* Kích thước nút */
+    border: none; /* Loại bỏ viền */
+    cursor: pointer; /* Biểu tượng con trỏ tay */
+    transition: background-color 0.3s ease; /* Hiệu ứng chuyển đổi màu */
+  }
+  
+  /* Hover: Khi di chuột qua các nút */
+  button:hover {
+    background-color: #45a049; /* Màu xanh đậm hơn */
+  }
+  
+  /* Hiệu ứng cho nút Refresh */
+  button.refresh-btn {
+    background-color: #14656ed6; /* Màu xanh dương */
+  }
+  
+  button.refresh-btn:hover {
+    background-color: #11555d; /* Xanh dương đậm hơn */
+  }
+  
+  /* Hiệu ứng cho nút Lưu mật khẩu */
+  button.save-password-btn {
+    background-color: #14656ed6; /* Màu cam */
+  }
+  
+  button.save-password-btn:hover {
+    background-color: #11555d; /* Cam đậm hơn */
+  }
+  
+  /* Hiệu ứng cho nút Lưu thay đổi */
+  button.save-changes-btn {
+    background-color: #14656ed6; /* Màu đỏ đậm */
+  }
+  
+  button.save-changes-btn:hover {
+    background-color: #11555d; /* Đỏ nhạt hơn */
+  }

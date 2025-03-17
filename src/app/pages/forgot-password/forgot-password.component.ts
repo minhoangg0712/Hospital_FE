@@ -1,21 +1,34 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import emailjs, { EmailJSResponseStatus } from '@emailjs/browser';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.css'],
 })
 export class ForgotPasswordComponent {
   username: string = '';
   email: string = '';
-  password: string = '';
+  newPassword: string = '';
+  confirmPassword: string = '';
   captchaInput: string = '';
   captchaCode: string = '';
+  errorMessage: string = '';
+  successMessage: string = '';
+  isLoading: boolean = false;
 
-  constructor(private router: Router) {
-    this.generateCaptcha(); // Tạo captcha khi tải trang
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {
+    this.generateCaptcha();
   }
 
   /** ✅ Tạo mã captcha ngẫu nhiên (6 ký tự số) */
@@ -35,8 +48,12 @@ export class ForgotPasswordComponent {
     this.email = (event.target as HTMLInputElement).value;
   }
 
-  updatePassword(event: Event): void {
-    this.password = (event.target as HTMLInputElement).value;
+  updateNewPassword(event: Event): void {
+    this.newPassword = (event.target as HTMLInputElement).value;
+  }
+
+  updateConfirmPassword(event: Event): void {
+    this.confirmPassword = (event.target as HTMLInputElement).value;
   }
 
   updateCaptcha(event: Event): void {
@@ -44,24 +61,29 @@ export class ForgotPasswordComponent {
   }
 
   /** ✅ Làm mới captcha */
-refreshCaptcha(): void {
-  this.generateCaptcha(); // Chỉ tạo lại captcha mới
-}
+  refreshCaptcha(): void {
+    this.generateCaptcha();
+  }
 
   /** ✅ Kiểm tra hợp lệ */
   isValidForm(): boolean {
-    if (!this.username || !this.email || !this.password || !this.captchaInput) {
-      alert('Vui lòng điền đầy đủ thông tin!');
+    if (!this.username || !this.email || !this.newPassword || !this.confirmPassword || !this.captchaInput) {
+      this.errorMessage = 'Vui lòng điền đầy đủ thông tin!';
       return false;
     }
 
-    if (this.password.length < 6) {
-      alert('Mật khẩu phải có ít nhất 6 ký tự!');
+    if (this.newPassword.length < 6) {
+      this.errorMessage = 'Mật khẩu phải có ít nhất 6 ký tự!';
+      return false;
+    }
+
+    if (this.newPassword !== this.confirmPassword) {
+      this.errorMessage = 'Mật khẩu xác nhận không khớp!';
       return false;
     }
 
     if (this.captchaInput !== this.captchaCode) {
-      alert('Mã captcha không chính xác!');
+      this.errorMessage = 'Mã captcha không chính xác!';
       this.refreshCaptcha();
       return false;
     }
@@ -73,14 +95,41 @@ refreshCaptcha(): void {
   async onSubmit(): Promise<void> {
     if (!this.isValidForm()) return;
 
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
     try {
-      await this.sendEmail(); // Gửi email xác nhận
-      alert(`✅ Xác nhận đặt lại mật khẩu đã gửi tới: ${this.email}`);
-      this.resetForm(); // Reset form sau khi gửi thành công
-      this.router.navigate(['/login']); // Chuyển hướng về trang đăng nhập
+      // Gọi API đổi mật khẩu
+      this.authService.forgotPassword({
+        username: this.username,
+        newPassword: this.newPassword,
+        confirmPassword: this.confirmPassword
+      }).subscribe({
+        next: async () => {
+          // Nếu API thành công, gửi email xác nhận
+          await this.sendEmail();
+          this.successMessage = 'Đặt lại mật khẩu thành công! Vui lòng kiểm tra email của bạn.';
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
+        },
+        error: (error) => {
+          console.error('Lỗi đặt lại mật khẩu:', error);
+          if (error.status === 404) {
+            this.errorMessage = 'Tài khoản không tồn tại!';
+          } else {
+            this.errorMessage = error.error?.message || 'Không thể đặt lại mật khẩu. Vui lòng thử lại sau.';
+          }
+        },
+        complete: () => {
+          this.isLoading = false;
+        }
+      });
     } catch (error) {
-      console.error('❌ Lỗi gửi email:', error);
-      alert('❌ Không thể gửi email, vui lòng thử lại sau!');
+      console.error('Lỗi gửi email:', error);
+      this.errorMessage = 'Không thể gửi email xác nhận. Vui lòng thử lại sau.';
+      this.isLoading = false;
     }
   }
 
@@ -88,16 +137,16 @@ refreshCaptcha(): void {
   sendEmail(): Promise<EmailJSResponseStatus> {
     const templateParams = {
       from_name: 'Medica Hospital',
-      to_name: this.username, // Tên người nhận
-      to_email: this.email, // Email người nhận
-      new_password: this.password, // ✅ Thêm mật khẩu mới
+      to_name: this.username,
+      to_email: this.email,
+      new_password: this.newPassword,
     };
 
     return emailjs.send(
-      'service_bn345hv',      // Thay bằng Service ID của bạn
-      'template_st5cpsf',     // Template ID của bạn
+      'service_bn345hv',
+      'template_st5cpsf',
       templateParams,
-      '_FxWXZ1gt_aF1SEzA'     // Public Key (User ID) của bạn
+      '_FxWXZ1gt_aF1SEzA'
     );
   }
 
@@ -105,8 +154,11 @@ refreshCaptcha(): void {
   resetForm(): void {
     this.username = '';
     this.email = '';
-    this.password = '';
+    this.newPassword = '';
+    this.confirmPassword = '';
     this.captchaInput = '';
-    this.generateCaptcha(); // Làm mới captcha
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.generateCaptcha();
   }
 }

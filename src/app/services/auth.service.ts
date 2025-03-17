@@ -14,6 +14,12 @@ export interface RegisterRequest {
   address: string;
 }
 
+export interface ForgotPasswordRequest {
+  username: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -64,6 +70,17 @@ export class AuthService {
     console.log('Dữ liệu gửi đến API:', payload);
     
     return this.http.post(`${this.baseUrl}/register`, payload, {
+      headers: headers
+    });
+  }
+  
+  forgotPassword(formData: ForgotPasswordRequest): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+
+    return this.http.post(`${this.baseUrl}/forgot-password`, formData, {
       headers: headers
     });
   }

@@ -1,86 +1,192 @@
 .register-container {
-  max-width: 470px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
-  margin-top: 50px;
-  position: absolute;
-    top: 44%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-height: 100vh;
-    overflow: auto;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.95);
+  margin-top: 0px;
+  position: relative;
+  overflow: hidden;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-.top-bar {
-  background-color: #14656E;
-  width: 470px;
-  height: 50px;
-  border-bottom: 10px;
+.register-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #14656E;
 }
 
 h2 {
   text-align: center;
+  color: #14656E;
+  font-size: 26px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 25px;
+  font-size: 15px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-row .form-group {
+  flex: 1;
+  margin-bottom: 0;
 }
 
 .form-group {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   margin-bottom: 20px;
+  width: 100%;
 }
 
 label {
-  width: 30%;
-  font-weight: bold;
-  padding-top: 8px; 
+  font-weight: 500;
+  color: #2C3E50;
+  margin-bottom: 6px;
+  font-size: 14px;
+  display: block;
 }
 
 .input-container {
-  width: 70%;
+  width: 100%;
+  position: relative;
 }
 
 input[type="text"],
 input[type="email"],
 input[type="password"],
 select {
-  width: 300px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 100%;
+  height: 45px;
+  padding: 0 15px;
+  border: 2px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background-color: #F8F9FA;
   box-sizing: border-box;
-  margin-left: 10px;
 }
 
 input:focus,
 select:focus {
   border-color: #14656E;
   outline: none;
+  box-shadow: 0 0 0 3px rgba(20, 101, 110, 0.1);
+  background-color: #FFFFFF;
 }
 
 button {
-  width: 450px;
-  padding: 10px;
-  background-color: #14656e;
+  width: 100%;
+  height: 45px;
+  padding: 0;
+  background: linear-gradient(90deg, #14656E, #2A9D8F);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
-  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(20, 101, 110, 0.2);
 }
 
 button:disabled {
-  background-color: #ccc;
+  background: #CCCCCC;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-/* Hiển thị lỗi ngay bên dưới ô nhập */
 .error-message {
-  color: red;
+  color: #E74C3C;
+  font-size: 12px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.error-container {
+  background-color: #FDE8E8;
+  border-left: 3px solid #E74C3C;
+  padding: 12px;
+  margin: 20px 0;
+  border-radius: 4px;
+}
+
+.api-error {
+  color: #E74C3C;
+  margin: 0;
   font-size: 14px;
-  display: block;
-  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: #14656E;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.login-link a:hover {
+  color: #2A9D8F;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .register-container {
+    margin: 15px;
+    padding: 25px;
+  }
+  
+  h2 {
+    font-size: 24px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
 }

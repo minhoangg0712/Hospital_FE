@@ -1,0 +1,61 @@
+<div class="profile-container">
+    <h2>THÔNG TIN CÁ NHÂN</h2>
+  
+    <div *ngIf="isLoading" class="loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Đang tải thông tin...</p>
+    </div>
+  
+    <div *ngIf="errorMessage" class="error">
+      <i class="fas fa-exclamation-circle"></i>
+      <p>{{ errorMessage }}</p>
+    </div>
+  
+    <div *ngIf="!isLoading && currentUser" class="info-section">
+      <div class="row">
+        <label>Mã số CCCD:</label>
+        <span>{{ currentUser.cccd }}</span>
+      </div>
+  
+      <div class="row">
+        <label>Họ tên:</label>
+        <span>{{ currentUser.name }}</span>
+      </div>
+  
+      <div class="row">
+        <label>Số điện thoại:</label>
+        <span>{{ currentUser.phone }}</span>
+      </div>
+  
+      <div class="row">
+        <label>Email:</label>
+        <span>{{ currentUser.email }}</span>
+      </div>
+  
+      <div class="row">
+        <label>Địa chỉ:</label>
+        <span>{{ currentUser.address }}</span>
+      </div>
+  
+      <div class="row">
+        <label>Số BHYT:</label>
+        <span>{{ currentUser.insuranceNumber }}</span>
+      </div>
+  
+      <div class="row">
+        <label>Giới tính:</label>
+        <span>{{ currentUser.gender === 'MALE' ? 'Nam' : 'Nữ' }}</span>
+      </div>
+  
+      <div class="row">
+        <label>Ngày tạo:</label>
+        <span>{{ currentUser.createdAt | date:'dd/MM/yyyy' }}</span>
+      </div>
+  
+      <div class="row">
+        <label>Cập nhật lần cuối:</label>
+        <span>{{ currentUser.updatedAt | date:'dd/MM/yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+  

@@ -10,6 +10,7 @@ import { AppointmentComponent} from './pages/appointment/appointment.component';
 import { MedicineComponent} from './pages/medicine/medicine.component';
 import { CartComponent} from './pages/cart/cart.component';
 import { AuthGuard } from '../guards/auth.guard';
+import { ProfileDoctorComponent } from './pages-doctor/profile-doctor/profile-doctor.component';
 
 export const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -21,5 +22,6 @@ export const routes: Routes = [
   {path: 'forgot-password', component: ForgotPasswordComponent},
   {path: 'appointment', component: AppointmentComponent, canActivate: [AuthGuard]},
   {path: 'medicine', component: MedicineComponent, canActivate: [AuthGuard]},
-  {path: 'cart', component: CartComponent, canActivate: [AuthGuard]}
+  {path: 'cart', component: CartComponent, canActivate: [AuthGuard]},
+  {path: 'profile-doctor', component: ProfileDoctorComponent, canActivate: [AuthGuard]}
 ];
