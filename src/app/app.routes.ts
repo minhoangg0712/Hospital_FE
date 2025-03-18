@@ -14,12 +14,13 @@ import { ProfileDoctorComponent } from './pages-doctor/profile-doctor/profile-do
 import { AppointmentScheduleComponent } from './pages-doctor/appointment-schedule/appointment-schedule.component';
 import { MedicalRecordsComponent} from './pages-doctor/medical-records/medical-records.component';
 import { RecordsListComponent} from './pages-doctor/records-list/records-list.component';
-import {PrescriptionManagementComponent} from './pages-doctor/prescription-management/prescription-management.component';
+import { PrescriptionManagementComponent} from './pages-doctor/prescription-management/prescription-management.component';
+
 export const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegistrationComponent},
-  {path: 'doctor', component: HomeDoctorComponent, /*canActivate: [AuthGuard]*/},
+  {path: 'doctor', component: HomeDoctorComponent, canActivate: [AuthGuard]},
   {path: 'patient', component: HomePatientComponent, canActivate: [AuthGuard]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'forgot-password', component: ForgotPasswordComponent},
@@ -27,8 +28,8 @@ export const routes: Routes = [
   {path: 'medicine', component: MedicineComponent, canActivate: [AuthGuard]},
   {path: 'cart', component: CartComponent, canActivate: [AuthGuard]},
   {path: 'profile-doctor', component: ProfileDoctorComponent, canActivate: [AuthGuard]},
-  {path: 'appointment-schedule', component: AppointmentScheduleComponent, /*canActivate: [AuthGuard]*/},
-  {path: 'medical-records' , component: MedicalRecordsComponent, /*canActivate: [AuthGuard]*/},
-  {path: 'records-list', component: RecordsListComponent, /*canActivate: [AuthGuard]*/},
-  {path: 'prescription-management', component: PrescriptionManagementComponent, /*canActivate: [AuthGuard]*/},
+  {path: 'appointment-schedule', component: AppointmentScheduleComponent, canActivate: [AuthGuard]},
+  {path: 'medical-records' , component: MedicalRecordsComponent, canActivate: [AuthGuard]},
+  {path: 'records-list', component: RecordsListComponent, canActivate: [AuthGuard]},
+  {path: 'prescription-management', component: PrescriptionManagementComponent, canActivate: [AuthGuard]},
 ];

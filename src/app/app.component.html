@@ -1,9 +1,18 @@
 <main class="main">
-  <app-header *ngIf="!isAuthPage"></app-header>  
+  <!-- Header -->
+  <ng-container *ngIf="!isAuthPage">
+    <app-header *ngIf="!isDoctor"></app-header>
+    <app-header-doctor *ngIf="isDoctor"></app-header-doctor>
+  </ng-container>
 
+  <!-- Content -->
   <div class="content">
     <router-outlet></router-outlet>  
   </div>
 
-  <app-footer *ngIf="!isAuthPage"></app-footer>  
+  <!-- Footer -->
+  <ng-container *ngIf="!isAuthPage">
+    <app-footer *ngIf="!isDoctor"></app-footer>
+    <app-footer-doctor *ngIf="isDoctor"></app-footer-doctor>
+  </ng-container>
 </main>

@@ -1,0 +1,24 @@
+<header class="header">
+  <div class="logo-container">
+      <i class="fas fa-user-md"></i>
+      <span class="title">Medica</span>
+  </div>
+  <div class="header-info">
+      <div class="profile-section">
+          <i class="fa-solid fa-user-doctor"></i>
+          <button routerLink="/profile-doctor">Hồ sơ cá nhân</button>
+      </div>
+      <button class="logout-btn" (click)="openLogoutModal()">Đăng xuất</button> 
+  </div>
+</header>
+
+<div class="modal-overlay" *ngIf="isLogoutModalOpen" (click)="closeLogoutModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()"> 
+      <h3>Xác nhận đăng xuất</h3>
+      <p>Bạn có chắc chắn muốn đăng xuất không?</p>
+      <div class="modal-buttons">
+          <button class="confirm" (click)="logout()">Đăng xuất</button>
+          <button class="cancel" (click)="closeLogoutModal()">Hủy</button>
+      </div>
+  </div>
+</div>

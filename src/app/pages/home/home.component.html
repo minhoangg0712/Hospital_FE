@@ -1,6 +1,25 @@
 <main class="main-container">
   <div class="image-container">
-    <img src="assets/Anh_trang_chu.jpg" alt="Ảnh trang chủ"/>
+    <div class="slideshow" #slideshow>
+      <div class="slide">
+        <img src="assets/Anh_trang_chu.jpg" alt="Bệnh viện hiện đại">
+      </div>
+      <div class="slide">
+        <img src="assets/Anh_trang_chu_4.jpg" alt="Đội ngũ y tế chuyên nghiệp">
+      </div>
+      <div class="slide">
+        <img src="assets/Anh_trang_chu_3.jpg" alt="Chăm sóc tận tâm">
+      </div>
+    </div>
+    <div class="slide-controls">
+      <div class="slide-dot active" (click)="goToSlide(0)"></div>
+      <div class="slide-dot" (click)="goToSlide(1)"></div>
+      <div class="slide-dot" (click)="goToSlide(2)"></div>
+    </div>
+    <div class="slide-arrows">
+      <div class="slide-arrow" (click)="prevSlide()">&#10094;</div>
+      <div class="slide-arrow" (click)="nextSlide()">&#10095;</div>
+    </div>
   </div>
 </main>
 <div class="container">
@@ -108,10 +127,101 @@
           <div class="text-box">
               <h2>GIỚI THIỆU</h2>
               <p>Địa chỉ chăm sóc sức khoẻ ban đầu tin cậy!</p>
-              <p>Phòng khám Medica trực thuộc Công ty Cổ Phần Sức khỏe và Môi trường Hà Nội, được thành lập với sứ mệnh và tầm nhìn “TIÊN PHONG TRONG LĨNH VỰC CHĂM SÓC SỨC KHỎE BAN ĐẦU”.</p>
+              <p>Phòng khám Medica trực thuộc Công ty Cổ Phần Sức khỏe và Môi trường Hà Nội, được thành lập với sứ mệnh và tầm nhìn "TIÊN PHONG TRONG LĨNH VỰC CHĂM SÓC SỨC KHỎE BAN ĐẦU".</p>
               <p>Phòng khám Medica tại địa chỉ số 80A Nguyễn Thanh Bình, Phường Vạn Phúc, Quận Hà Đông, Thành phố Hà Nội. Thành lập từ năm 2015 bởi đội ngũ các y bác sĩ đầu ngành nhiều năm kinh nghiệm đến từ các bệnh viện tuyến Trung ương giàu y đức, tâm huyết với nghề và có trình độ chuyên môn cao.</p>
               <button>Chi tiết</button>
           </div>
         </div>  
       </div>
 </div>
+
+<!-- Đội ngũ bác sĩ -->
+<section class="doctors">
+    <h2 class="section-title">Đội Ngũ Bác Sĩ</h2>
+    <div class="doctors-grid">
+        <div class="doctor-card">
+            <div class="doctor-image">
+                <img src="assets/doctor/doctor1.jpg" alt="Bác sĩ 1">
+            </div>
+            <div class="doctor-info">
+                <h3>TS.BS Nguyễn Văn A</h3>
+                <p class="specialty">Khoa Nội Tổng Hợp</p>
+                <p class="experience">20 năm kinh nghiệm</p>
+                <button class="book-appointment">Đặt lịch khám</button>
+            </div>
+        </div>
+        <div class="doctor-card">
+            <div class="doctor-image">
+                <img src="assets/doctor/doctor2.jpg" alt="Bác sĩ 2">
+            </div>
+            <div class="doctor-info">
+                <h3>PGS.TS Trần Thị B</h3>
+                <p class="specialty">Khoa Tim Mạch</p>
+                <p class="experience">15 năm kinh nghiệm</p>
+                <button class="book-appointment">Đặt lịch khám</button>
+            </div>
+        </div>
+        <div class="doctor-card">
+            <div class="doctor-image">
+                <img src="assets/doctor/doctor3.jpg" alt="Bác sĩ 3">
+            </div>
+            <div class="doctor-info">
+                <h3>BS.CKI Lê Văn C</h3>
+                <p class="specialty">Khoa Nhi</p>
+                <p class="experience">12 năm kinh nghiệm</p>
+                <button class="book-appointment">Đặt lịch khám</button>
+            </div>
+        </div>
+        <div class="doctor-card">
+            <div class="doctor-image">
+                <img src="assets/doctor/doctor4.png" alt="Bác sĩ 4">
+            </div>
+            <div class="doctor-info">
+                <h3>TS.BS Phạm Thị D</h3>
+                <p class="specialty">Khoa Da Liễu</p>
+                <p class="experience">18 năm kinh nghiệm</p>
+                <button class="book-appointment">Đặt lịch khám</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tin tức và sự kiện -->
+<section class="news">
+    <h2 class="section-title">Tin Tức & Sự Kiện</h2>
+    <div class="news-grid">
+        <div class="news-card">
+            <div class="news-image">
+                <img src="assets/tintuc1.jpg" alt="Tin tức 1">
+            </div>
+            <div class="news-content">
+                <div class="news-date">15 Tháng 3, 2024</div>
+                <h3>Chương trình khám sức khỏe miễn phí cho người cao tuổi</h3>
+                <p>Phòng khám tổ chức chương trình khám sức khỏe miễn phí cho người cao tuổi nhân dịp kỷ niệm ngày Thầy thuốc Việt Nam...</p>
+                <a href="#" class="read-more">Xem thêm</a>
+            </div>
+        </div>
+        <div class="news-card">
+            <div class="news-image">
+                <img src="assets/tintuc2.jpg" alt="Tin tức 2">
+            </div>
+            <div class="news-content">
+                <div class="news-date">10 Tháng 3, 2024</div>
+                <h3>Tư vấn dinh dưỡng cho trẻ em trong mùa dịch</h3>
+                <p>Các chuyên gia dinh dưỡng của phòng khám chia sẻ những kiến thức bổ ích về chế độ dinh dưỡng cho trẻ...</p>
+                <a href="#" class="read-more">Xem thêm</a>
+            </div>
+        </div>
+        <div class="news-card">
+            <div class="news-image">
+                <img src="assets/tintuc3.jpg" alt="Tin tức 3">
+            </div>
+            <div class="news-content">
+                <div class="news-date">5 Tháng 3, 2024</div>
+                <h3>Khai trương khoa Vật lý trị liệu</h3>
+                <p>Phòng khám chính thức đưa vào hoạt động khoa Vật lý trị liệu với trang thiết bị hiện đại...</p>
+                <a href="#" class="read-more">Xem thêm</a>
+            </div>
+        </div>
+    </div> 
+</section>

@@ -61,6 +61,18 @@ export class ProfileComponent implements OnInit {
     this.errorMessage = '';
 
     try {
+      // Log thông tin từ token
+      const token = localStorage.getItem('token');
+      if (token) {
+        const tokenParts = token.split('.');
+        const payload = JSON.parse(atob(tokenParts[1]));
+        console.log('Thông tin từ token:', {
+          userId: payload.userId || payload.sub,
+          role: payload.role,
+          username: payload.username
+        });
+      }
+
       this.userService.getCurrentUserProfile().subscribe({
         next: (data: UserDTO) => {
           this.currentUser = data;
@@ -70,10 +82,12 @@ export class ProfileComponent implements OnInit {
         error: (error: any) => {
           console.error('Lỗi khi tải thông tin:', error);
           if (error.status === 401) {
-            this.errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
+            this.errorMessage = error.message || 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
             this.router.navigate(['/login']);
+          } else if (error.status === 403) {
+            this.errorMessage = error.message || 'Bạn không có quyền truy cập thông tin này.';
           } else {
-            this.errorMessage = 'Không thể tải thông tin cá nhân. Vui lòng thử lại sau.';
+            this.errorMessage = error.message || 'Không thể tải thông tin cá nhân. Vui lòng thử lại sau.';
           }
           this.isLoading = false;
         }
