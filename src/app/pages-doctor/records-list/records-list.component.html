@@ -1,0 +1,17 @@
+<div class="record-list">
+  <h2>Danh sách hồ sơ bệnh án</h2>
+  <div class="record-card" *ngFor="let record of records; let i = index">
+      <h3>{{ record.patientName }} - {{ record.dateOfBirth }}</h3>
+      <p><strong>Giới tính:</strong> {{ record.gender }}</p>
+      <p><strong>Địa chỉ:</strong> {{ record.address }}</p>
+      <p><strong>Điện thoại:</strong> {{ record.phone }}</p>
+      <p><strong>Triệu chứng:</strong> {{ record.symptoms }}</p>
+      <p><strong>Tiền sử bệnh:</strong> {{ record.medicalHistory }}</p>
+      <p><strong>Mã BHYT:</strong> {{ record.healthInsuranceId }}</p>
+      <p><strong>Dị ứng thuốc:</strong> {{ record.allergies }}</p>
+      <p><strong>Chuẩn đoán:</strong> {{ record.diagnose}}</p>
+      <p><strong>Kết quả xét nghiệm:</strong> {{ record.result }}</p>
+      
+  </div>
+</div>
+

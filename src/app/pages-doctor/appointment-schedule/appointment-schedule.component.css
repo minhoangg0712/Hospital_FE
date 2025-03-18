@@ -1,0 +1,63 @@
+/* Thiết lập khung chung */
+:host ::ng-deep .fc {
+  max-width: 1000px;
+  margin: auto;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Tiêu đề lịch */
+:host ::ng-deep .fc-toolbar-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #14656E;
+}
+
+/* Nút điều hướng */
+:host ::ng-deep .fc-button {
+  background-color: #14656E !important;
+  border: none !important;
+  color: white !important;
+  font-weight: bold !important;
+  padding: 8px 15px !important;
+  border-radius: 5px !important;
+}
+
+:host ::ng-deep .fc-button:hover {
+  background-color: #14656E !important;
+}
+
+/* Định dạng tiêu đề cột ngày */
+:host ::ng-deep .fc-col-header-cell {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  padding: 10px;
+}
+
+/* Định dạng background của slot giờ */
+:host ::ng-deep .fc-timegrid-slot {
+  background-color: #fdfdfd;
+}
+
+/* Tô màu event */
+:host ::ng-deep .fc-event {
+  background-color: #14656E !important;
+  border: none !important;
+  color: white !important;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+/* Hover sự kiện */
+:host ::ng-deep .fc-event:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+/* Định dạng timeline hiện tại */
+:host ::ng-deep .fc-timegrid-now-indicator {
+  background-color: red;
+  height: 2px;
+}
+
