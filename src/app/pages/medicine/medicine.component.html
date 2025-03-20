@@ -1,62 +1,81 @@
-<h2 class="page-title">Danh mục thuốc</h2>
-
-<div class="search-section">
-  <div class="search-container">
-    <i class="fas fa-search search-icon"></i>
-    <input 
-      type="text" 
-      [(ngModel)]="searchTerm" 
-      (input)="filterBySearch()"
-      placeholder="Tìm kiếm theo tên thuốc, công dụng, hoặc loại thuốc..."
-      class="search-input"
-    />
+<div class="medicine-page">
+  <!-- Header Section -->
+  <div class="header-section">
+    <h1>Danh Mục Thuốc</h1>
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="filterMedicines()"
+        placeholder="Tìm kiếm theo tên thuốc, công dụng, hoặc loại thuốc..."
+        class="search-input"
+      />
+    </div>
   </div>
-</div>
 
-<div class="medicine-container">
-  <!-- Bộ lọc -->
-  <aside class="filter-sidebar">
-    <h3 class="filter-header">Bộ lọc nâng cao</h3>
+  <!-- Loading Spinner -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Đang tải danh sách thuốc...</p>
+  </div>
 
-    <!-- Giá bán -->
-    <div class="filter-group">
-      <h4 class="filter-title">Giá bán</h4>
-      <div class="price-filters">
-        <label class="filter-item" *ngFor="let price of priceRanges">
-          <input type="radio" name="price" (change)="filterByPrice(price)" />
-          <span class="label-text">{{ price.label }}</span>
-        </label>
+  <!-- Error Message -->
+  <div class="error-container" *ngIf="error">
+    <i class="fas fa-exclamation-circle"></i>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Main Content -->
+  <div class="medicine-content" *ngIf="!loading && !error">
+    <!-- Filter Sidebar -->
+    <aside class="filter-sidebar">
+      <h3>Bộ lọc nâng cao</h3>
+      
+      <!-- Price Filter -->
+      <div class="filter-section">
+        <h4>Khoảng giá</h4>
+        <div class="price-filters">
+          <label *ngFor="let range of priceRanges" class="price-filter-item">
+            <input 
+              type="radio" 
+              name="price" 
+              (change)="filterByPrice(range)"
+            />
+            <span>{{ range.label }}</span>
+          </label>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Medicine Grid -->
+    <div class="medicine-grid">
+      <div class="medicine-card" *ngFor="let medicine of filteredMedicines">
+        <div class="medicine-image">
+          <img [src]="medicine.image" [alt]="medicine.name">
+          <div class="stock-badge" *ngIf="medicine.quantity > 0">
+            Còn {{ medicine.quantity }} {{ medicine.unit }}
+          </div>
+        </div>
+        
+        <div class="medicine-info">
+          <h3 class="medicine-name">{{ medicine.name }}</h3>
+          <p class="medicine-description">{{ medicine.description }}</p>
+          
+          <div class="medicine-category">
+            <span class="category-tag">{{ medicine.category }}</span>
+          </div>
+
+          <div class="medicine-price">
+            <span class="price">{{ formatPrice(medicine.price) }}đ</span>
+          </div>
+
+          <button class="add-to-cart-btn" (click)="addToCart(medicine)">
+            <i class="fas fa-shopping-cart"></i>
+            Thêm vào giỏ hàng
+          </button>
+        </div>
       </div>
     </div>
-  </aside>
-
-  <!-- Danh sách thuốc -->
-  <section class="medicine-list">
-    <div class="medicine-card" *ngFor="let medicine of filteredMedicines">
-      <div class="medicine-image">
-        <img [src]="medicine.image" [alt]="medicine.name" />
-        <div class="discount-badge" *ngIf="medicine.discount">Giảm giá</div>
-      </div>
-      <div class="medicine-info">
-        <h3 class="medicine-name">{{ medicine.name }}</h3>
-        <p class="medicine-description">{{ medicine.description }}</p>
-    
-        <div class="price-section">
-          <p class="price">
-            <span [class.discounted]="medicine.discount">{{ formatPrice(medicine.price) }}đ</span>
-            <span *ngIf="medicine.discount" class="original-price">{{ formatPrice(medicine.originalPrice) }}đ</span>
-          </p>
-        </div>
-
-        <div class="tags">
-          <span *ngFor="let tag of medicine.tags" class="tag">{{ tag }}</span>
-        </div>
-
-        <button class="add-to-cart-btn" (click)="addToCart(medicine)">
-          <i class="fas fa-shopping-cart"></i>
-          Thêm vào giỏ hàng
-        </button>
-      </div>
-    </div>
-  </section>
+  </div>
 </div>
