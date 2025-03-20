@@ -1,0 +1,38 @@
+<div class="container">
+    <h1 class="title">Danh sách bác sĩ</h1>
+  
+    <!-- Thanh tìm kiếm và lọc -->
+    <div class="filter-container">
+      <input 
+        type="text" 
+        placeholder="Tìm kiếm theo tên bác sĩ..." 
+        [(ngModel)]="searchText"
+        (input)="filterDoctors()"
+      />
+  
+      <select [(ngModel)]="selectedDepartment" (change)="filterDoctors()">
+        <option value="">Tất cả phòng ban</option>
+        <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+      </select>
+    </div>
+  
+    <!-- Bảng danh sách bác sĩ -->
+    <table>
+      <thead>
+        <tr>
+          <th>Tên đăng nhập</th>
+          <th>Phòng ban</th>
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let doctor of filteredDoctors">
+          <td>{{ doctor.username }}</td>
+          <td>{{ doctor.department }}</td>
+          <td>
+            <button class="delete-btn" (click)="deleteDoctor(doctor)">Xóa</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
