@@ -2,6 +2,21 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface MedicalRecordDTO {
+  recordId?: number;
+  patientName: string;
+  gender: string;
+  address: string;
+  insuranceNumber: string;
+  symptoms: string;
+  medicalHistory: string;
+  allergies: string;
+  diagnosis: string;
+  testResults: string;
+  prescription: string;
+  notes?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,15 +25,15 @@ export class MedicalRecordService {
 
   constructor(private http: HttpClient) { }
 
-  createMedicalRecord(recordData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/create`, recordData);
+  createMedicalRecord(patientId: number, record: MedicalRecordDTO): Observable<MedicalRecordDTO> {
+    return this.http.post<MedicalRecordDTO>(`${this.baseUrl}/create/${patientId}`, record);
   }
 
-  getMedicalRecords(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/list`);
+  getMedicalRecords(): Observable<MedicalRecordDTO[]> {
+    return this.http.get<MedicalRecordDTO[]>(`${this.baseUrl}/list`);
   }
 
-  getMedicalRecordById(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/${id}`);
+  getMedicalRecordById(id: number): Observable<MedicalRecordDTO> {
+    return this.http.get<MedicalRecordDTO>(`${this.baseUrl}/${id}`);
   }
 } 

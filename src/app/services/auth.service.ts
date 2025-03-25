@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 export interface RegisterRequest {
   name: string;
@@ -12,6 +12,7 @@ export interface RegisterRequest {
   cccd: string;
   insuranceNumber: string;
   address: string;
+  roleCode: string;
 }
 
 export interface ForgotPasswordRequest {
@@ -29,14 +30,14 @@ export class AuthService {
   constructor(private http: HttpClient) { }
   
   login(username: string, password: string): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    
-    return this.http.post(`${this.baseUrl}/login`, { username, password }, {
-      headers: headers
-    });
+    return this.http.post(`${this.baseUrl}/login`, { username, password })
+      .pipe(
+        tap((response: any) => {
+          if (response.token) {
+            localStorage.setItem('token', response.token);
+          }
+        })
+      );
   }
   
   register(formData: {
@@ -56,15 +57,16 @@ export class AuthService {
     });
     
     const payload: RegisterRequest = {
-      name: formData.name || '',
-      username: formData.username || '',
-      password: formData.password || '',
-      email: formData.email || '',
-      phone: formData.phone ? String(formData.phone) : '',
-      address: formData.address || '',
-      cccd: formData.cccd ? String(formData.cccd) : '',
-      insuranceNumber: formData.insuranceNumber ? String(formData.insuranceNumber) : '',
-      gender: formData.gender || ''
+      name: formData.name,
+      username: formData.username,
+      password: formData.password,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      cccd: formData.cccd,
+      insuranceNumber: formData.insuranceNumber,
+      gender: formData.gender,
+      roleCode: 'PATIENT'
     };
     
     console.log('Dữ liệu gửi đến API:', payload);
@@ -94,6 +96,6 @@ export class AuthService {
   }
   
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return !!localStorage.getItem('token');
   }
 }

@@ -11,21 +11,19 @@ export interface UserDTO {
   email: string;
   gender: string;
   roleCode: string;
-  departmentId?: number;
+  departmentId: number;
   cccd: string;
   insuranceNumber: string;
   address: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
-
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private baseUrl = 'http://localhost:8080';
-  private apiUrl = this.baseUrl + '/api';
+  private apiUrl = 'http://localhost:8080/api/patient';
 
 
   constructor(private http: HttpClient) {}
@@ -48,7 +46,9 @@ export class UserService {
       errorMessage = error.error.message;
     } else {
       // Lỗi phía server
-      if (error.status === 401) {
+      if (error.status === 400) {
+        errorMessage = error.error.message || 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.';
+      } else if (error.status === 401) {
         errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
       } else if (error.status === 403) {
         errorMessage = 'Bạn không có quyền thực hiện thao tác này.';
@@ -57,21 +57,27 @@ export class UserService {
       }
     }
    
+    console.error('Error details:', error);
     return throwError(() => new Error(errorMessage));
   }
 
 
   // Lấy danh sách hồ sơ bệnh nhân
   getPatientProfiles(): Observable<UserDTO[]> {
-    return this.http.get<UserDTO[]>(`${this.apiUrl}/patient/profiles`, { headers: this.getHeaders() })
+    return this.http.get<UserDTO[]>(`${this.apiUrl}/profiles`, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
 
   // Lấy hồ sơ chi tiết theo ID
   getUserProfileById(id: number): Observable<UserDTO> {
-    return this.http.get<UserDTO>(`${this.apiUrl}/patient/profile/${id}`, { headers: this.getHeaders() })
-      .pipe(catchError(this.handleError));
+    console.log('Calling getUserProfileById with ID:', id);
+    console.log('Headers:', this.getHeaders());
+    
+    return this.http.get<UserDTO>(`${this.apiUrl}/profile/${id}`, { 
+      headers: this.getHeaders(),
+      withCredentials: true 
+    }).pipe(catchError(this.handleError));
   }
 
 
@@ -82,13 +88,16 @@ export class UserService {
       return throwError(() => new Error('Không tìm thấy token xác thực'));
     }
 
-
     try {
       const tokenParts = token.split('.');
       const payload = JSON.parse(atob(tokenParts[1]));
       const role = payload.role;
       const userId = payload.userId || payload.sub;
 
+      console.log('Token:', token);
+      console.log('Token payload:', payload);
+      console.log('Role:', role);
+      console.log('User ID:', userId);
 
       // Chọn endpoint dựa trên role
       if (role === 'ROLE_DOCTOR' || role === 'ROLE_MGR') {
@@ -97,6 +106,7 @@ export class UserService {
         return this.getUserProfileById(Number(userId));
       }
     } catch (error) {
+      console.error('Token parsing error:', error);
       return throwError(() => new Error('Token không hợp lệ'));
     }
   }
@@ -104,62 +114,27 @@ export class UserService {
 
   // Lấy thông tin bác sĩ
   private getDoctorProfile(): Observable<UserDTO> {
-    return this.http.get<UserDTO>(`${this.apiUrl}/patient/Doctorprofile`, { headers: this.getHeaders() })
+    return this.http.get<UserDTO>(`${this.apiUrl}/Doctorprofile`, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
 
   // Cập nhật hồ sơ
   updateUserProfile(user: UserDTO): Observable<UserDTO> {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      return throwError(() => new Error('Không tìm thấy token xác thực'));
-    }
-
-
-    const headers = new HttpHeaders()
-      .set('Content-Type', 'application/json')
-      .set('Authorization', `Bearer ${token}`);
-
-
-    return this.http.put<UserDTO>(`${this.apiUrl}/patient/profile/update`, user, {
-      headers,
-      withCredentials: true
-    }).pipe(
-      catchError((error: HttpErrorResponse) => {
-        console.error('Error in updateUserProfile:', error);
-        let errorMessage = 'Đã xảy ra lỗi không xác định';
-       
-        if (error.error instanceof ErrorEvent) {
-          // Lỗi phía client
-          errorMessage = error.error.message;
-        } else {
-          // Lỗi phía server
-          if (error.status === 401) {
-            errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
-          } else if (error.status === 403) {
-            errorMessage = 'Bạn không có quyền thực hiện thao tác này.';
-          } else if (error.error && error.error.message) {
-            errorMessage = error.error.message;
-          } else if (error.status === 400) {
-            errorMessage = 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.';
-          }
-        }
-        return throwError(() => new Error(errorMessage));
-      })
-    );
+    return this.http.put<UserDTO>(`${this.apiUrl}/profile/update`, user, {
+      headers: this.getHeaders()
+    }).pipe(catchError(this.handleError));
   }
 
 
   // Đổi mật khẩu
   changePassword(oldPassword: string, newPassword: string): Observable<any> {
-    const body = {
+    return this.http.post(`${this.apiUrl}/change-password`, {
       oldPassword,
       newPassword
-    };
-   
-    return this.http.post(`${this.baseUrl}/api/auth/change-password`, body, { headers: this.getHeaders() })
-      .pipe(catchError(this.handleError));
+    }, {
+      headers: this.getHeaders()
+    }).pipe(catchError(this.handleError));
   }
 }
 

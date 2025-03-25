@@ -15,7 +15,7 @@ import { FooterDoctorComponent } from './component/footer-doctor/footer-doctor.c
     FooterComponent, 
     CommonModule,
     HeaderDoctorComponent,
-    FooterDoctorComponent
+    FooterDoctorComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
@@ -24,6 +24,7 @@ export class AppComponent {
   title = 'Project-angular';
   isAuthPage: boolean = false;
   isDoctor: boolean = false;
+  isAdmin: boolean = false;
 
   constructor(private router: Router) {
     this.router.events.subscribe(event => {
@@ -31,7 +32,10 @@ export class AppComponent {
         // Kiểm tra trang auth
         this.isAuthPage = event.url.includes('/login') 
           || event.url.includes('/register')
-          || event.url.includes('/forgot-password');
+          || event.url.includes('/forgot-password')
+          || event.url.includes('/admin-home')
+          || event.url.includes('/admin-create-doctor')
+          || event.url.includes('/admin-doctor-list');
 
         // Kiểm tra role từ localStorage
         const token = localStorage.getItem('token');
@@ -42,6 +46,7 @@ export class AppComponent {
             const role = payload.role;
             // Kiểm tra cả ROLE_DOCTOR và ROLE_MGR
             this.isDoctor = role === 'ROLE_DOCTOR' || role === 'ROLE_MGR';
+            this.isAdmin = role === 'ROLE_ADMIN';
             console.log('Role hiện tại:', role);
             console.log('isDoctor:', this.isDoctor);
           } catch (error) {

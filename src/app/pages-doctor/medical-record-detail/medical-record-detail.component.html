@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="header">
+    <h2><i class="fas fa-file-medical"></i> Chi tiết hồ sơ bệnh án</h2>
+    <button class="btn btn-secondary" routerLink="/medical-records">
+      <i class="fas fa-arrow-left"></i> Quay lại
+    </button>
+  </div>
+
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    <i class="fas fa-exclamation-circle"></i> {{errorMessage}}
+  </div>
+
+  <div class="loading" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Đang tải...</span>
+    </div>
+  </div>
+
+  <div class="medical-record-detail" *ngIf="!isLoading && !errorMessage && medicalRecord">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">
+          <i class="fas fa-user"></i> {{medicalRecord.patientName}}
+        </h5>
+        <span class="badge bg-primary">Mã hồ sơ: {{medicalRecord.recordId}}</span>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="info-group">
+              <h6>Thông tin cá nhân</h6>
+              <p><strong>Giới tính:</strong> {{medicalRecord.gender}}</p>
+              <p><strong>Địa chỉ:</strong> {{medicalRecord.address}}</p>
+              <p><strong>Số BHYT:</strong> {{medicalRecord.insuranceNumber}}</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-group">
+              <h6>Thông tin khám bệnh</h6>
+              <p><strong>Triệu chứng:</strong> {{medicalRecord.symptoms}}</p>
+              <p><strong>Chẩn đoán:</strong> {{medicalRecord.diagnosis}}</p>
+              <p><strong>Đơn thuốc:</strong> {{medicalRecord.prescription}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <div class="info-group">
+              <h6>Tiền sử bệnh</h6>
+              <p><strong>Bệnh sử:</strong> {{medicalRecord.medicalHistory || 'Không có'}}</p>
+              <p><strong>Dị ứng:</strong> {{medicalRecord.allergies || 'Không có'}}</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-group">
+              <h6>Kết quả xét nghiệm</h6>
+              <p>{{medicalRecord.testResults || 'Chưa có kết quả'}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-12">
+            <div class="info-group">
+              <h6>Ghi chú</h6>
+              <p>{{medicalRecord.notes || 'Không có ghi chú'}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

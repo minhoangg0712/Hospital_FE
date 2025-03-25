@@ -1,61 +1,121 @@
-<div class="cart-container">
-    <div class="cart-header">
+<div class="cart-page">
+    <!-- Header Section -->
+    <div class="page-header">
         <h1><i class="fas fa-shopping-cart"></i> Giỏ hàng của bạn</h1>
     </div>
-  
-    <!-- Giỏ hàng trống -->
-    <div *ngIf="cartItems.length === 0" class="empty-cart">
-        <i class="fas fa-shopping-basket empty-cart-icon"></i>
-        <h2>Giỏ hàng của bạn đang trống</h2>
-        <p>Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm</p>
-        <button class="primary-button" (click)="goToShop()">
-            <i class="fas fa-shopping-bag"></i> Mua sắm ngay</button>
+
+    <!-- Loading Spinner -->
+    <div class="loading-container" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Đang tải giỏ hàng...</p>
     </div>
-  
-    <!-- Danh sách sản phẩm trong giỏ -->
-    <div *ngIf="cartItems.length > 0" class="cart-content">
-        <div class="cart-items">
-            <div class="cart-item" *ngFor="let item of cartItems; let i = index">
-                <div class="item-image">
-                    <img [src]="item.image" [alt]="item.name"/>
-                </div>
-                <div class="item-details">
-                    <div class="item-info">
-                        <h3>{{ item.name }}</h3>
-                        <p class="description">{{ item.description }}</p>
-                    </div>
-                    <div class="item-price">
-                        <p class="price">{{ formatPrice(item.price) }}</p>
-                        <div class="quantity-controls">
-                            <button class="quantity-btn" (click)="decreaseQuantity(i)">-</button>
-                            <span>{{ item.quantity }}</span>
-                            <button class="quantity-btn" (click)="increaseQuantity(i)">+</button>
+
+    <!-- Error Message -->
+    <div class="error-container" *ngIf="error">
+        <i class="fas fa-exclamation-circle"></i>
+        <p>{{ error }}</p>
+    </div>
+
+    <!-- Empty Cart -->
+    <div *ngIf="!loading && !error && cartItems.length === 0" class="empty-cart">
+        <div class="empty-cart-content">
+            <i class="fas fa-shopping-basket"></i>
+            <h2>Giỏ hàng của bạn đang trống</h2>
+            <p>Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm</p>
+            <button class="primary-button" (click)="goToShop()">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Mua sắm ngay</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Cart Content -->
+    <div *ngIf="!loading && !error && cartItems.length > 0" class="cart-content">
+        <!-- Cart Items -->
+        <div class="cart-items-container">
+            <div class="cart-items-header">
+                <div class="product-col">Sản phẩm</div>
+                <div class="price-col">Đơn giá</div>
+                <div class="quantity-col">Số lượng</div>
+                <div class="total-col">Thành tiền</div>
+                <div class="action-col"></div>
+            </div>
+
+            <div class="cart-items-list">
+                <div *ngFor="let item of cartItems" class="cart-item">
+                    <!-- Product Info -->
+                    <div class="product-col">
+                        <div class="product-info">
+                            <img [src]="getMedicineInfo(item.medicineId)?.image || 'https://via.placeholder.com/80x80.png?text=Thuốc'" 
+                                 [alt]="item.medicineName">
+                            <div class="product-details">
+                                <h3>{{ item.medicineName }}</h3>
+                                <p>{{ getMedicineInfo(item.medicineId)?.description || 'Không có mô tả' }}</p>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Unit Price -->
+                    <div class="price-col">
+                        <span class="price">{{ formatPrice(item.unitPrice) }}</span>
+                    </div>
+
+                    <!-- Quantity Controls -->
+                    <div class="quantity-col">
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" 
+                                    (click)="decreaseQuantity(item.cartItemId, item.quantity)"
+                                    [disabled]="item.quantity <= 1">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="quantity">{{ item.quantity }}</span>
+                            <button class="quantity-btn" 
+                                    (click)="increaseQuantity(item.cartItemId, item.quantity)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Total Price -->
+                    <div class="total-col">
+                        <span class="total-price">{{ formatPrice(item.totalPrice) }}</span>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="action-col">
+                        <button class="remove-btn" (click)="removeFromCart(item.cartItemId)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
-                <button class="remove-btn" (click)="removeFromCart(i)">
-                    <i class="fas fa-trash"></i>
-                </button>
             </div>
         </div>
 
+        <!-- Cart Summary -->
         <div class="cart-summary">
-            <div class="summary-details">
+            <h3>Tổng đơn hàng</h3>
+            <div class="summary-content">
                 <div class="summary-row">
-                    <span>Tạm tính:</span>
-                    <span>{{ formatPrice(getSubtotal()) }}</span>
+                    <span>Tạm tính</span>
+                    <span class="amount">{{ formatPrice(cartSummary.subtotal) }}</span>
                 </div>
                 <div class="summary-row">
-                    <span>Phí vận chuyển:</span>
-                    <span>{{ formatPrice(getShippingFee()) }}</span>
+                    <span>Phí vận chuyển</span>
+                    <span class="amount">{{ formatPrice(cartSummary.shippingFee) }}</span>
                 </div>
                 <div class="summary-row total">
-                    <span>Tổng cộng:</span>
-                    <span>{{ formatPrice(getTotalPrice()) }}</span>
+                    <span>Tổng cộng</span>
+                    <span class="amount">{{ formatPrice(cartSummary.total) }}</span>
                 </div>
+                <button class="checkout-btn" (click)="checkout()">
+                    <i class="fas fa-check"></i>
+                    <span>Thanh toán</span>
+                </button>
+                <button class="continue-shopping-btn" (click)="goToShop()">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Tiếp tục mua sắm</span>
+                </button>
             </div>
-            <button class="checkout-btn" (click)="checkout()">
-                <i class="fas fa-credit-card"></i> Thanh toán ngay</button>
         </div>
     </div>
 </div>

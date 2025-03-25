@@ -1,112 +1,130 @@
-.top-bar {
-    background-color: #14656E;
-    height: 50px;
-    width: auto;
+.header {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .layout {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #ffffff;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    width: auto;
-    height: 100px;
-    margin-top: 0px;
-    padding: 15px 50px;
+    padding: 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 50px;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    font-size: 1.8rem;
-    font-weight: bold;
-    gap: 10px;
-    margin-left: 100px;
+    gap: 0.5rem;
 }
 
 .logo img {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
 }
 
 .logo span {
-    font-size: 45px;
+    font-size: 3rem;
+    font-weight: bold;
+    color: #2c3e50;
 }
 
 .account-cart {
     display: flex;
+    gap: 1rem;
     align-items: center;
-    gap: 20px;
 }
 
 .account, .cart {
     display: flex;
     align-items: center;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.account:hover, .cart:hover {
-    background: rgba(0, 0, 0, 0.1);
+    gap: 0.5rem;
 }
 
 .account i, .cart i {
-    margin-right: 8px;
-    font-size: 18px;
-    color: #333;
+    font-size: 1.2rem;
+    color: #2c3e50;
 }
 
-.account button, .cart button {
+button {
     background: none;
     border: none;
-    color: #333;
-    font-size: 16px;
     cursor: pointer;
-    padding: 0;
+    font-size: 1rem;
+    color: #2c3e50;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s;
 }
 
-.account button:hover, .cart button:hover {
-    color: #14656E;
+button:hover {
+    background-color: #f5f5f5;
 }
 
-.cart span {
-    font-size: 16px;
-    color: #333;
-}
 .nav {
-    background-color: white;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    padding: 12px 0;
+    background-color: #14656E;
+    padding: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .nav ul {
-    list-style: none;
     display: flex;
     justify-content: center;
-    gap: 30px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 70px;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
 }
 
 .nav ul li {
-    display: inline-block;
+    text-align: center;
+    margin-right: 45px;
+    position: relative;
 }
 
-.nav ul li a {
+.nav ul li:last-child {
+    margin-right: 0;
+}
+
+.nav a {
+    color: #fff;
     text-decoration: none;
-    color: black;
-    font-size: 16px;
-    padding: 10px 15px;
-    border-radius: 5px;
-    transition: all 0.3s;
-    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 15px 20px;
+    display: block;
+    white-space: nowrap;
+    position: relative;
+}
+
+.nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
 }
 
 .nav a:hover {
-    background: #14656ec9;
-    color: white;
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav a:hover::after {
+    width: 100%;
 }
 
 /* Modal styles */
@@ -120,58 +138,128 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1001;
 }
 
 .modal-content {
     background-color: white;
-    padding: 20px;
+    padding: 2rem;
     border-radius: 8px;
-    width: 330px;
-    height: 150px;
-    max-width: 90%;
-    text-align: center;
+    max-width: 400px;
+    width: 90%;
 }
 
 .modal-content h3 {
     margin-top: 0;
-    color: #333;
-}
-
-.modal-content p {
-    color: #666;
-    margin: 20px 0;
+    color: #2c3e50;
 }
 
 .modal-buttons {
     display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 50px;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
 }
 
 .modal-buttons button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
     cursor: pointer;
-    font-weight: bold;
 }
 
-.modal-buttons .confirm {
-    background-color: #dc3545;
+.confirm {
+    background-color: #e74c3c;
     color: white;
 }
 
-.modal-buttons .confirm:hover {
-    background-color: #c82333;
+.confirm:hover {
+    background-color: #c0392b;
 }
 
-.modal-buttons .cancel {
-    background-color: #6c757d;
+.cancel {
+    background-color: #bdc3c7;
     color: white;
 }
 
-.modal-buttons .cancel:hover {
-    background-color: #5a6268;
+.cancel:hover {
+    background-color: #95a5a6;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+    .layout {
+        padding: 1rem;
+    }
+
+    .logo span {
+        font-size: 1.2rem;
+    }
+
+    .account-cart {
+        gap: 0.5rem;
+    }
+
+    .nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        padding: 0;
+        height: auto;
+    }
+
+    .nav ul li {
+        margin: 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav a {
+        display: block;
+        padding: 15px;
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav a::after {
+        display: none;
+    }
+
+    .nav a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    button {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .layout {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .account-cart {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .logo {
+        justify-content: center;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+    }
+
+    .modal-buttons {
+        flex-direction: column;
+    }
+
+    .modal-buttons button {
+        width: 100%;
+    }
 }

@@ -52,27 +52,27 @@
     <div class="medicine-grid">
       <div class="medicine-card" *ngFor="let medicine of filteredMedicines">
         <div class="medicine-image">
-          <img [src]="medicine.image" [alt]="medicine.name">
-          <div class="stock-badge" *ngIf="medicine.quantity > 0">
-            Còn {{ medicine.quantity }} {{ medicine.unit }}
+          <img [src]="medicine.image || 'https://via.placeholder.com/150x150.png?text=Thuốc'" [alt]="medicine.name || 'Hình ảnh thuốc'">
+          <div class="stock-badge" *ngIf="medicine?.quantity && medicine.quantity > 0">
+            Còn {{ medicine.quantity }} {{ medicine.unit || 'Đơn vị' }}
           </div>
         </div>
         
         <div class="medicine-info">
-          <h3 class="medicine-name">{{ medicine.name }}</h3>
-          <p class="medicine-description">{{ medicine.description }}</p>
+          <h3 class="medicine-name">{{ medicine.name || 'Chưa có tên' }}</h3>
+          <p class="medicine-description">{{ medicine.description || 'Chưa có mô tả' }}</p>
           
-          <div class="medicine-category">
+          <div class="medicine-category" *ngIf="medicine.category">
             <span class="category-tag">{{ medicine.category }}</span>
           </div>
 
           <div class="medicine-price">
-            <span class="price">{{ formatPrice(medicine.price) }}đ</span>
+            <span class="price">{{ formatPrice(medicine.unitPrice) }}đ</span>
           </div>
 
           <button class="add-to-cart-btn" (click)="addToCart(medicine)">
             <i class="fas fa-shopping-cart"></i>
-            Thêm vào giỏ hàng
+            {{ isLoggedIn ? 'Thêm vào giỏ hàng' : 'Đăng nhập để mua' }}
           </button>
         </div>
       </div>

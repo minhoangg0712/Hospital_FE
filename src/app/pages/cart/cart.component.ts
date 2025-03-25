@@ -1,6 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { CartService } from '../../services/cart.service';
+import { MedicineService, Medicine } from '../../services/medicine.service';
+
+interface CartItem {
+  cartItemId: number;
+  medicineId: number;
+  medicineName: string;
+  unitPrice: number;
+  quantity: number;
+  totalPrice: number;
+}
+
+interface CartResponse {
+  items: CartItem[];
+  summary: {
+    subtotal: number;
+    shippingFee: number;
+    total: number;
+  };
+}
 
 @Component({
   selector: 'app-cart',
@@ -10,65 +30,176 @@ import { Router, RouterModule } from '@angular/router';
   styleUrls: ['./cart.component.css'],
 })
 export class CartComponent implements OnInit {
-  cartItems: any[] = [];
+  cartItems: CartItem[] = [];
+  medicineDetails: Map<number, Medicine> = new Map();
+  isLoggedIn: boolean = false;
+  loading: boolean = true;
+  error: string | null = null;
+  cartSummary = {
+    subtotal: 0,
+    shippingFee: 30000,
+    total: 0
+  };
 
-  constructor(private router: Router) {}
-
-  ngOnInit(): void {
-    this.loadCart();
+  constructor(
+    private router: Router,
+    private cartService: CartService,
+    private medicineService: MedicineService
+  ) {
+    this.checkLoginStatus();
   }
 
-  // Tải giỏ hàng từ localStorage
-  loadCart(): void {
-    const cart = localStorage.getItem('cart');
-    this.cartItems = cart ? JSON.parse(cart) : [];
-  }
-
-  // Giảm số lượng sản phẩm
-  decreaseQuantity(index: number): void {
-    if (this.cartItems[index].quantity > 1) {
-      this.cartItems[index].quantity--;
-      localStorage.setItem('cart', JSON.stringify(this.cartItems));
+  private checkLoginStatus(): void {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    this.isLoggedIn = !!token && !!userId;
+    
+    if (!this.isLoggedIn) {
+      this.router.navigate(['/login']);
     }
   }
 
-  // Tăng số lượng sản phẩm
-  increaseQuantity(index: number): void {
-    this.cartItems[index].quantity++;
-    localStorage.setItem('cart', JSON.stringify(this.cartItems));
+  ngOnInit(): void {
+    if (this.isLoggedIn) {
+      this.loadCart();
+    }
   }
 
-  // Tính tổng tiền tạm tính
-  getSubtotal(): number {
-    return this.cartItems.reduce(
-      (total, item) => total + item.price * (item.quantity || 1),
-      0
-    );
+  loadCart(): void {
+    this.loading = true;
+    this.error = null;
+    
+    this.cartService.getCartItems().subscribe({
+      next: (response: any) => {
+        console.log('Dữ liệu giỏ hàng:', response);
+        
+        // Kiểm tra và gán dữ liệu
+        if (response && Array.isArray(response.items)) {
+          this.cartItems = response.items;
+          this.cartSummary = response.summary || this.cartSummary;
+          this.loadMedicineDetails();
+        } else if (Array.isArray(response)) {
+          // Nếu response là một mảng trực tiếp
+          this.cartItems = response;
+          this.updateCartSummary();
+        } else {
+          console.error('Dữ liệu giỏ hàng không hợp lệ:', response);
+          this.error = 'Không thể tải dữ liệu giỏ hàng';
+        }
+        
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Lỗi khi tải giỏ hàng:', error);
+        this.error = error.message || 'Có lỗi xảy ra khi tải giỏ hàng';
+        this.loading = false;
+        
+        if (error.message?.includes('Phiên đăng nhập đã hết hạn')) {
+          this.isLoggedIn = false;
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
+          this.router.navigate(['/login']);
+        }
+      }
+    });
   }
 
-  // Tính phí vận chuyển
-  getShippingFee(): number {
-    // Có thể thay đổi logic tính phí ship ở đây
-    return this.cartItems.length > 0 ? 30000 : 0;
+  private updateCartSummary(): void {
+    this.cartSummary.subtotal = this.cartItems.reduce((total, item) => 
+      total + (item.unitPrice * item.quantity), 0);
+    this.cartSummary.total = this.cartSummary.subtotal + this.cartSummary.shippingFee;
   }
 
-  // Tính tổng tiền của giỏ hàng
-  getTotalPrice(): number {
-    return this.getSubtotal() + this.getShippingFee();
+  loadMedicineDetails(): void {
+    if (!Array.isArray(this.cartItems) || this.cartItems.length === 0) {
+      return;
+    }
+
+    this.medicineService.getAllMedicines().subscribe({
+      next: (medicines) => {
+        this.cartItems.forEach(item => {
+          const medicine = medicines.find(m => m.id === item.medicineId);
+          if (medicine) {
+            this.medicineDetails.set(item.medicineId, medicine);
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Lỗi khi tải thông tin thuốc:', error);
+        this.error = 'Không thể tải thông tin chi tiết sản phẩm';
+      }
+    });
   }
 
-  // Xóa sản phẩm khỏi giỏ hàng
-  removeFromCart(index: number): void {
-    this.cartItems.splice(index, 1);
-    localStorage.setItem('cart', JSON.stringify(this.cartItems));
+  decreaseQuantity(cartItemId: number, currentQuantity: number): void {
+    if (currentQuantity > 1) {
+      this.cartService.updateQuantity(cartItemId, currentQuantity - 1).subscribe({
+        next: (response: any) => {
+          console.log('Cập nhật số lượng thành công:', response);
+          if (response.items) {
+            this.cartItems = response.items;
+            this.cartSummary = response.summary;
+          } else {
+            const index = this.cartItems.findIndex(item => item.cartItemId === cartItemId);
+            if (index !== -1) {
+              this.cartItems[index].quantity = currentQuantity - 1;
+              this.updateCartSummary();
+            }
+          }
+        },
+        error: (error) => {
+          console.error('Lỗi khi cập nhật số lượng:', error);
+          alert(error.message || 'Có lỗi xảy ra khi cập nhật số lượng!');
+        }
+      });
+    }
   }
 
-  // Định dạng giá tiền (VNĐ)
+  increaseQuantity(cartItemId: number, currentQuantity: number): void {
+    this.cartService.updateQuantity(cartItemId, currentQuantity + 1).subscribe({
+      next: (response: any) => {
+        console.log('Cập nhật số lượng thành công:', response);
+        if (response.items) {
+          this.cartItems = response.items;
+          this.cartSummary = response.summary;
+        } else {
+          const index = this.cartItems.findIndex(item => item.cartItemId === cartItemId);
+          if (index !== -1) {
+            this.cartItems[index].quantity = currentQuantity + 1;
+            this.updateCartSummary();
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Lỗi khi cập nhật số lượng:', error);
+        alert(error.message || 'Có lỗi xảy ra khi cập nhật số lượng!');
+      }
+    });
+  }
+
+  removeFromCart(cartItemId: number): void {
+    this.cartService.removeFromCart(cartItemId).subscribe({
+      next: (response: any) => {
+        console.log('Xóa sản phẩm thành công');
+        if (response && response.items) {
+          this.cartItems = response.items;
+          this.cartSummary = response.summary;
+        } else {
+          this.cartItems = this.cartItems.filter(item => item.cartItemId !== cartItemId);
+          this.updateCartSummary();
+        }
+      },
+      error: (error) => {
+        console.error('Lỗi khi xóa sản phẩm:', error);
+        alert(error.message || 'Có lỗi xảy ra khi xóa sản phẩm!');
+      }
+    });
+  }
+
   formatPrice(value: number): string {
     return value.toLocaleString('vi-VN') + 'đ';
   }
 
-  // Xử lý thanh toán
   checkout(): void {
     if (this.cartItems.length === 0) {
       alert('Giỏ hàng của bạn đang trống!');
@@ -76,13 +207,21 @@ export class CartComponent implements OnInit {
     }
 
     alert('Thanh toán thành công!');
-    localStorage.removeItem('cart'); // Xóa giỏ hàng sau khi thanh toán
     this.cartItems = [];
-    this.router.navigate(['/']); // Quay lại trang chủ
+    this.medicineDetails.clear();
+    this.cartSummary = {
+      subtotal: 0,
+      shippingFee: 30000,
+      total: 0
+    };
+    this.router.navigate(['/']);
   }
 
-  // Điều hướng quay lại trang mua hàng
   goToShop(): void {
     this.router.navigate(['medicine']);
+  }
+
+  getMedicineInfo(medicineId: number): Medicine | undefined {
+    return this.medicineDetails.get(medicineId);
   }
 }

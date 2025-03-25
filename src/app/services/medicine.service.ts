@@ -6,7 +6,7 @@ export interface Medicine {
   id: number;
   name: string;
   description: string;
-  price: number;
+  unitPrice: number;
   image: string;
   quantity: number;
   unit: string;

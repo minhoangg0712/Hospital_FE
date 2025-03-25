@@ -36,6 +36,7 @@ export class ProfileComponent implements OnInit {
       cccd: ['', Validators.required],
       fullName: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      gender: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       address: ['', Validators.required],
       insuranceNumber: ['', Validators.required]
@@ -68,7 +69,6 @@ export class ProfileComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-
     try {
       // Log thông tin từ token
       const token = localStorage.getItem('token');
@@ -82,20 +82,23 @@ export class ProfileComponent implements OnInit {
         });
       }
 
-
       this.userService.getCurrentUserProfile().subscribe({
         next: (data: UserDTO) => {
+          console.log('Dữ liệu user nhận được:', data);
           this.currentUser = data;
           this.updateProfileForm(data);
           this.isLoading = false;
         },
         error: (error: any) => {
           console.error('Lỗi khi tải thông tin:', error);
+          console.error('Chi tiết lỗi:', error.error);
           if (error.status === 401) {
             this.errorMessage = error.message || 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
             this.router.navigate(['/login']);
           } else if (error.status === 403) {
             this.errorMessage = error.message || 'Bạn không có quyền truy cập thông tin này.';
+          } else if (error.status === 400) {
+            this.errorMessage = error.message || 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.';
           } else {
             this.errorMessage = error.message || 'Không thể tải thông tin cá nhân. Vui lòng thử lại sau.';
           }
@@ -115,6 +118,7 @@ export class ProfileComponent implements OnInit {
       cccd: user.cccd,
       fullName: user.name,
       phone: user.phone,
+      gender: user.gender,
       email: user.email,
       address: user.address,
       insuranceNumber: user.insuranceNumber

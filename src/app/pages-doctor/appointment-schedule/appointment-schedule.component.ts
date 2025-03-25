@@ -1,53 +1,87 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { FullCalendarModule } from '@fullcalendar/angular';
-interface EventData {
-  title: string;
-  start: string;
-  end: string;
-}
+import { AppointmentService, Appointment } from '../../services/appointment.service';
 
 @Component({
   selector: 'app-appointment-schedule',
   templateUrl: './appointment-schedule.component.html',
   styleUrls: ['./appointment-schedule.component.css'],
   standalone: true,
-  imports: [FullCalendarModule], // Import FullCalendarModule
+  imports: [FullCalendarModule],
 })
-export class AppointmentScheduleComponent {
-  events: EventData[] = [];
+export class AppointmentScheduleComponent implements OnInit {
+  events: any[] = [];
 
   calendarOptions = {
     initialView: 'timeGridWeek',
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     events: this.events,
-    slotMinTime: '08:00:00', // Bắt đầu từ 8:00 AM
-    slotMaxTime: '23:00:00', // Kết thúc lúc 16:40 PM
+    slotMinTime: '08:00:00',
+    slotMaxTime: '23:00:00',
     allDaySlot: false,
-    dayMaxEventRows: true, // Giữ gọn các sự kiện trong một hàng
+    dayMaxEventRows: true,
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
       right: 'dayGridMonth,timeGridWeek,timeGridDay',
     },
-    eventColor: '#007bff', // Màu xanh dương cho các sự kiện
+    eventColor: '#007bff',
     eventTextColor: 'white',
-
+    eventClick: (info: any) => {
+      this.handleEventClick(info.event);
+    }
   };
 
-  constructor() {
-    this.loadEvents();
+  constructor(private appointmentService: AppointmentService) {}
+
+  ngOnInit() {
+    this.loadAppointments();
   }
 
-  loadEvents() {
-    this.events = [
-      { title: 'Khám bệnh A', start: '2025-03-17T09:00:00', end: '2025-03-17T10:00:00' },
-      { title: 'Khám bệnh B', start: '2025-03-18T11:00:00', end: '2025-03-18T12:00:00' },
-      { title: 'Khám bệnh C', start: '2025-03-13T13:00:00', end: '2025-03-13T14:00:00' },
-      { title: 'Khám bệnh D', start: '2025-03-13T15:00:00', end: '2025-03-13T16:40:00' },
-    ];
-    this.calendarOptions = { ...this.calendarOptions, events: this.events };
+  loadAppointments() {
+    this.appointmentService.getAppointmentsByDepartment().subscribe({
+      next: (appointments: Appointment[]) => {
+        this.events = appointments.map(appointment => ({
+          id: appointment.id,
+          title: `${appointment.patientName} - ${appointment.title}`,
+          start: appointment.start,
+          end: appointment.end,
+          backgroundColor: this.getEventColor(appointment.status),
+          extendedProps: appointment
+        }));
+        this.calendarOptions = { ...this.calendarOptions, events: this.events };
+      },
+      error: (error) => {
+        console.error('Lỗi khi tải lịch hẹn:', error);
+      }
+    });
+  }
+
+  getEventColor(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return '#ffc107';
+      case 'confirmed':
+        return '#28a745';
+      case 'cancelled':
+        return '#dc3545';
+      default:
+        return '#007bff';
+    }
+  }
+
+  handleEventClick(event: any) {
+    const appointment = event.extendedProps;
+    // Hiển thị thông tin chi tiết lịch hẹn
+    alert(`
+      Bệnh nhân: ${appointment.patientName}
+      Tiêu đề: ${appointment.title}
+      Thời gian: ${new Date(appointment.start).toLocaleString()} - ${new Date(appointment.end).toLocaleString()}
+      Trạng thái: ${appointment.status}
+      ${appointment.description ? `Mô tả: ${appointment.description}` : ''}
+    `);
   }
 }

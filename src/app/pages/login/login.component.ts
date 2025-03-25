@@ -65,7 +65,18 @@ export class LoginComponent implements OnInit {
                 const role = payload.role.toUpperCase();
                 console.log('Role từ payload:', role);
 
-                if (role === 'DOCTOR' || role === 'ROLE_DOCTOR') {
+                // Lưu userId
+                if (payload.userId) {
+                  console.log('Lưu userId:', payload.userId);
+                  localStorage.setItem('userId', payload.userId.toString());
+                }
+
+                if (role === 'ADMIN' || role === 'ROLE_ADMIN' || role === 'ROLE_ADM' || role === 'ADM') {
+                  console.log('Đang set role ADMIN...');
+                  localStorage.setItem('userRole', 'ADM');
+                  console.log('Đang chuyển hướng đến /admin-home...');
+                  this.router.navigate(['/admin-home']);
+                } else if (role === 'DOCTOR' || role === 'ROLE_DOCTOR') {
                   console.log('Đang set role DOCTOR...');
                   localStorage.setItem('userRole', 'DOCTOR');
                   this.router.navigate(['/doctor']);
@@ -73,6 +84,10 @@ export class LoginComponent implements OnInit {
                   console.log('Đang set role MGR...');
                   localStorage.setItem('userRole', 'MGR');
                   this.router.navigate(['/doctor']);
+                } else if (role === 'ROLE_EMP' || role === 'EMP') {
+                  console.log('Đang set role EMP...');
+                  localStorage.setItem('userRole', 'EMP');
+                  this.router.navigate(['/patient']);
                 } else {
                   console.log('Đang set role PATIENT...');
                   localStorage.setItem('userRole', 'PATIENT');
@@ -80,6 +95,7 @@ export class LoginComponent implements OnInit {
                 }
                 
                 console.log('Role sau khi lưu:', localStorage.getItem('userRole'));
+                console.log('UserId sau khi lưu:', localStorage.getItem('userId'));
               } else {
                 throw new Error('Không tìm thấy role trong token');
               }

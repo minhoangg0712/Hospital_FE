@@ -1,104 +1,53 @@
 <div class="container">
-  <div class="card">
-      <div class="header">
-          <h1>PHIẾU BỆNH ÁN ĐIỆN TỬ</h1>
-      </div>
-
-
-
-
-      <!-- Form nhập dữ liệu bệnh án -->
-      <div class="content">
-        <div class="info">
-            <form (ngSubmit)="saveRecord()">
-                <div class="grid-container">
-                    <div class="col-span">
-                        <label>Họ tên</label>
-                        <input type="text" [(ngModel)]="newRecord.patientName" name="patientName" required />
-                    </div>
-
-                    <div class="col-span">
-                        <label>Ảnh</label>
-                        <input type="file" />
-                    </div>
-
-                    <div class="col-span">
-                        <label>Giới tính</label>
-                        <select [(ngModel)]="newRecord.gender" name="gender">
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                        </select>
-                    </div>
-
-                    <div class="col-span">
-                        <label>Ngày sinh</label>
-                        <input type="date" [(ngModel)]="newRecord.dateOfBirth" name="dateOfBirth" required />
-                    </div>
-
-                    <div class="col-span">
-                        <label>Địa chỉ</label>
-                        <input type="text" [(ngModel)]="newRecord.address" name="address" required />
-                    </div>
-
-                    <div class="col-span">
-                        <label>Điện thoại</label>
-                        <input type="text" [(ngModel)]="newRecord.phone" name="phone" required />
-                    </div>
-
-                    <div class="col-span">
-                        <label>Email</label>
-                        <input type="email" [(ngModel)]="newRecord.email" name="email" />
-                    </div>
-
-                    <div class="col-span">
-                        <label>Cân nặng (kg)</label>
-                        <input type="number" [(ngModel)]="newRecord.weight" name="weight" />
-                    </div>
-
-                    <div class="col-span">
-                        <label>Triệu chứng</label>
-                        <input type="text" [(ngModel)]="newRecord.symptoms" name="symptoms" required />
-                    </div>
-
-                    <div class="col-span">
-                        <label>Chiều cao (cm)</label>
-                        <input type="number" [(ngModel)]="newRecord.height" name="height" />
-                    </div>
-
-                    <div class="col-span">
-                        <label>Tiền sử bệnh</label>
-                        <input type="text" [(ngModel)]="newRecord.medicalHistory" name="medicalHistory" required />
-                    </div>
-
-                    <div class="col-span">
-                        <label>Mã BHYT</label>
-                        <input type="text" [(ngModel)]="newRecord.healthInsuranceId" name="healthInsuranceId" />
-                    </div>
-
-                    <div class="col-span">
-                        <label>Tiền sử dị ứng thuốc</label>
-                        <input type="text" [(ngModel)]="newRecord.allergies" name="allergies" />
-                    </div>
-                    <div class="col-span">
-                      <label>Chẩn đoán</label>
-                      <input type="text" [(ngModel)]="newRecord.diagnose" name="diagnose" />
-                  </div>
-                  <div class="col-span">
-                    <label>Kết quả xét nghiệm</label>
-                    <input type="text" [(ngModel)]="newRecord.result" name="result" />
-                </div>
-                </div>
-
-
-
-                  <div class="actions">
-                      <button type="submit">{{ editIndex === null ? 'Tạo' : 'Cập nhật' }}</button>
-                      <button *ngIf="editIndex !== null" (click)="cancelEdit()" type="button">Hủy</button>
-                  </div>
-              </form>
-          </div>
-      </div>
-
-   
+  <div class="header">
+    <h2><i class="fas fa-file-medical"></i> Danh sách hồ sơ bệnh án</h2>
+    <button class="btn btn-primary" routerLink="/create-medical-record">
+      <i class="fas fa-plus"></i> Tạo hồ sơ mới
+    </button>
   </div>
-</div>
+
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    <i class="fas fa-exclamation-circle"></i> {{errorMessage}}
+  </div>
+
+  <div class="loading" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Đang tải...</span>
+    </div>
+  </div>
+
+  <div class="medical-records-list" *ngIf="!isLoading && !errorMessage">
+    <div class="card" *ngFor="let record of medicalRecords">
+      <div class="card-header">
+        <h5 class="card-title">
+          <i class="fas fa-user"></i> {{record.patientName}}
+        </h5>
+        <span class="badge bg-primary">Mã hồ sơ: {{record.recordId}}</span>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Giới tính:</strong> {{record.gender}}</p>
+            <p><strong>Địa chỉ:</strong> {{record.address}}</p>
+            <p><strong>Số BHYT:</strong> {{record.insuranceNumber}}</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Triệu chứng:</strong> {{record.symptoms}}</p>
+            <p><strong>Chẩn đoán:</strong> {{record.diagnosis}}</p>
+            <p><strong>Đơn thuốc:</strong> {{record.prescription}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-info btn-sm" [routerLink]="['/medical-records', record.recordId]">
+          <i class="fas fa-eye"></i> Xem chi tiết
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-records" *ngIf="!isLoading && !errorMessage && medicalRecords.length === 0">
+    <i class="fas fa-folder-open"></i>
+    <p>Chưa có hồ sơ bệnh án nào</p>
+  </div>
+</div> 

@@ -1,24 +1,20 @@
 <div class="profile-container">
   <h2>THÔNG TIN CÁ NHÂN</h2>
 
-
   <div *ngIf="isLoading" class="loading">
     <i class="fas fa-spinner fa-spin"></i>
     <p>Đang tải thông tin...</p>
   </div>
-
 
   <div *ngIf="errorMessage" class="error">
     <i class="fas fa-exclamation-circle"></i>
     <p>{{ errorMessage }}</p>
   </div>
 
-
   <div *ngIf="successMessage" class="success">
     <i class="fas fa-check-circle"></i>
     <p>{{ successMessage }}</p>
   </div>
-
 
   <div *ngIf="!isLoading && currentUser" class="profile-content">
     <div class="info-section" *ngIf="!isEditing">
@@ -27,60 +23,50 @@
         <span>{{ currentUser.cccd }}</span>
       </div>
 
-
       <div class="row">
         <label>Họ tên:</label>
         <span>{{ currentUser.name }}</span>
       </div>
-
 
       <div class="row">
         <label>Số điện thoại:</label>
         <span>{{ currentUser.phone }}</span>
       </div>
 
-
       <div class="row">
         <label>Email:</label>
         <span>{{ currentUser.email }}</span>
       </div>
-
-
-      <div class="row">
-        <label>Địa chỉ:</label>
-        <span>{{ currentUser.address }}</span>
-      </div>
-
-
-      <div class="row">
-        <label>Số BHYT:</label>
-        <span>{{ currentUser.insuranceNumber }}</span>
-      </div>
-
 
       <div class="row">
         <label>Giới tính:</label>
         <span>{{ currentUser.gender === 'MALE' ? 'Nam' : 'Nữ' }}</span>
       </div>
 
+      <div class="row">
+        <label>Địa chỉ:</label>
+        <span>{{ currentUser.address }}</span>
+      </div>
+
+      <div class="row">
+        <label>Số BHYT:</label>
+        <span>{{ currentUser.insuranceNumber }}</span>
+      </div>
 
       <div class="row">
         <label>Ngày tạo:</label>
         <span>{{ currentUser.createdAt | date:'dd/MM/yyyy' }}</span>
       </div>
 
-
       <div class="row">
         <label>Cập nhật lần cuối:</label>
         <span>{{ currentUser.updatedAt | date:'dd/MM/yyyy' }}</span>
       </div>
 
-
       <div class="button-group">
         <button class="btn btn-primary" (click)="toggleEdit()">Cập nhật thông tin</button>
       </div>
     </div>
-
 
     <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="edit-form" *ngIf="isEditing">
       <div class="form-group">
@@ -91,7 +77,6 @@
         </div>
       </div>
 
-
       <div class="form-group">
         <label for="fullName">Họ tên:</label>
         <input type="text" id="fullName" formControlName="fullName" class="form-control">
@@ -99,7 +84,6 @@
           Họ tên không được để trống
         </div>
       </div>
-
 
       <div class="form-group">
         <label for="phone">Số điện thoại:</label>
@@ -112,7 +96,6 @@
         </div>
       </div>
 
-
       <div class="form-group">
         <label for="email">Email:</label>
         <input type="email" id="email" formControlName="email" class="form-control">
@@ -124,6 +107,16 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label for="gender">Giới tính:</label>
+        <select id="gender" formControlName="gender" class="form-control">
+          <option value="MALE">Nam</option>
+          <option value="FEMALE">Nữ</option>
+        </select>
+        <div *ngIf="profileForm.get('gender')?.errors?.['required'] && profileForm.get('gender')?.touched" class="error-message">
+          Giới tính không được để trống
+        </div>
+      </div>
 
       <div class="form-group">
         <label for="address">Địa chỉ:</label>
@@ -133,7 +126,6 @@
         </div>
       </div>
 
-
       <div class="form-group">
         <label for="insuranceNumber">Số BHYT:</label>
         <input type="text" id="insuranceNumber" formControlName="insuranceNumber" class="form-control">
@@ -141,7 +133,6 @@
           Số BHYT không được để trống
         </div>
       </div>
-
 
       <div class="button-group">
         <button type="submit" class="btn btn-primary" [disabled]="!profileForm.valid || isLoading">
@@ -152,4 +143,5 @@
     </form>
   </div>
 </div>
+
 

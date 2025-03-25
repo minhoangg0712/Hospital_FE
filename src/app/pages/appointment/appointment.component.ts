@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -6,7 +6,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
-import { Router, RouterModule} from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AppointmentService, AppointmentRequest, Department } from '../../services/appointment.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-appointment',
@@ -23,61 +25,53 @@ import { Router, RouterModule} from '@angular/router';
   templateUrl: './appointment.component.html',
   styleUrls: ['./appointment.component.css'],
 })
-export class AppointmentComponent {
+export class AppointmentComponent implements OnInit {
   appointmentForm: FormGroup;
-  isRegisterForRelative = false; // Kiểm tra nếu chọn "Người thân"
-
-  // Danh sách chuyên khoa
-  specialties = [
-    'Nội tổng quát',
-    'Ngoại tổng quát',
-    'Nhi khoa',
-    'Sản phụ khoa',
-    'Tim mạch',
-    'Tai mũi họng',
-    'Da liễu',
-    'Mắt (Nhãn khoa)',
-    'Thần kinh',
-    'Cơ xương khớp',
-    'Tiết niệu',
-    'Ung bướu',
-    'Nội tiết',
-    'Chấn thương chỉnh hình',
-    'Phục hồi chức năng',
-    'Răng hàm mặt',
-    'Tâm thần',
-    'Y học cổ truyền',
-    'Dinh dưỡng',
+  isRegisterForRelative = false;
+  departments: Department[] = [
+    { departmentId: 1, departmentName: 'Cardiology' },
+    { departmentId: 4, departmentName: 'Dermatology' },
+    { departmentId: 2, departmentName: 'Neurology' },
+    { departmentId: 6, departmentName: 'Nutrition' },
+    { departmentId: 3, departmentName: 'Pediatrics' },
+    { departmentId: 5, departmentName: 'Rehabilitation' }
   ];
-
-  // Lịch trống cho từng ngày
   availableSlots: Record<string, string[]> = {};
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private appointmentService: AppointmentService,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.appointmentForm = this.fb.group({
-      registerFor: ['self', Validators.required], // Chọn "Bản thân" hoặc "Người thân"
-      relativeName: [''],                         // Tên người thân (ẩn mặc định)
-      relativeCCCD: [''],                         // CCCD (ẩn mặc định)
-      specialty: ['', Validators.required],       // Chuyên khoa
-      date: ['', Validators.required],            // Ngày khám
-      time: ['', Validators.required],            // Giờ khám
-      reason: ['', [Validators.required, Validators.minLength(2)]], // Lý do khám
+      registerFor: ['self', Validators.required],
+      relativeName: [''],
+      relativeCCCD: [''],
+      departmentId: ['', Validators.required],
+      date: ['', Validators.required],
+      time: ['', Validators.required],
+      reason: ['', [Validators.required, Validators.minLength(2)]],
     });
-  
 
-    this.generateRandomSlots(); // Tạo giờ khám ngẫu nhiên
+    this.generateRandomSlots();
   }
 
-  /** ✅ Xử lý thay đổi khi chọn "Đăng ký cho ai" */
+  ngOnInit() {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+  }
+
   onRegisterForChange(): void {
     this.isRegisterForRelative = this.appointmentForm.value.registerFor === 'relative';
 
-    // Cập nhật validation cho "Tên người thân" và "CCCD"
     if (this.isRegisterForRelative) {
       this.appointmentForm.get('relativeName')?.setValidators(Validators.required);
       this.appointmentForm.get('relativeCCCD')?.setValidators([
         Validators.required,
-        Validators.pattern(/^\d{12}$/), // 12 số CCCD
+        Validators.pattern(/^\d{12}$/),
       ]);
     } else {
       this.appointmentForm.get('relativeName')?.clearValidators();
@@ -88,11 +82,10 @@ export class AppointmentComponent {
     this.appointmentForm.get('relativeCCCD')?.updateValueAndValidity();
   }
 
-  /** ✅ Tạo giờ khám (8:00 - 16:30) cho 14 ngày tới */
   generateRandomSlots(): void {
-    const startTime = 8; // Bắt đầu từ 8:00 AM
-    const endTime = 17; // Kết thúc lúc 5:00 PM
-    const days = 14; // 14 ngày tới
+    const startTime = 8;
+    const endTime = 17;
+    const days = 14;
 
     for (let i = 0; i < days; i++) {
       const date = new Date();
@@ -108,7 +101,6 @@ export class AppointmentComponent {
     }
   }
 
-  /** ✅ Lấy giờ khám theo ngày */
   getSelectedSlots(): string[] {
     const selectedDate = this.appointmentForm.value.date;
     if (!selectedDate) return [];
@@ -117,29 +109,61 @@ export class AppointmentComponent {
     return this.availableSlots[dateString] || [];
   }
 
-  /** ✅ Cập nhật ngày khi chọn từ mat-calendar */
   onDateSelect(date: Date): void {
     this.appointmentForm.patchValue({ date });
   }
 
-  /** ✅ Chọn giờ khám */
   selectTime(time: string): void {
     this.appointmentForm.get('time')?.setValue(time);
   }
 
-  /** ✅ Gửi thông tin đặt lịch */
   onSubmit(): void {
     if (this.appointmentForm.valid) {
-      console.log('Dữ liệu lịch khám:', this.appointmentForm.value);
-      alert('Đăng ký lịch khám thành công!');
-      this.resetForm();
+      const formData = this.appointmentForm.value;
+      const selectedDate = new Date(formData.date);
+      const [hours, minutes] = formData.time.split(':');
+      selectedDate.setHours(parseInt(hours), parseInt(minutes));
+
+      const appointmentData: AppointmentRequest = {
+        department: {
+          departmentId: formData.departmentId
+        },
+        appointmentDate: selectedDate.toISOString(),
+        relativeName: formData.registerFor === 'relative' ? formData.relativeName : null,
+        relativeIdCard: formData.registerFor === 'relative' ? formData.relativeCCCD : null,
+        reason: formData.reason
+      };
+
+      console.log('Dữ liệu gửi đi:', appointmentData);
+      console.log('Token:', localStorage.getItem('token'));
+
+      this.appointmentService.createAppointment(appointmentData).subscribe({
+        next: (response) => {
+          alert('Đăng ký lịch khám thành công!');
+          this.resetForm();
+        },
+        error: (error) => {
+          console.error('Lỗi khi đăng ký lịch khám:', error);
+          if (error.status === 403) {
+            alert('Phiên làm việc đã hết hạn hoặc không có quyền truy cập. Vui lòng đăng nhập lại.');
+            this.authService.logout();
+            this.router.navigate(['/login']);
+          } else if (error.status === 401) {
+            alert('Vui lòng đăng nhập để thực hiện chức năng này.');
+            this.router.navigate(['/login']);
+          } else if (error.status === 400) {
+            alert('Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin.');
+          } else {
+            alert('Không thể đăng ký lịch khám. Vui lòng thử lại sau.');
+          }
+        }
+      });
     } else {
       console.error('Form không hợp lệ:', this.appointmentForm.value);
       alert('Vui lòng điền đầy đủ thông tin!');
     }
   }
 
-  /** ✅ Đặt lại form sau khi đăng ký */
   resetForm(): void {
     this.appointmentForm.reset({
       registerFor: 'self',

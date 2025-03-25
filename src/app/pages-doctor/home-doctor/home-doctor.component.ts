@@ -15,10 +15,10 @@ export class HomeDoctorComponent {
     this.router.navigate(['/appointment-schedule']);
   }
   GoToMedicalRecords(): void {
-    this.router.navigate(['/medical-records']);
+    this.router.navigate(['/create-medical-record']);
   }
   GoToRecordsList(): void {
-    this.router.navigate(['/records-list']);
+    this.router.navigate(['/medical-records']);
   }
   GoToPrescriptionManagement(): void {
     this.router.navigate(['/prescription-management']);

@@ -1,34 +1,78 @@
-<div class="container">
-    <h1 class="title">Tạo tài khoản bác sĩ</h1>
+<div class="admin-layout">
+  <app-admin-nav></app-admin-nav>
+  
+  <div class="main-content">
+    <div class="content-header">
+      <h1>Tạo tài khoản bác sĩ</h1>
+    </div>
 
-    <form [formGroup]="doctorForm" (ngSubmit)="createDoctor()">
-        <div>
-            <label for="username">Tên đăng nhập:</label>
-            <input id="username" formControlName="username" type="text" />
-            <small *ngIf="doctorForm.get('username')?.invalid && doctorForm.get('username')?.touched" class="error">
-                Tên đăng nhập không được để trống.
-            </small>
+    <div class="form-container">
+      <form [formGroup]="doctorForm" (ngSubmit)="createDoctor()" class="doctor-form">
+        <div class="form-group">
+          <label for="username">Tên đăng nhập</label>
+          <input 
+            id="username" 
+            type="text" 
+            formControlName="username"
+            class="form-control"
+            placeholder="Nhập tên đăng nhập"
+          >
+          <small class="error-message" *ngIf="doctorForm.get('username')?.invalid && doctorForm.get('username')?.touched">
+            {{ getErrorMessage('username') }}
+          </small>
         </div>
 
-        <div>
-            <label for="password">Mật khẩu:</label>
-            <input id="password" formControlName="password" type="password" />
-            <small *ngIf="doctorForm.get('password')?.invalid && doctorForm.get('password')?.touched" class="error">
-                Mật khẩu ít nhất 6 ký tự.
-            </small>
+        <div class="form-group">
+          <label for="password">Mật khẩu</label>
+          <input 
+            id="password" 
+            type="password" 
+            formControlName="password"
+            class="form-control"
+            placeholder="Nhập mật khẩu"
+          >
+          <small class="error-message" *ngIf="doctorForm.get('password')?.invalid && doctorForm.get('password')?.touched">
+            {{ getErrorMessage('password') }}
+          </small>
         </div>
 
-        <div>
-            <label for="department">Phòng ban:</label>
-            <select id="department" formControlName="department" class="form-control">
-                <option value="" disabled selected>Chọn phòng ban</option>
-                <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
-            </select>
-            <small *ngIf="doctorForm.get('department')?.invalid && doctorForm.get('department')?.touched" class="error">
-                Phòng ban không được để trống.
-            </small>
+        <div class="form-group">
+          <label for="department">Phòng ban</label>
+          <select 
+            id="department" 
+            formControlName="department"
+            class="form-control"
+          >
+            <option value="" disabled selected>Chọn phòng ban</option>
+            <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+          </select>
+          <small class="error-message" *ngIf="doctorForm.get('department')?.invalid && doctorForm.get('department')?.touched">
+            {{ getErrorMessage('department') }}
+          </small>
         </div>
 
-        <button type="submit" [disabled]="doctorForm.invalid">Tạo tài khoản</button>
-    </form>
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="submit-btn"
+            [disabled]="doctorForm.invalid || loading"
+          >
+            <i class="fas fa-save"></i>
+            {{ loading ? 'Đang xử lý...' : 'Tạo tài khoản' }}
+          </button>
+        </div>
+
+        <div class="message-container">
+          <div class="success-message" *ngIf="success">
+            <i class="fas fa-check-circle"></i>
+            {{ success }}
+          </div>
+          <div class="error-message" *ngIf="error">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ error }}
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

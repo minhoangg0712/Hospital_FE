@@ -45,11 +45,11 @@
       </div>
   
       <!-- Chọn chuyên khoa -->
-      <label for="specialty">Chuyên khoa:</label>
-      <select id="specialty" formControlName="specialty" class="specialty-select">
+      <label for="departmentId">Chuyên khoa:</label>
+      <select id="departmentId" formControlName="departmentId" class="specialty-select">
         <option value="">Chọn chuyên khoa</option>
-        <option *ngFor="let specialty of specialties" [value]="specialty">
-          {{ specialty }}
+        <option *ngFor="let dept of departments" [value]="dept.departmentId">
+          {{ dept.departmentName }}
         </option>
       </select>
   

@@ -1,0 +1,210 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <h2><i class="fas fa-file-medical"></i> Tạo Hồ Sơ Khám Bệnh</h2>
+    </div>
+
+    <div class="card-body">
+      <form [formGroup]="medicalRecordForm" (ngSubmit)="onSubmit()">
+        <!-- Chọn bệnh nhân -->
+        <div class="section-title">
+          <h3><i class="fas fa-search"></i> Chọn bệnh nhân</h3>
+        </div>
+
+        <div class="form-group">
+          <label for="patientId">Bệnh nhân</label>
+          <select 
+            id="patientId" 
+            formControlName="patientId" 
+            class="form-control">
+            <option value="">-- Chọn bệnh nhân --</option>
+            <option *ngFor="let patient of patients" [value]="patient.userId">
+              {{patient.name}} - {{patient.insuranceNumber}}
+            </option>
+          </select>
+          <div *ngIf="medicalRecordForm.get('patientId')?.errors?.['required'] && medicalRecordForm.get('patientId')?.touched" 
+               class="error-message">
+            Vui lòng chọn bệnh nhân
+          </div>
+        </div>
+
+        <!-- Thông tin bệnh nhân -->
+        <div class="section-title" *ngIf="selectedPatient">
+          <h3><i class="fas fa-user"></i> Thông tin bệnh nhân</h3>
+        </div>
+        
+        <div class="form-row" *ngIf="selectedPatient">
+          <div class="form-group col-md-6">
+            <label for="patientName">Họ tên bệnh nhân</label>
+            <input 
+              type="text" 
+              id="patientName" 
+              formControlName="patientName" 
+              class="form-control"
+              readonly>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="gender">Giới tính</label>
+            <input 
+              type="text" 
+              id="gender" 
+              formControlName="gender" 
+              class="form-control"
+              readonly>
+          </div>
+        </div>
+
+        <div class="form-row" *ngIf="selectedPatient">
+          <div class="form-group col-md-6">
+            <label for="address">Địa chỉ</label>
+            <input 
+              type="text" 
+              id="address" 
+              formControlName="address" 
+              class="form-control"
+              readonly>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="insuranceNumber">Số BHYT</label>
+            <input 
+              type="text" 
+              id="insuranceNumber" 
+              formControlName="insuranceNumber" 
+              class="form-control"
+              readonly>
+          </div>
+        </div>
+
+        <!-- Thông tin khám bệnh -->
+        <div class="section-title" *ngIf="selectedPatient">
+          <h3><i class="fas fa-stethoscope"></i> Thông tin khám bệnh</h3>
+        </div>
+
+        <div class="form-group" *ngIf="selectedPatient">
+          <label for="symptoms">Triệu chứng</label>
+          <textarea 
+            id="symptoms" 
+            formControlName="symptoms" 
+            class="form-control" 
+            rows="3"
+            placeholder="Nhập triệu chứng của bệnh nhân">
+          </textarea>
+          <div *ngIf="medicalRecordForm.get('symptoms')?.errors?.['required'] && medicalRecordForm.get('symptoms')?.touched" 
+               class="error-message">
+            Vui lòng nhập triệu chứng
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="selectedPatient">
+          <label for="medicalHistory">Tiền sử bệnh</label>
+          <textarea 
+            id="medicalHistory" 
+            formControlName="medicalHistory" 
+            class="form-control" 
+            rows="3"
+            placeholder="Nhập tiền sử bệnh">
+          </textarea>
+          <div *ngIf="medicalRecordForm.get('medicalHistory')?.errors?.['required'] && medicalRecordForm.get('medicalHistory')?.touched" 
+               class="error-message">
+            Vui lòng nhập tiền sử bệnh
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="selectedPatient">
+          <label for="allergies">Dị ứng</label>
+          <textarea 
+            id="allergies" 
+            formControlName="allergies" 
+            class="form-control" 
+            rows="3"
+            placeholder="Nhập thông tin dị ứng">
+          </textarea>
+          <div *ngIf="medicalRecordForm.get('allergies')?.errors?.['required'] && medicalRecordForm.get('allergies')?.touched" 
+               class="error-message">
+            Vui lòng nhập thông tin dị ứng
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="selectedPatient">
+          <label for="diagnosis">Chẩn đoán</label>
+          <textarea 
+            id="diagnosis" 
+            formControlName="diagnosis" 
+            class="form-control" 
+            rows="3"
+            placeholder="Nhập chẩn đoán">
+          </textarea>
+          <div *ngIf="medicalRecordForm.get('diagnosis')?.errors?.['required'] && medicalRecordForm.get('diagnosis')?.touched" 
+               class="error-message">
+            Vui lòng nhập chẩn đoán
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="selectedPatient">
+          <label for="testResults">Kết quả xét nghiệm</label>
+          <textarea 
+            id="testResults" 
+            formControlName="testResults" 
+            class="form-control" 
+            rows="3"
+            placeholder="Nhập kết quả xét nghiệm">
+          </textarea>
+          <div *ngIf="medicalRecordForm.get('testResults')?.errors?.['required'] && medicalRecordForm.get('testResults')?.touched" 
+               class="error-message">
+            Vui lòng nhập kết quả xét nghiệm
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="selectedPatient">
+          <label for="prescription">Đơn thuốc</label>
+          <textarea 
+            id="prescription" 
+            formControlName="prescription" 
+            class="form-control" 
+            rows="3"
+            placeholder="Nhập đơn thuốc">
+          </textarea>
+          <div *ngIf="medicalRecordForm.get('prescription')?.errors?.['required'] && medicalRecordForm.get('prescription')?.touched" 
+               class="error-message">
+            Vui lòng nhập đơn thuốc
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="selectedPatient">
+          <label for="notes">Ghi chú</label>
+          <textarea 
+            id="notes" 
+            formControlName="notes" 
+            class="form-control" 
+            rows="3"
+            placeholder="Nhập ghi chú (nếu có)">
+          </textarea>
+        </div>
+
+        <div class="alert alert-danger" *ngIf="errorMessage">
+          <i class="fas fa-exclamation-circle"></i> {{errorMessage}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successMessage">
+          <i class="fas fa-check-circle"></i> {{successMessage}}
+        </div>
+
+        <div class="button-group">
+          <button type="button" 
+                  class="btn btn-secondary" 
+                  (click)="cancel()"
+                  [disabled]="isLoading">
+            <i class="fas fa-times"></i> Hủy
+          </button>
+          <button type="submit" 
+                  class="btn btn-primary" 
+                  [disabled]="!medicalRecordForm.valid || isLoading || !selectedPatient">
+            <i class="fas fa-save"></i> {{isLoading ? 'Đang xử lý...' : 'Lưu hồ sơ'}}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 

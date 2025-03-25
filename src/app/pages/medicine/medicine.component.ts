@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MedicineService, Medicine } from '../../services/medicine.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-medicine',
@@ -17,8 +18,16 @@ export class MedicineComponent implements OnInit {
   filteredMedicines: Medicine[] = [];
   loading: boolean = true;
   error: string = '';
+  isLoggedIn: boolean = false;
 
-  constructor(private router: Router, private medicineService: MedicineService) {}
+  constructor(
+    private router: Router, 
+    private medicineService: MedicineService,
+    private cartService: CartService
+  ) {
+    // Kiểm tra trạng thái đăng nhập
+    this.isLoggedIn = !!localStorage.getItem('token') && !!localStorage.getItem('userId');
+  }
 
   ngOnInit(): void {
     this.loadMedicines();
@@ -59,25 +68,48 @@ export class MedicineComponent implements OnInit {
   // Lọc thuốc theo khoảng giá
   filterByPrice(range: any) {
     this.filteredMedicines = this.medicines.filter(
-      (m) => m.price >= range.min && m.price <= range.max
+      (m) => m.unitPrice >= range.min && m.unitPrice <= range.max
     );
   }
 
   // Thêm vào giỏ hàng 
-  addToCart(medicine: Medicine) {
-    const cart = localStorage.getItem('cart');
-    const cartItems = cart ? JSON.parse(cart) : [];
-
-    // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-    const existingItem = cartItems.find((item: any) => item.name === medicine.name);
-    if (existingItem) {
-      existingItem.quantity += 1; // Tăng số lượng nếu đã có
-    } else {
-      cartItems.push({ ...medicine, quantity: 1 }); // Thêm mới nếu chưa có
+  addToCart(medicine: any) {
+    if (!this.isLoggedIn) {
+      alert('Vui lòng đăng nhập để thêm vào giỏ hàng!');
+      this.router.navigate(['/login']);
+      return;
     }
 
-    localStorage.setItem('cart', JSON.stringify(cartItems));
-    alert('Đã thêm vào giỏ hàng');
+    if (!medicine || !medicine.medicineId) {
+      console.error('Dữ liệu sản phẩm không hợp lệ:', medicine);
+      alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
+      return;
+    }
+
+    try {
+      console.log('Đang thêm sản phẩm vào giỏ hàng:', medicine);
+      this.cartService.addToCart(medicine.medicineId, 1).subscribe({
+        next: (response) => {
+          console.log('Thêm vào giỏ hàng thành công:', response);
+          alert('Đã thêm vào giỏ hàng thành công!');
+        },
+        error: (error) => {
+          console.error('Lỗi khi thêm vào giỏ hàng:', error);
+          if (error.message === 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!') {
+            this.isLoggedIn = false;
+            alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!');
+            this.router.navigate(['/login']);
+          } else if (error.message === 'Bạn không có quyền thực hiện thao tác này!') {
+            alert('Bạn không có quyền thêm vào giỏ hàng!');
+          } else {
+            alert(error.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng!');
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Lỗi khi thêm vào giỏ hàng:', error);
+      alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
+    }
   }
 
   filterMedicines(): void {

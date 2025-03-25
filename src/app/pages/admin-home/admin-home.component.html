@@ -1,34 +1,42 @@
-<div class="admin-container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <h2>Admin</h2>
-      <button class="menu-item active">
-        <i class="fas fa-home"></i> Trang chủ
-      </button>
-      <button class="menu-item" (click)="openCreateAccount()">
-        <i class="fas fa-user-plus"></i> Tạo tài khoản
-      </button>
-      <button class="menu-item" (click)="openListAccount()">
-        <i class="fas fa-user"></i> Tài khoản
-      </button>
-    </div>
+<div class="admin-layout">
+  <app-admin-nav></app-admin-nav>
   
-    <!-- Main Content -->
-    <div class="content">
-      <header>
-        <h1 class="title">Trang chủ</h1>
-      </header>
-      <div class="card-container">
-        <div class="card" (click)="openCreateAccount()">
-          <i class="fas fa-user-plus card-icon"></i>
-          <h3>Tạo tài khoản bác sĩ</h3>
-          <p>Thêm tài khoản mới cho bác sĩ.</p>
-        </div>
-        <div class="card" (click)="openListAccount()">
-            <i class="fas fa-user card-icon"></i>
-            <h3>Tài khoản bác sĩ</h3>
-            <p></p>
+  <div class="main-content">
+    <div class="content-header">
+      <h1>Trang chủ Admin</h1>
+    </div>
+
+    <div class="dashboard">
+      <div class="stats-container">
+        <div class="stat-card">
+          <i class="fas fa-user-md"></i>
+          <div class="stat-info">
+            <h3>Tổng số bác sĩ</h3>
+            <p class="stat-number">0</p>
           </div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-hospital"></i>
+          <div class="stat-info">
+            <h3>Phòng ban</h3>
+            <p class="stat-number">0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <h2>Thao tác nhanh</h2>
+        <div class="action-buttons">
+          <button class="action-btn" (click)="openCreateAccount()">
+            <i class="fas fa-user-plus"></i>
+            <span>Tạo tài khoản bác sĩ</span>
+          </button>
+          <button class="action-btn" (click)="openListAccount()">
+            <i class="fas fa-users"></i>
+            <span>Quản lý bác sĩ</span>
+          </button>
+        </div>
       </div>
     </div>
+  </div>
 </div>
