@@ -1,0 +1,66 @@
+<div class="appointment-list-container">
+  <div class="header">
+    <h2>Danh sách lịch hẹn</h2>
+    <button mat-raised-button color="primary" routerLink="/appointment">
+      Đăng ký lịch mới
+    </button>
+  </div>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="appointments">
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let appointment">{{appointment.id}}</td>
+      </ng-container>
+
+      <!-- Department Column -->
+      <ng-container matColumnDef="department">
+        <th mat-header-cell *matHeaderCellDef>Chuyên khoa</th>
+        <td mat-cell *matCellDef="let appointment">{{getDepartmentName(appointment.department.departmentId)}}</td>
+      </ng-container>
+
+      <!-- Date Column -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Ngày hẹn</th>
+        <td mat-cell *matCellDef="let appointment">{{formatDate(appointment.appointmentDate)}}</td>
+      </ng-container>
+
+      <!-- Reason Column -->
+      <ng-container matColumnDef="reason">
+        <th mat-header-cell *matHeaderCellDef>Lý do</th>
+        <td mat-cell *matCellDef="let appointment">{{appointment.reason}}</td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Trạng thái</th>
+        <td mat-cell *matCellDef="let appointment">
+          <span class="status-badge" [ngClass]="getStatusClass(appointment.status)">
+            {{appointment.status}}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Thao tác</th>
+        <td mat-cell *matCellDef="let appointment">
+          <button mat-icon-button color="primary" (click)="openEditDialog(appointment)" matTooltip="Chỉnh sửa">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteAppointment(appointment.id)" matTooltip="Xóa">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <div class="no-data" *ngIf="appointments.length === 0">
+    <p>Chưa có lịch hẹn nào</p>
+  </div>
+</div> 

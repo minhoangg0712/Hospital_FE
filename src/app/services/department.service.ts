@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
@@ -23,12 +23,22 @@ export class DepartmentService {
   ) { }
 
   getAllDepartments(): Observable<Department[]> {
-    return this.http.get<Department[]>(`${this.baseUrl}/departments/list`).pipe(
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.router.navigate(['/login']);
+      return new Observable(subscriber => subscriber.error('Không tìm thấy token'));
+    }
+
+    return this.http.get<Department[]>(`${this.baseUrl}/departments`, { 
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      })
+    }).pipe(
       catchError(error => {
         if (error.status === 403) {
-          alert('Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại.');
-          this.authService.logout();
-          this.router.navigate(['/login']);
+          alert('Bạn không có quyền truy cập danh sách phòng ban. Vui lòng liên hệ quản trị viên.');
+          this.router.navigate(['/home']);
         }
         throw error;
       })
@@ -36,11 +46,33 @@ export class DepartmentService {
   }
 
   getDepartments(): Observable<Department[]> {
-    return this.http.get<Department[]>(`${this.baseUrl}/departments`);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.router.navigate(['/login']);
+      return new Observable(subscriber => subscriber.error('Không tìm thấy token'));
+    }
+
+    return this.http.get<Department[]>(`${this.baseUrl}/departments`, { 
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      })
+    });
   }
 
   getDepartmentById(id: number): Observable<Department> {
-    return this.http.get<Department>(`${this.baseUrl}/departments/${id}`);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.router.navigate(['/login']);
+      return new Observable(subscriber => subscriber.error('Không tìm thấy token'));
+    }
+
+    return this.http.get<Department>(`${this.baseUrl}/departments/${id}`, { 
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      })
+    });
   }
 
   getPatientByDepartment(departmentId: number, patientId: number): Observable<UserDTO> {

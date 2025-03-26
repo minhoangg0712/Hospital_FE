@@ -6,8 +6,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
-import { AppointmentService, AppointmentRequest, Department } from '../../services/appointment.service';
+import { AppointmentService, AppointmentRequest } from '../../services/appointment.service';
+import { DepartmentService, Department } from '../../services/department.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -20,6 +22,7 @@ import { AuthService } from '../../services/auth.service';
     MatInputModule,
     MatNativeDateModule,
     MatButtonModule,
+    MatIconModule,
     RouterModule
   ],
   templateUrl: './appointment.component.html',
@@ -28,19 +31,13 @@ import { AuthService } from '../../services/auth.service';
 export class AppointmentComponent implements OnInit {
   appointmentForm: FormGroup;
   isRegisterForRelative = false;
-  departments: Department[] = [
-    { departmentId: 1, departmentName: 'Cardiology' },
-    { departmentId: 4, departmentName: 'Dermatology' },
-    { departmentId: 2, departmentName: 'Neurology' },
-    { departmentId: 6, departmentName: 'Nutrition' },
-    { departmentId: 3, departmentName: 'Pediatrics' },
-    { departmentId: 5, departmentName: 'Rehabilitation' }
-  ];
+  departments: Department[] = [];
   availableSlots: Record<string, string[]> = {};
 
   constructor(
     private fb: FormBuilder,
     private appointmentService: AppointmentService,
+    private departmentService: DepartmentService,
     private authService: AuthService,
     private router: Router
   ) {
@@ -62,6 +59,18 @@ export class AppointmentComponent implements OnInit {
       this.router.navigate(['/login']);
       return;
     }
+
+    // Lấy danh sách phòng ban
+    this.departmentService.getAllDepartments().subscribe({
+      next: (departments) => {
+        this.departments = departments;
+        console.log('Danh sách phòng ban:', this.departments);
+      },
+      error: (error) => {
+        console.error('Lỗi khi lấy danh sách phòng ban:', error);
+        alert('Không thể lấy danh sách phòng ban. Vui lòng thử lại sau.');
+      }
+    });
   }
 
   onRegisterForChange(): void {
@@ -129,15 +138,16 @@ export class AppointmentComponent implements OnInit {
           departmentId: formData.departmentId
         },
         appointmentDate: selectedDate.toISOString(),
+        reason: formData.reason,
+        status: "Scheduled",
         relativeName: formData.registerFor === 'relative' ? formData.relativeName : null,
-        relativeIdCard: formData.registerFor === 'relative' ? formData.relativeCCCD : null,
-        reason: formData.reason
+        relativeIdCard: formData.registerFor === 'relative' ? formData.relativeCCCD : null
       };
 
       console.log('Dữ liệu gửi đi:', appointmentData);
       console.log('Token:', localStorage.getItem('token'));
 
-      this.appointmentService.createAppointment(appointmentData).subscribe({
+      this.appointmentService.createAppointment(appointmentData, formData.registerFor === 'self').subscribe({
         next: (response) => {
           alert('Đăng ký lịch khám thành công!');
           this.resetForm();
