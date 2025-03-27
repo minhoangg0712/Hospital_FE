@@ -2,8 +2,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface CreateMedicalRecordDTO {
+  symptoms: string;
+  medicalHistory: string;
+  allergies: string;
+  diagnosis: string;
+  testResults: string;
+  prescription: string;
+  notes?: string;
+}
+
 export interface MedicalRecordDTO {
-  recordId?: number;
+  recordId: number;
   patientName: string;
   gender: string;
   address: string;
@@ -33,7 +43,7 @@ export class MedicalRecordService {
     });
   }
 
-  createMedicalRecord(patientId: number, record: MedicalRecordDTO): Observable<MedicalRecordDTO> {
+  createMedicalRecord(patientId: number, record: CreateMedicalRecordDTO): Observable<MedicalRecordDTO> {
     return this.http.post<MedicalRecordDTO>(
       `${this.baseUrl}/create/${patientId}`, 
       record,
@@ -51,6 +61,13 @@ export class MedicalRecordService {
   getMedicalRecordById(id: number): Observable<MedicalRecordDTO> {
     return this.http.get<MedicalRecordDTO>(
       `${this.baseUrl}/${id}`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  getMedicalRecordsByPatientId(patientId: number): Observable<MedicalRecordDTO[]> {
+    return this.http.get<MedicalRecordDTO[]>(
+      `${this.baseUrl}/list`,
       { headers: this.getHeaders() }
     );
   }

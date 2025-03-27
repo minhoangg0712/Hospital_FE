@@ -17,7 +17,6 @@ import { UserService, UserDTO } from '../../services/user.service';
 })
 export class DoctorScheduleComponent implements OnInit {
   appointments: Appointment[] = [];
-  viewMode: 'personal' | 'department' = 'personal';
   searchTerm: string = '';
   statusFilter: string = '';
   isLoading = false;
@@ -26,17 +25,15 @@ export class DoctorScheduleComponent implements OnInit {
 
   constructor(
     private appointmentService: AppointmentService,
-    private router: Router,
     private userService: UserService
   ) {}
 
   ngOnInit() {
-    // Log thông tin user hiện tại
     this.userService.getCurrentUserProfile().subscribe({
       next: (user) => {
         console.log('Current user:', user);
         this.currentUser = user;
-        this.loadMyAppointments();
+        this.loadAppointments();
       },
       error: (error) => {
         console.error('Lỗi khi tải thông tin user:', error);
@@ -45,10 +42,9 @@ export class DoctorScheduleComponent implements OnInit {
     });
   }
 
-  loadMyAppointments() {
+  loadAppointments() {
     this.isLoading = true;
     this.errorMessage = '';
-    this.viewMode = 'personal';
     
     console.log('Đang gọi API getAppointmentsByDepartment...');
     this.appointmentService.getAppointmentsByDepartment().subscribe({
@@ -59,41 +55,12 @@ export class DoctorScheduleComponent implements OnInit {
       },
       error: (error) => {
         console.error('Lỗi khi tải lịch hẹn:', error);
-        this.errorMessage = 'Có lỗi xảy ra khi tải lịch hẹn';
-        this.isLoading = false;
-      }
-    });
-  }
-
-  loadDepartmentAppointments() {
-    this.loadMyAppointments(); // Vì MGR đã xem theo department rồi
-  }
-
-  updateStatus(appointmentId: number, status: string) {
-    this.isLoading = true;
-    this.errorMessage = '';
-    
-    this.appointmentService.updateDoctorAppointment(appointmentId, { status } as Appointment)
-      .subscribe({
-        next: () => {
-          this.loadMyAppointments();
-        },
-        error: (error) => {
-          console.error('Lỗi khi cập nhật trạng thái:', error);
-          this.errorMessage = 'Có lỗi xảy ra khi cập nhật trạng thái';
-          this.isLoading = false;
+        if (error.status === 403) {
+          this.errorMessage = 'Bạn không có quyền xem danh sách lịch hẹn';
+        } else {
+          this.errorMessage = 'Có lỗi xảy ra khi tải lịch hẹn';
         }
-      });
-  }
-
-  createMedicalRecord(appointment: Appointment) {
-    this.router.navigate(['/create-medical-record'], {
-      queryParams: {
-        patientId: appointment.user.userId,
-        patientName: appointment.user.name,
-        gender: appointment.user.gender,
-        address: appointment.user.address,
-        insuranceNumber: appointment.user.insuranceNumber
+        this.isLoading = false;
       }
     });
   }

@@ -150,7 +150,10 @@ export class AppointmentComponent implements OnInit {
       console.log('Dữ liệu gửi đi:', appointmentData);
       console.log('Token:', localStorage.getItem('token'));
 
-      this.appointmentService.createAppointment(appointmentData, true).subscribe({
+      // Xác định forSelf dựa vào giá trị registerFor
+      const forSelf = formData.registerFor === 'self';
+
+      this.appointmentService.createAppointment(appointmentData, forSelf).subscribe({
         next: (response: Appointment) => {
           console.log('Đặt lịch hẹn thành công:', response);
           alert('Đăng ký lịch khám thành công!');
@@ -163,6 +166,14 @@ export class AppointmentComponent implements OnInit {
               alert(error.error.message);
             } else {
               alert('Bạn không có quyền thực hiện chức năng này');
+            }
+          } else if (error.status === 400) {
+            if (error.error && error.error.message) {
+              alert(error.error.message);
+            } else if (error.error && error.error.includes('already have an appointment')) {
+              alert('Bạn đã có lịch hẹn vào thời gian này. Vui lòng chọn thời gian khác.');
+            } else {
+              alert('Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin.');
             }
           } else {
             alert('Có lỗi xảy ra khi đăng ký lịch khám. Vui lòng thử lại sau.');

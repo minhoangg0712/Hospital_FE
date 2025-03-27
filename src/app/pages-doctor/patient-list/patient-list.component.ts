@@ -99,7 +99,11 @@ export class PatientListComponent implements OnInit {
   }
 
   viewPatientProfile(patientId: number): void {
-    this.router.navigate(['/doctor/patient-profile', patientId]);
+    this.router.navigate(['/create-medical-record'], {
+      queryParams: {
+        patientId: patientId
+      }
+    });
   }
 
   get filteredPatients(): UserDTO[] {

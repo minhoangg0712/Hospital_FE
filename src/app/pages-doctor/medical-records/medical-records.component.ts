@@ -6,17 +6,18 @@ import { MedicalRecordService, MedicalRecordDTO } from '../../services/medical-r
 
 @Component({
   selector: 'app-medical-records',
-  templateUrl: './medical-records.component.html',
-  styleUrls: ['./medical-records.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule]
+  imports: [CommonModule, RouterModule, FormsModule],
+  templateUrl: './medical-records.component.html',
+  styleUrls: ['./medical-records.component.css']
 })
 export class MedicalRecordsComponent implements OnInit {
   medicalRecords: MedicalRecordDTO[] = [];
   isLoading = false;
   errorMessage = '';
+  searchTerm = '';
 
-  constructor(private medicalRecordService: MedicalRecordService) { }
+  constructor(private medicalRecordService: MedicalRecordService) {}
 
   ngOnInit(): void {
     this.loadMedicalRecords();
@@ -32,9 +33,21 @@ export class MedicalRecordsComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
+        console.error('Lỗi khi tải danh sách hồ sơ:', error);
         this.errorMessage = 'Có lỗi xảy ra khi tải danh sách hồ sơ bệnh án';
         this.isLoading = false;
       }
     });
+  }
+
+  get filteredRecords(): MedicalRecordDTO[] {
+    if (!this.searchTerm) return this.medicalRecords;
+    
+    const searchLower = this.searchTerm.toLowerCase();
+    return this.medicalRecords.filter(record => 
+      record.patientName.toLowerCase().includes(searchLower) ||
+      record.insuranceNumber.toLowerCase().includes(searchLower) ||
+      record.diagnosis.toLowerCase().includes(searchLower)
+    );
   }
 } 

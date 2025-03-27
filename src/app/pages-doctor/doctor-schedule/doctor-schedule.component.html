@@ -2,13 +2,7 @@
   <!-- Header Section -->
   <div class="header-card">
     <div class="card-header">
-      <h2>Quản lý lịch hẹn</h2>
-      <div class="header-actions">
-        <button class="btn btn-primary" (click)="loadDepartmentAppointments()">
-          <i class="fas fa-hospital"></i>
-          Lịch hẹn khoa
-        </button>
-      </div>
+      <h2>Danh sách lịch hẹn</h2>
     </div>
   </div>
 
@@ -81,18 +75,6 @@
           <i class="fas fa-hospital"></i>
           <span>Khoa: {{appointment.department.departmentName}}</span>
         </div>
-      </div>
-
-      <div class="card-actions" *ngIf="appointment.status === 'Scheduled'">
-        <button class="btn btn-success" (click)="updateStatus(appointment.appointmentId, 'Completed')">
-          <i class="fas fa-check"></i> Hoàn thành
-        </button>
-        <button class="btn btn-danger" (click)="updateStatus(appointment.appointmentId, 'Cancelled')">
-          <i class="fas fa-times"></i> Hủy
-        </button>
-        <button class="btn btn-info" (click)="createMedicalRecord(appointment)">
-          <i class="fas fa-file-medical"></i> Tạo hồ sơ
-        </button>
       </div>
     </div>
   </div>

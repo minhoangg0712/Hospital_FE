@@ -136,5 +136,11 @@ export class UserService {
       headers: this.getHeaders()
     }).pipe(catchError(this.handleError));
   }
+
+  getUserById(userId: number): Observable<UserDTO> {
+    return this.http.get<UserDTO>(`${this.apiUrl}/profile/${userId}`, {
+      headers: this.getHeaders()
+    }).pipe(catchError(this.handleError));
+  }
 }
 

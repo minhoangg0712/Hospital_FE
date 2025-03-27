@@ -22,6 +22,7 @@ import { AppointmentListComponent } from './pages/appointment-list/appointment-l
 import { AuthGuard } from './guards/auth.guard';
 import { DoctorScheduleComponent } from './pages-doctor/doctor-schedule/doctor-schedule.component';
 import { ManagerGuard } from './guards/manager.guard';
+import { PatientMedicalRecordsComponent } from './pages/patient-medical-records/patient-medical-records.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -47,5 +48,6 @@ export const routes: Routes = [
   { path: 'appointments', component: AppointmentListComponent, canActivate: [ManagerGuard] },
   { path: 'schedule', component: DoctorScheduleComponent, canActivate: [AuthGuard] },
   { path: 'doctor/schedule', component: DoctorScheduleComponent },
+  { path: 'patient-medical-records', component: PatientMedicalRecordsComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '/home' }
 ];

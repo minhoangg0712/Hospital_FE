@@ -1,0 +1,93 @@
+<div class="container">
+  <div class="header">
+    <h2><i class="fas fa-file-medical"></i> Hồ sơ bệnh án của tôi</h2>
+  </div>
+
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    <i class="fas fa-exclamation-circle"></i> {{errorMessage}}
+  </div>
+
+
+
+  <div class="loading" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Đang tải...</span>
+    </div>
+    <p>Đang tải hồ sơ bệnh án...</p>
+  </div>
+
+  <div class="medical-records-list" *ngIf="!isLoading && !errorMessage">
+    <div class="card" *ngFor="let record of filteredRecords">
+      <div class="card-header">
+        <div class="header-content">
+          <div class="record-id">
+            <i class="fas fa-hashtag"></i>
+            <span>Mã hồ sơ: {{record.recordId}}</span>
+          </div>
+          <div class="patient-info">
+            <span class="badge bg-primary">
+              <i class="fas fa-user"></i> {{record.patientName}}
+            </span>
+            <span class="badge bg-info">
+              <i class="fas fa-id-card"></i> {{record.insuranceNumber}}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="info-group">
+              <h6><i class="fas fa-stethoscope"></i> Thông tin khám bệnh</h6>
+              <div class="info-item">
+                <label>Triệu chứng:</label>
+                <p>{{record.symptoms}}</p>
+              </div>
+              <div class="info-item">
+                <label>Chẩn đoán:</label>
+                <p>{{record.diagnosis}}</p>
+              </div>
+              <div class="info-item">
+                <label>Đơn thuốc:</label>
+                <p>{{record.prescription}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-group">
+              <h6><i class="fas fa-history"></i> Tiền sử bệnh</h6>
+              <div class="info-item">
+                <label>Bệnh sử:</label>
+                <p>{{record.medicalHistory}}</p>
+              </div>
+              <div class="info-item">
+                <label>Dị ứng:</label>
+                <p>{{record.allergies || 'Không có'}}</p>
+              </div>
+              <div class="info-item">
+                <label>Kết quả xét nghiệm:</label>
+                <p>{{record.testResults || 'Chưa có'}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4" *ngIf="record.notes">
+          <div class="col-12">
+            <div class="info-group">
+              <h6><i class="fas fa-comment-medical"></i> Ghi chú</h6>
+              <p>{{record.notes}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-records" *ngIf="!isLoading && !errorMessage && filteredRecords.length === 0">
+    <div class="empty-state">
+      <i class="fas fa-folder-open"></i>
+      <h3>Chưa có hồ sơ bệnh án</h3>
+      <p>Bạn chưa có hồ sơ bệnh án nào trong hệ thống</p>
+    </div>
+  </div>
+</div> 
