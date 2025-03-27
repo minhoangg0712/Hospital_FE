@@ -72,8 +72,7 @@
       <div class="form-section">
         <div class="form-group">
           <label for="departmentId">Chuyên khoa:</label>
-          <select id="departmentId" formControlName="departmentId" class="form-control">
-            <option value="">Chọn chuyên khoa</option>
+          <select id="departmentId" formControlName="departmentId" class="form-control">x
             <option *ngFor="let dept of departments" [value]="dept.departmentId">
               {{ dept.departmentName }}
             </option>

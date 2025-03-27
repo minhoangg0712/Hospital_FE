@@ -15,7 +15,6 @@ import { AdminCreateDoctorComponent } from './pages/admin-create-doctor/admin-cr
 import { AdminDoctorListComponent } from './pages/admin-doctor-list/admin-doctor-list.component';
 import { RecordsListComponent } from './pages-doctor/records-list/records-list.component';
 import { PatientListComponent } from './pages-doctor/patient-list/patient-list.component';
-import { AppointmentScheduleComponent } from './pages-doctor/appointment-schedule/appointment-schedule.component';
 import { CreateMedicalRecordComponent } from './pages-doctor/create-medical-record/create-medical-record.component';
 import { MedicalRecordsComponent } from './pages-doctor/medical-records/medical-records.component';
 import { MedicalRecordDetailComponent } from './pages-doctor/medical-record-detail/medical-record-detail.component';
@@ -40,7 +39,6 @@ export const routes: Routes = [
   { path: 'admin-doctor-list', component: AdminDoctorListComponent, canActivate: [AuthGuard] },
   { path: 'records-list', component: RecordsListComponent, canActivate: [AuthGuard] },
   { path: 'patient-list', component: PatientListComponent, canActivate: [AuthGuard] },
-  { path: 'appointment-schedule', component: AppointmentScheduleComponent, canActivate: [AuthGuard] },
   { path: 'create-medical-record', component: CreateMedicalRecordComponent, canActivate: [AuthGuard] },
   { path: 'medical-records', component: MedicalRecordsComponent, canActivate: [AuthGuard] },
   { path: 'medical-records/:id', component: MedicalRecordDetailComponent, canActivate: [AuthGuard] },

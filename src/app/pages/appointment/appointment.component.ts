@@ -92,9 +92,9 @@ export class AppointmentComponent implements OnInit {
   }
 
   generateRandomSlots(): void {
-    const startTime = 8;
-    const endTime = 17;
-    const days = 14;
+    const startTime = 7;  // Bắt đầu từ 7h sáng
+    const endTime = 16;   // Kết thúc lúc 16h40
+    const days = 14;      // Tạo lịch cho 14 ngày tới
 
     for (let i = 0; i < days; i++) {
       const date = new Date();
@@ -103,12 +103,15 @@ export class AppointmentComponent implements OnInit {
 
       const slots: string[] = [];
       for (let hour = startTime; hour < endTime; hour++) {
-        slots.push(`${hour}:00`, `${hour}:30`);
+        slots.push(`${hour}:00 - ${hour + 1}:00`);
       }
+      
+      slots.push("16:00 - 16:40"); // Slot cuối cùng từ 16:00 đến 16:40
 
       this.availableSlots[dateString] = slots;
     }
-  }
+}
+
 
   getSelectedSlots(): string[] {
     const selectedDate = this.appointmentForm.value.date;

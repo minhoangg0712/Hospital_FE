@@ -95,20 +95,20 @@
     padding: 8px 16px;
     border: 1px solid #ddd;
     border-radius: 6px;
-    background: #fff;
+    background: #000000;
     cursor: pointer;
     transition: all 0.3s ease;
   }
   
   .time-slots button:hover {
     background: #f8f9fa;
-    border-color: #3498db;
+    border-color: #14656E;
   }
   
   .time-slots button.selected-time {
-    background: #3498db;
-    color: white;
-    border-color: #3498db;
+    background: #14656E;
+    color: rgb(0, 0, 0);
+    border-color: #14656E;
   }
   
   /* Mở rộng ô chọn chuyên khoa */
@@ -228,7 +228,7 @@
   .submit-button {
     width: 100%;
     padding: 12px;
-    background: #3498db;
+    background: #14656E;
     color: white;
     border: none;
     border-radius: 6px;
@@ -239,7 +239,7 @@
   }
 
   .submit-button:hover:not(:disabled) {
-    background: #2980b9;
+    background: #14656E;
   }
 
   .submit-button:disabled {
@@ -286,7 +286,7 @@
   }
 
   .form-control:focus {
-    border-color: #3498db;
+    border-color: #14656E;
     outline: none;
     box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
   }
@@ -303,29 +303,33 @@
   }
 
   .time-slots {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 cột */
+    grid-template-rows: repeat(2, auto);  /* 2 hàng */
+    gap: 10px; /* Khoảng cách giữa các ô */
     margin-top: 10px;
+    justify-items: center; /* Căn giữa các button */
   }
-
+  
   .time-slots button {
     padding: 8px 16px;
-    border: 1px solid #ddd;
+    border: 1px solid #4a7c82;
     border-radius: 4px;
-    background: #fff;
+    background: #14656ece;
     cursor: pointer;
     transition: all 0.3s ease;
+    width: 100%; /* Để button chiếm đủ cột */
   }
+  
 
   .time-slots button:hover {
-    background: #f8f9fa;
+    background: #14656edb;
   }
 
   .time-slots button.selected-time {
-    background: #3498db;
-    color: white;
-    border-color: #3498db;
+    background: #14656e;
+    color: rgb(255, 255, 255);
+    border-color: #14656E;
   }
 
   .error-message {
