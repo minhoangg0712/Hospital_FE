@@ -1,4 +1,4 @@
-<div class="appointment-list-container">
+<div *ngIf="isManager" class="appointment-list-container">
   <div class="header">
     <h2>Danh sách lịch hẹn</h2>
     <button mat-raised-button color="primary" routerLink="/appointment">
@@ -7,7 +7,7 @@
   </div>
 
   <div class="table-container">
-    <table mat-table [dataSource]="appointments">
+    <table mat-table [dataSource]="appointments" class="mat-elevation-z8">
       <!-- ID Column -->
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>ID</th>
@@ -16,29 +16,27 @@
 
       <!-- Department Column -->
       <ng-container matColumnDef="department">
-        <th mat-header-cell *matHeaderCellDef>Chuyên khoa</th>
-        <td mat-cell *matCellDef="let appointment">{{getDepartmentName(appointment.department.departmentId)}}</td>
+        <th mat-header-cell *matHeaderCellDef>Khoa</th>
+        <td mat-cell *matCellDef="let appointment">{{getDepartmentName(appointment.departmentId)}}</td>
       </ng-container>
 
       <!-- Date Column -->
       <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef>Ngày hẹn</th>
-        <td mat-cell *matCellDef="let appointment">{{formatDate(appointment.appointmentDate)}}</td>
+        <th mat-header-cell *matHeaderCellDef>Ngày giờ</th>
+        <td mat-cell *matCellDef="let appointment">{{formatDate(appointment.start)}}</td>
       </ng-container>
 
       <!-- Reason Column -->
       <ng-container matColumnDef="reason">
-        <th mat-header-cell *matHeaderCellDef>Lý do</th>
-        <td mat-cell *matCellDef="let appointment">{{appointment.reason}}</td>
+        <th mat-header-cell *matHeaderCellDef>Lý do khám</th>
+        <td mat-cell *matCellDef="let appointment">{{appointment.description}}</td>
       </ng-container>
 
       <!-- Status Column -->
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>Trạng thái</th>
         <td mat-cell *matCellDef="let appointment">
-          <span class="status-badge" [ngClass]="getStatusClass(appointment.status)">
-            {{appointment.status}}
-          </span>
+          <span [class]="getStatusClass(appointment.status)">{{appointment.status}}</span>
         </td>
       </ng-container>
 
@@ -63,4 +61,8 @@
   <div class="no-data" *ngIf="appointments.length === 0">
     <p>Chưa có lịch hẹn nào</p>
   </div>
+</div>
+
+<div *ngIf="!isManager" class="unauthorized-message">
+  <p>Bạn không có quyền truy cập trang này.</p>
 </div> 

@@ -1,0 +1,106 @@
+<div class="schedule-container">
+  <!-- Header Section -->
+  <div class="header-card">
+    <div class="card-header">
+      <h2>Quản lý lịch hẹn</h2>
+      <div class="header-actions">
+        <button class="btn btn-primary" (click)="loadDepartmentAppointments()">
+          <i class="fas fa-hospital"></i>
+          Lịch hẹn khoa
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    <i class="fas fa-exclamation-circle"></i> {{errorMessage}}
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-spinner" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Đang tải...</span>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section" *ngIf="!isLoading">
+    <div class="search-box">
+      <input type="text" [(ngModel)]="searchTerm" class="form-control" placeholder="Tìm kiếm...">
+    </div>
+
+    <div class="status-filter">
+      <select [(ngModel)]="statusFilter" class="form-control">
+        <option value="">Tất cả trạng thái</option>
+        <option value="Scheduled">Chờ khám</option>
+        <option value="Completed">Đã khám</option>
+        <option value="Cancelled">Đã hủy</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Appointments Grid -->
+  <div class="appointments-grid" *ngIf="!isLoading">
+    <div class="appointment-card" *ngFor="let appointment of filteredAppointments">
+      <div class="card-header" [ngClass]="appointment.status.toLowerCase()">
+        <div class="patient-info">
+          <h3>{{appointment.user.name}}</h3>
+          <div class="appointment-time">
+            <i class="far fa-clock"></i>
+            {{appointment.appointmentDate | date:'HH:mm dd/MM/yyyy'}}
+          </div>
+        </div>
+        <div class="status-badge" [ngClass]="appointment.status.toLowerCase()">
+          {{getStatusText(appointment.status)}}
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="info-row">
+          <i class="fas fa-phone"></i>
+          <span>{{appointment.user.phone}}</span>
+        </div>
+        <div class="info-row">
+          <i class="fas fa-envelope"></i>
+          <span>{{appointment.user.email}}</span>
+        </div>
+        <div class="info-row">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>{{appointment.user.address}}</span>
+        </div>
+        <div class="info-row">
+          <i class="fas fa-notes-medical"></i>
+          <span>{{appointment.reason}}</span>
+        </div>
+        <div class="info-row" *ngIf="appointment.relativeName">
+          <i class="fas fa-users"></i>
+          <span>Người thân: {{appointment.relativeName}} (CCCD: {{appointment.relativeIdCard}})</span>
+        </div>
+        <div class="info-row">
+          <i class="fas fa-hospital"></i>
+          <span>Khoa: {{appointment.department.departmentName}}</span>
+        </div>
+      </div>
+
+      <div class="card-actions" *ngIf="appointment.status === 'Scheduled'">
+        <button class="btn btn-success" (click)="updateStatus(appointment.appointmentId, 'Completed')">
+          <i class="fas fa-check"></i> Hoàn thành
+        </button>
+        <button class="btn btn-danger" (click)="updateStatus(appointment.appointmentId, 'Cancelled')">
+          <i class="fas fa-times"></i> Hủy
+        </button>
+        <button class="btn btn-info" (click)="createMedicalRecord(appointment)">
+          <i class="fas fa-file-medical"></i> Tạo hồ sơ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Results Message -->
+  <div class="no-results" *ngIf="!isLoading && filteredAppointments.length === 0">
+    <i class="fas fa-calendar-times"></i>
+    <p>Không tìm thấy lịch hẹn nào</p>
+  </div>
+</div>
+  

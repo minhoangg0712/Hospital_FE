@@ -8,7 +8,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
-import { AppointmentService, AppointmentRequest } from '../../services/appointment.service';
+import { AppointmentService, AppointmentRequest, Appointment } from '../../services/appointment.service';
 import { DepartmentService, Department } from '../../services/department.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -150,24 +150,22 @@ export class AppointmentComponent implements OnInit {
       console.log('Dữ liệu gửi đi:', appointmentData);
       console.log('Token:', localStorage.getItem('token'));
 
-      this.appointmentService.createAppointment(appointmentData, formData.registerFor === 'self').subscribe({
-        next: (response) => {
+      this.appointmentService.createAppointment(appointmentData, true).subscribe({
+        next: (response: Appointment) => {
+          console.log('Đặt lịch hẹn thành công:', response);
           alert('Đăng ký lịch khám thành công!');
           this.resetForm();
         },
         error: (error) => {
           console.error('Lỗi khi đăng ký lịch khám:', error);
           if (error.status === 403) {
-            alert('Phiên làm việc đã hết hạn hoặc không có quyền truy cập. Vui lòng đăng nhập lại.');
-            this.authService.logout();
-            this.router.navigate(['/login']);
-          } else if (error.status === 401) {
-            alert('Vui lòng đăng nhập để thực hiện chức năng này.');
-            this.router.navigate(['/login']);
-          } else if (error.status === 400) {
-            alert('Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin.');
+            if (error.error && error.error.message) {
+              alert(error.error.message);
+            } else {
+              alert('Bạn không có quyền thực hiện chức năng này');
+            }
           } else {
-            alert('Không thể đăng ký lịch khám. Vui lòng thử lại sau.');
+            alert('Có lỗi xảy ra khi đăng ký lịch khám. Vui lòng thử lại sau.');
           }
         }
       });

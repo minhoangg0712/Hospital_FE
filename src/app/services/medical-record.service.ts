@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface MedicalRecordDTO {
@@ -25,15 +25,33 @@ export class MedicalRecordService {
 
   constructor(private http: HttpClient) { }
 
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+
   createMedicalRecord(patientId: number, record: MedicalRecordDTO): Observable<MedicalRecordDTO> {
-    return this.http.post<MedicalRecordDTO>(`${this.baseUrl}/create/${patientId}`, record);
+    return this.http.post<MedicalRecordDTO>(
+      `${this.baseUrl}/create/${patientId}`, 
+      record,
+      { headers: this.getHeaders() }
+    );
   }
 
   getMedicalRecords(): Observable<MedicalRecordDTO[]> {
-    return this.http.get<MedicalRecordDTO[]>(`${this.baseUrl}/list`);
+    return this.http.get<MedicalRecordDTO[]>(
+      `${this.baseUrl}/list`,
+      { headers: this.getHeaders() }
+    );
   }
 
   getMedicalRecordById(id: number): Observable<MedicalRecordDTO> {
-    return this.http.get<MedicalRecordDTO>(`${this.baseUrl}/${id}`);
+    return this.http.get<MedicalRecordDTO>(
+      `${this.baseUrl}/${id}`,
+      { headers: this.getHeaders() }
+    );
   }
 } 

@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AppointmentService, Appointment } from '../../services/appointment.service';
 import { DepartmentService, Department } from '../../services/department.service';
@@ -40,28 +40,42 @@ import { AuthService } from '../../services/auth.service';
 export class AppointmentListComponent implements OnInit {
   appointments: Appointment[] = [];
   departments: Department[] = [];
-  displayedColumns: string[] = ['id', 'department', 'date', 'reason', 'status', 'actions'];
+  displayedColumns: string[] = ['id', 'department', 'date', 'reason', 'status'];
+  isManager: boolean = false;
 
   constructor(
     private appointmentService: AppointmentService,
     private departmentService: DepartmentService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.loadAppointments();
-    this.loadDepartments();
+    const userRole = this.authService.getUserRole();
+    if (userRole === 'ROLE_MGR') {
+      this.isManager = true;
+      this.loadAppointments();
+      this.loadDepartments();
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
   loadAppointments() {
+    if (!this.isManager) return;
+    
     this.appointmentService.getAppointments().subscribe({
       next: (data) => {
         this.appointments = data;
-        console.log('Danh sách lịch hẹn:', this.appointments);
       },
       error: (error) => {
         console.error('Lỗi khi lấy danh sách lịch hẹn:', error);
-        alert('Không thể tải danh sách lịch hẹn. Vui lòng thử lại sau.');
+        if (error.status === 403) {
+          alert('Bạn không có quyền xem danh sách lịch hẹn');
+          this.router.navigate(['/']);
+        } else {
+          alert('Không thể tải danh sách lịch hẹn. Vui lòng thử lại sau.');
+        }
       }
     });
   }
@@ -112,16 +126,22 @@ export class AppointmentListComponent implements OnInit {
     console.log('Edit appointment:', appointment);
   }
 
-  deleteAppointment(id: number) {
-    if (confirm('Bạn có chắc chắn muốn xóa lịch hẹn này?')) {
+  deleteAppointment(id: number): void {
+    if (confirm('Bạn có chắc chắn muốn hủy lịch hẹn này?')) {
       this.appointmentService.deleteAppointment(id).subscribe({
         next: () => {
-          alert('Xóa lịch hẹn thành công!');
+          // Xóa thành công
+          alert('Hủy lịch hẹn thành công');
+          // Reload danh sách lịch hẹn
           this.loadAppointments();
         },
-        error: (error) => {
-          console.error('Lỗi khi xóa lịch hẹn:', error);
-          alert('Không thể xóa lịch hẹn. Vui lòng thử lại sau.');
+        error: (error: any) => {
+          console.error('Lỗi khi hủy lịch hẹn:', error);
+          if (error.status === 403) {
+            alert('Bạn không có quyền hủy lịch hẹn này');
+          } else {
+            alert('Có lỗi xảy ra khi hủy lịch hẹn. Vui lòng thử lại sau.');
+          }
         }
       });
     }

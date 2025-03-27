@@ -20,21 +20,23 @@ import { MedicalRecordsComponent } from './pages-doctor/medical-records/medical-
 import { MedicalRecordDetailComponent } from './pages-doctor/medical-record-detail/medical-record-detail.component';
 import { AppointmentListComponent } from './pages/appointment-list/appointment-list.component';
 import { AuthGuard } from './guards/auth.guard';
+import { DoctorScheduleComponent } from './pages-doctor/doctor-schedule/doctor-schedule.component';
+import { ManagerGuard } from './guards/manager.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegistrationComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'doctor', component: HomeDoctorComponent },
-  { path: 'profile-doctor', component: ProfileDoctorComponent },
-  { path: 'patient', component: HomePatientComponent },
-  { path: 'profile', component: ProfileComponent },
+  { path: 'doctor', component: HomeDoctorComponent, canActivate: [AuthGuard] },
+  { path: 'profile-doctor', component: ProfileDoctorComponent, canActivate: [AuthGuard] },
+  { path: 'patient', component: HomePatientComponent, canActivate: [AuthGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
-  { path: 'appointment', component: AppointmentComponent },
-  { path: 'medicine', component: MedicineComponent },
-  { path: 'cart', component: CartComponent },
-  { path: 'admin-home', component: AdminHomeComponent },
+  { path: 'appointment', component: AppointmentComponent, canActivate: [AuthGuard] },
+  { path: 'medicine', component: MedicineComponent, canActivate: [AuthGuard] },
+  { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
+  { path: 'admin-home', component: AdminHomeComponent, canActivate: [AuthGuard] },
   { path: 'admin-create-doctor', component: AdminCreateDoctorComponent, canActivate: [AuthGuard] },
   { path: 'admin-doctor-list', component: AdminDoctorListComponent, canActivate: [AuthGuard] },
   { path: 'records-list', component: RecordsListComponent, canActivate: [AuthGuard] },
@@ -42,6 +44,8 @@ export const routes: Routes = [
   { path: 'create-medical-record', component: CreateMedicalRecordComponent, canActivate: [AuthGuard] },
   { path: 'medical-records', component: MedicalRecordsComponent, canActivate: [AuthGuard] },
   { path: 'medical-records/:id', component: MedicalRecordDetailComponent, canActivate: [AuthGuard] },
-  { path: 'appointments', component: AppointmentListComponent, canActivate: [AuthGuard] },
+  { path: 'appointments', component: AppointmentListComponent, canActivate: [ManagerGuard] },
+  { path: 'schedule', component: DoctorScheduleComponent, canActivate: [AuthGuard] },
+  { path: 'doctor/schedule', component: DoctorScheduleComponent },
   { path: '**', redirectTo: '/home' }
 ];

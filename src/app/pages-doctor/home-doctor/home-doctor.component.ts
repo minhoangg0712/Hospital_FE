@@ -12,7 +12,7 @@ export class HomeDoctorComponent {
   constructor(private router: Router) { }
 
   goToSchedule(): void {
-    this.router.navigate(['/appointment-schedule']);
+    this.router.navigate(['/doctor/schedule']);
   }
   GoToMedicalRecords(): void {
     this.router.navigate(['/create-medical-record']);

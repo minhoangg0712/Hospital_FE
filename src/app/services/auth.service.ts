@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
 
 export interface RegisterRequest {
   name: string;
@@ -97,5 +98,18 @@ export class AuthService {
   
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
+  }
+
+  getUserRole(): string | null {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token) as any;
+        return decodedToken.role || null;
+      } catch {
+        return null;
+      }
+    }
+    return null;
   }
 }
