@@ -1,14 +1,30 @@
+<!-- Hero Section -->
 <main class="main-container">
   <div class="image-container">
     <div class="slideshow" #slideshow>
       <div class="slide">
         <img src="assets/Anh_trang_chu.jpg" alt="Bệnh viện hiện đại">
+        <div class="slide-content">
+          <h1>Chăm sóc sức khỏe chất lượng cao</h1>
+          <p>Đội ngũ y bác sĩ chuyên môn cao, trang thiết bị hiện đại</p>
+          <button class="cta-button">Đặt lịch khám ngay</button>
+        </div>
       </div>
       <div class="slide">
         <img src="assets/Anh_trang_chu_4.jpg" alt="Đội ngũ y tế chuyên nghiệp">
+        <div class="slide-content">
+          <h1>Đội ngũ y tế chuyên nghiệp</h1>
+          <p>Bác sĩ giàu kinh nghiệm, tận tâm với người bệnh</p>
+          <button class="cta-button">Tìm hiểu thêm</button>
+        </div>
       </div>
       <div class="slide">
         <img src="assets/Anh_trang_chu_3.jpg" alt="Chăm sóc tận tâm">
+        <div class="slide-content">
+          <h1>Dịch vụ chăm sóc tận tâm</h1>
+          <p>Môi trường thân thiện, phục vụ 24/7</p>
+          <button class="cta-button">Liên hệ ngay</button>
+        </div>
       </div>
     </div>
     <div class="slide-controls">
@@ -22,206 +38,360 @@
     </div>
   </div>
 </main>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+  <div class="action-item">
+    <i class="fas fa-calendar-check"></i>
+    <span>Đặt lịch online</span>
+  </div>
+  <div class="action-item">
+    <i class="fas fa-phone-alt"></i>
+    <span>Gọi tư vấn</span>
+  </div>
+  <div class="action-item">
+    <i class="fas fa-map-marker-alt"></i>
+    <span>Chỉ đường</span>
+  </div>
+</div>
+
 <div class="container">
-    <section class="services">
-        <h2 class="section-title">Dịch vụ nổi bật</h2>
-        <div class="service-grid">
-            <div class="service-box">
-                <img src="assets/Kham-ca-nhan-1.png" alt="Khám sức khỏe Gia đình">
-                <div class="overlay"></div>
-                <p class="service-text">Khám sức khỏe gia đình </p>
-            </div>
-            <div class="service-box">
-                <img src="assets/Kham-noi-vien-2.png" alt="Khám sức khỏe Doanh nghiệp nội viện">
-                <div class="overlay"></div>
-                <p class="service-text">Khám sức khỏe doanh nghiệp nội viện</p>
-            </div>
-            <div class="service-box large">
-                <img src="assets/home-khamluudong.jpg" alt="Khám sức khỏe Doanh nghiệp lưu động">
-                <div class="overlay"></div>
-                <p class="service-text">Khám sức khỏe doanh nghiệp lưu động</p>
-            </div>
-            <div class="service-box">
-                <img src="assets/kham-lai-xe-2.png" alt="Khám sức khỏe Lái xe">
-                <div class="overlay"></div>
-                <p class="service-text">Khám sức khỏe lái xe</p>
-            </div>
-            <div class="service-box">
-                <img src="assets/Kham-bao-hiem-1.png" alt="Khám Bảo hiểm">
-                <div class="overlay"></div>
-                <p class="service-text">Khám bảo hiểm</p>
-            </div>
+  <!-- Dịch vụ nổi bật -->
+  <section class="services">
+    <h2 class="section-title">Dịch vụ nổi bật</h2>
+    <div class="service-grid">
+      <div class="service-box">
+        <img src="assets/Kham-ca-nhan-1.png" alt="Khám sức khỏe Gia đình">
+        <div class="overlay"></div>
+        <div class="service-content">
+          <p class="service-text">Khám sức khỏe gia đình</p>
+          <button class="service-button">Chi tiết</button>
         </div>
-    </section>
-    
-    <section class="specialties">
-        <h2 class="section-title">Chuyên khoa khám bệnh</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            
-          <div class="specialty-card">
-            <div class="icon-container"><i class="fas fa-stethoscope"></i></div>
-            <div class="text-container">Khoa Nội Tổng Hợp</div>
-          </div>
-          
-          <div class="specialty-card">
-            <div class="icon-container"><i class="fas fa-user-md"></i></div>
-            <div class="text-container">Khoa Ngoại</div>
-          </div>
-          
-          <div class="specialty-card">
-            <div class="icon-container"><i class="fas fa-baby"></i></div>
-            <div class="text-container">Khoa Nhi</div>
-          </div>
-         
-          <div class="specialty-card">
-            <div class="icon-container"><i class="fas fa-tooth"></i></div>
-            <div class="text-container">Khoa Răng Hàm Mặt</div>
-          </div>
-          
-          <div class="specialty-card">
-            <div class="icon-container"><i class="fas fa-allergies"></i></div>
-            <div class="text-container">Khoa Da Liễu</div>
-          </div>
-          
-          <div class="specialty-card">
-            <div class="icon-container"><i class="fas fa-brain"></i></div>
-            <div class="text-container">Khoa Tâm Thần</div>
-          </div>
-          
-          <div class="specialty-card">
-            <div class="icon-container"><i class="fas fa-venus-mars"></i></div>
-            <div class="text-container">Khoa Sản Phụ khoa</div>
-          </div>
-          
-          <div class="specialty-card">
-            <div class="icon-container"><i class="fas fa-deaf"></i></div>
-            <div class="text-container">Khoa Tai – Mũi – Họng</div>
-          </div>
-          
-          <div class="specialty-card">
-            <div class="icon-container"><i class="fas fa-eye"></i></div>
-            <div class="text-container">Khoa Mắt</div>
-          </div>
-          
-          <div class="specialty-card">
-            <div class="icon-container"><i class="fas fa-vial"></i></div>
-            <div class="text-container">Trung Tâm Xét Nghiệm</div>
-          </div>
-          
-          <div class="specialty-card">
-            <div class="icon-container"><i class="fas fa-x-ray"></i></div>
-            <div class="text-container">Trung Tâm X-Quang</div>
-          </div>
-          
-          <div class="specialty-card">
-            <div class="icon-container"><i class="fas fa-wave-square"></i></div>
-            <div class="text-container">Siêu Âm</div>
-          </div>
-        </div>
-      </section>
-      <div class="main-content">
-        <div class="content">
-          <div class="image-box">
-              <img src="assets/Anh_nen.jpg" alt="">
-          </div>
-          <div class="text-box">
-              <h2>GIỚI THIỆU</h2>
-              <p>Địa chỉ chăm sóc sức khoẻ ban đầu tin cậy!</p>
-              <p>Phòng khám Medica trực thuộc Công ty Cổ Phần Sức khỏe và Môi trường Hà Nội, được thành lập với sứ mệnh và tầm nhìn "TIÊN PHONG TRONG LĨNH VỰC CHĂM SÓC SỨC KHỎE BAN ĐẦU".</p>
-              <p>Phòng khám Medica tại địa chỉ số 80A Nguyễn Thanh Bình, Phường Vạn Phúc, Quận Hà Đông, Thành phố Hà Nội. Thành lập từ năm 2015 bởi đội ngũ các y bác sĩ đầu ngành nhiều năm kinh nghiệm đến từ các bệnh viện tuyến Trung ương giàu y đức, tâm huyết với nghề và có trình độ chuyên môn cao.</p>
-              <button>Chi tiết</button>
-          </div>
-        </div>  
       </div>
+      <div class="service-box">
+        <img src="assets/Kham-noi-vien-2.png" alt="Khám sức khỏe Doanh nghiệp nội viện">
+        <div class="overlay"></div>
+        <div class="service-content">
+          <p class="service-text">Khám sức khỏe doanh nghiệp nội viện</p>
+          <button class="service-button">Chi tiết</button>
+        </div>
+      </div>
+      <div class="service-box">
+        <img src="assets/home-khamluudong.jpg" alt="Khám sức khỏe Doanh nghiệp lưu động">
+        <div class="overlay"></div>
+        <div class="service-content">
+          <p class="service-text">Khám sức khỏe doanh nghiệp lưu động</p>
+          <button class="service-button">Chi tiết</button>
+        </div>
+      </div>
+      <div class="service-box">
+        <img src="assets/kham-lai-xe-2.png" alt="Khám sức khỏe Lái xe">
+        <div class="overlay"></div>
+        <div class="service-content">
+          <p class="service-text">Khám sức khỏe lái xe</p>
+          <button class="service-button">Chi tiết</button>
+        </div>
+      </div>
+      <div class="service-box">
+        <img src="assets/Kham-bao-hiem-1.png" alt="Khám Bảo hiểm">
+        <div class="overlay"></div>
+        <div class="service-content">
+          <p class="service-text">Khám bảo hiểm</p>
+          <button class="service-button">Chi tiết</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Chuyên khoa -->
+  <section class="specialties">
+    <h2 class="section-title">Chuyên khoa khám bệnh</h2>
+    <div class="grid">
+      <div class="specialty-card">
+        <div class="icon-container"><i class="fas fa-stethoscope"></i></div>
+        <div class="text-container">Khoa Nội Tổng Hợp</div>
+        <div class="specialty-description">Khám và điều trị các bệnh lý nội khoa</div>
+      </div>
+      
+      <div class="specialty-card">
+        <div class="icon-container"><i class="fas fa-user-md"></i></div>
+        <div class="text-container">Khoa Ngoại</div>
+        <div class="specialty-description">Phẫu thuật và điều trị ngoại khoa</div>
+      </div>
+      
+      <div class="specialty-card">
+        <div class="icon-container"><i class="fas fa-baby"></i></div>
+        <div class="text-container">Khoa Nhi</div>
+        <div class="specialty-description">Chăm sóc sức khỏe trẻ em</div>
+      </div>
+      
+      <div class="specialty-card">
+        <div class="icon-container"><i class="fas fa-tooth"></i></div>
+        <div class="text-container">Khoa Răng Hàm Mặt</div>
+        <div class="specialty-description">Điều trị răng miệng toàn diện</div>
+      </div>
+      
+      <div class="specialty-card">
+        <div class="icon-container"><i class="fas fa-allergies"></i></div>
+        <div class="text-container">Khoa Da Liễu</div>
+        <div class="specialty-description">Điều trị các bệnh về da</div>
+      </div>
+      
+      <div class="specialty-card">
+        <div class="icon-container"><i class="fas fa-brain"></i></div>
+        <div class="text-container">Khoa Tâm Thần</div>
+        <div class="specialty-description">Tư vấn và điều trị tâm lý</div>
+      </div>
+      
+      <div class="specialty-card">
+        <div class="icon-container"><i class="fas fa-venus-mars"></i></div>
+        <div class="text-container">Khoa Sản Phụ khoa</div>
+        <div class="specialty-description">Chăm sóc sức khỏe phụ nữ</div>
+      </div>
+      
+      <div class="specialty-card">
+        <div class="icon-container"><i class="fas fa-deaf"></i></div>
+        <div class="text-container">Khoa Tai – Mũi – Họng</div>
+        <div class="specialty-description">Điều trị các bệnh về tai mũi họng</div>
+      </div>
+      
+      <div class="specialty-card">
+        <div class="icon-container"><i class="fas fa-eye"></i></div>
+        <div class="text-container">Khoa Mắt</div>
+        <div class="specialty-description">Khám và điều trị các bệnh về mắt</div>
+      </div>
+      
+      <div class="specialty-card">
+        <div class="icon-container"><i class="fas fa-vial"></i></div>
+        <div class="text-container">Trung Tâm Xét Nghiệm</div>
+        <div class="specialty-description">Xét nghiệm chẩn đoán chính xác</div>
+      </div>
+      
+      <div class="specialty-card">
+        <div class="icon-container"><i class="fas fa-x-ray"></i></div>
+        <div class="text-container">Trung Tâm X-Quang</div>
+        <div class="specialty-description">Chẩn đoán hình ảnh hiện đại</div>
+      </div>
+      
+      <div class="specialty-card">
+        <div class="icon-container"><i class="fas fa-wave-square"></i></div>
+        <div class="text-container">Siêu Âm</div>
+        <div class="specialty-description">Siêu âm chẩn đoán chuyên sâu</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Giới thiệu -->
+  <div class="main-content">
+    <div class="content">
+      <div class="image-box">
+        <img src="assets/Anh_nen.jpg" alt="Phòng khám Medica">
+        <div class="image-overlay">
+          <div class="overlay-content">
+            <h3>Hơn 8 năm kinh nghiệm</h3>
+            <p>Phục vụ cộng đồng</p>
+          </div>
+        </div>
+      </div>
+      <div class="text-box">
+        <h2>GIỚI THIỆU</h2>
+        <p>Địa chỉ chăm sóc sức khoẻ ban đầu tin cậy!</p>
+        <p>Phòng khám Medica trực thuộc Công ty Cổ Phần Sức khỏe và Môi trường Hà Nội, được thành lập với sứ mệnh và tầm nhìn "TIÊN PHONG TRONG LĨNH VỰC CHĂM SÓC SỨC KHỎE BAN ĐẦU".</p>
+        <p>Phòng khám Medica tại địa chỉ số 80A Nguyễn Thanh Bình, Phường Vạn Phúc, Quận Hà Đông, Thành phố Hà Nội. Thành lập từ năm 2015 bởi đội ngũ các y bác sĩ đầu ngành nhiều năm kinh nghiệm đến từ các bệnh viện tuyến Trung ương giàu y đức, tâm huyết với nghề và có trình độ chuyên môn cao.</p>
+        <div class="button-group">
+          <button class="primary-button">Chi tiết</button>
+          <button class="secondary-button">Liên hệ</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Đội ngũ bác sĩ -->
 <section class="doctors">
-    <h2 class="section-title">Đội Ngũ Bác Sĩ</h2>
-    <div class="doctors-grid">
-        <div class="doctor-card">
-            <div class="doctor-image">
-                <img src="assets/doctor/doctor1.jpg" alt="Bác sĩ 1">
-            </div>
-            <div class="doctor-info">
-                <h3>TS.BS Nguyễn Văn A</h3>
-                <p class="specialty">Khoa Nội Tổng Hợp</p>
-                <p class="experience">20 năm kinh nghiệm</p>
-                <button class="book-appointment">Đặt lịch khám</button>
-            </div>
+  <h2 class="section-title">Đội Ngũ Bác Sĩ</h2>
+  <div class="doctors-grid">
+    <div class="doctor-card">
+      <div class="doctor-image">
+        <img src="assets/doctor/doctor1.jpg" alt="Bác sĩ 1">
+        <div class="doctor-overlay">
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
         </div>
-        <div class="doctor-card">
-            <div class="doctor-image">
-                <img src="assets/doctor/doctor2.jpg" alt="Bác sĩ 2">
-            </div>
-            <div class="doctor-info">
-                <h3>PGS.TS Trần Thị B</h3>
-                <p class="specialty">Khoa Tim Mạch</p>
-                <p class="experience">15 năm kinh nghiệm</p>
-                <button class="book-appointment">Đặt lịch khám</button>
-            </div>
-        </div>
-        <div class="doctor-card">
-            <div class="doctor-image">
-                <img src="assets/doctor/doctor3.jpg" alt="Bác sĩ 3">
-            </div>
-            <div class="doctor-info">
-                <h3>BS.CKI Lê Văn C</h3>
-                <p class="specialty">Khoa Nhi</p>
-                <p class="experience">12 năm kinh nghiệm</p>
-                <button class="book-appointment">Đặt lịch khám</button>
-            </div>
-        </div>
-        <div class="doctor-card">
-            <div class="doctor-image">
-                <img src="assets/doctor/doctor4.png" alt="Bác sĩ 4">
-            </div>
-            <div class="doctor-info">
-                <h3>TS.BS Phạm Thị D</h3>
-                <p class="specialty">Khoa Da Liễu</p>
-                <p class="experience">18 năm kinh nghiệm</p>
-                <button class="book-appointment">Đặt lịch khám</button>
-            </div>
-        </div>
+      </div>
+      <div class="doctor-info">
+        <h3>TS.BS Nguyễn Văn A</h3>
+        <p class="specialty">Khoa Nội Tổng Hợp</p>
+        <p class="experience">20 năm kinh nghiệm</p>
+        <button class="book-appointment">Đặt lịch khám</button>
+      </div>
     </div>
+    <div class="doctor-card">
+      <div class="doctor-image">
+        <img src="assets/doctor/doctor2.jpg" alt="Bác sĩ 2">
+        <div class="doctor-overlay">
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="doctor-info">
+        <h3>PGS.TS Trần Thị B</h3>
+        <p class="specialty">Khoa Tim Mạch</p>
+        <p class="experience">15 năm kinh nghiệm</p>
+        <button class="book-appointment">Đặt lịch khám</button>
+      </div>
+    </div>
+    <div class="doctor-card">
+      <div class="doctor-image">
+        <img src="assets/doctor/doctor3.jpg" alt="Bác sĩ 3">
+        <div class="doctor-overlay">
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="doctor-info">
+        <h3>BS.CKI Lê Văn C</h3>
+        <p class="specialty">Khoa Nhi</p>
+        <p class="experience">12 năm kinh nghiệm</p>
+        <button class="book-appointment">Đặt lịch khám</button>
+      </div>
+    </div>
+    <div class="doctor-card">
+      <div class="doctor-image">
+        <img src="assets/doctor/doctor4.png" alt="Bác sĩ 4">
+        <div class="doctor-overlay">
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="doctor-info">
+        <h3>TS.BS Phạm Thị D</h3>
+        <p class="specialty">Khoa Da Liễu</p>
+        <p class="experience">18 năm kinh nghiệm</p>
+        <button class="book-appointment">Đặt lịch khám</button>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Tin tức và sự kiện -->
 <section class="news">
-    <h2 class="section-title">Tin Tức & Sự Kiện</h2>
-    <div class="news-grid">
-        <div class="news-card">
-            <div class="news-image">
-                <img src="assets/tintuc1.jpg" alt="Tin tức 1">
-            </div>
-            <div class="news-content">
-                <div class="news-date">15 Tháng 3, 2024</div>
-                <h3>Chương trình khám sức khỏe miễn phí cho người cao tuổi</h3>
-                <p>Phòng khám tổ chức chương trình khám sức khỏe miễn phí cho người cao tuổi nhân dịp kỷ niệm ngày Thầy thuốc Việt Nam...</p>
-                <a href="#" class="read-more">Xem thêm</a>
-            </div>
+  <h2 class="section-title">Tin Tức & Sự Kiện</h2>
+  <div class="news-grid">
+    <div class="news-card">
+      <div class="news-image">
+        <img src="assets/tintuc1.jpg" alt="Tin tức 1">
+        <div class="news-category">Sự kiện</div>
+      </div>
+      <div class="news-content">
+        <div class="news-date">15 Tháng 3, 2024</div>
+        <h3>Chương trình khám sức khỏe miễn phí cho người cao tuổi</h3>
+        <p>Phòng khám tổ chức chương trình khám sức khỏe miễn phí cho người cao tuổi nhân dịp kỷ niệm ngày Thầy thuốc Việt Nam...</p>
+        <div class="news-meta">
+          <span><i class="far fa-eye"></i> 1.2k lượt xem</span>
+          <span><i class="far fa-comment"></i> 15 bình luận</span>
         </div>
-        <div class="news-card">
-            <div class="news-image">
-                <img src="assets/tintuc2.jpg" alt="Tin tức 2">
-            </div>
-            <div class="news-content">
-                <div class="news-date">10 Tháng 3, 2024</div>
-                <h3>Tư vấn dinh dưỡng cho trẻ em trong mùa dịch</h3>
-                <p>Các chuyên gia dinh dưỡng của phòng khám chia sẻ những kiến thức bổ ích về chế độ dinh dưỡng cho trẻ...</p>
-                <a href="#" class="read-more">Xem thêm</a>
-            </div>
+        <a href="#" class="read-more">Xem thêm</a>
+      </div>
+    </div>
+    <div class="news-card">
+      <div class="news-image">
+        <img src="assets/tintuc2.jpg" alt="Tin tức 2">
+        <div class="news-category">Tư vấn</div>
+      </div>
+      <div class="news-content">
+        <div class="news-date">10 Tháng 3, 2024</div>
+        <h3>Tư vấn dinh dưỡng cho trẻ em trong mùa dịch</h3>
+        <p>Các chuyên gia dinh dưỡng của phòng khám chia sẻ những kiến thức bổ ích về chế độ dinh dưỡng cho trẻ...</p>
+        <div class="news-meta">
+          <span><i class="far fa-eye"></i> 980 lượt xem</span>
+          <span><i class="far fa-comment"></i> 12 bình luận</span>
         </div>
-        <div class="news-card">
-            <div class="news-image">
-                <img src="assets/tintuc3.jpg" alt="Tin tức 3">
-            </div>
-            <div class="news-content">
-                <div class="news-date">5 Tháng 3, 2024</div>
-                <h3>Khai trương khoa Vật lý trị liệu</h3>
-                <p>Phòng khám chính thức đưa vào hoạt động khoa Vật lý trị liệu với trang thiết bị hiện đại...</p>
-                <a href="#" class="read-more">Xem thêm</a>
-            </div>
+        <a href="#" class="read-more">Xem thêm</a>
+      </div>
+    </div>
+    <div class="news-card">
+      <div class="news-image">
+        <img src="assets/tintuc3.jpg" alt="Tin tức 3">
+        <div class="news-category">Thông báo</div>
+      </div>
+      <div class="news-content">
+        <div class="news-date">5 Tháng 3, 2024</div>
+        <h3>Khai trương khoa Vật lý trị liệu</h3>
+        <p>Phòng khám chính thức đưa vào hoạt động khoa Vật lý trị liệu với trang thiết bị hiện đại...</p>
+        <div class="news-meta">
+          <span><i class="far fa-eye"></i> 850 lượt xem</span>
+          <span><i class="far fa-comment"></i> 8 bình luận</span>
         </div>
-    </div> 
+        <a href="#" class="read-more">Xem thêm</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact">
+  <div class="contact-container">
+    <div class="contact-info">
+      <h2>Liên Hệ</h2>
+      <div class="info-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <div>
+          <h3>Địa chỉ</h3>
+          <p>80A Nguyễn Thanh Bình, Phường Vạn Phúc, Quận Hà Đông, Hà Nội</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-phone"></i>
+        <div>
+          <h3>Điện thoại</h3>
+          <p>024.1234.5678</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-envelope"></i>
+        <div>
+          <h3>Email</h3>
+          <p>infomedica.com</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-clock"></i>
+        <div>
+          <h3>Giờ làm việc</h3>
+          <p>Thứ 2 - Chủ nhật: 7:00 - 20:00</p>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form">
+      <h2>Gửi tin nhắn</h2>
+      <form>
+        <div class="form-group">
+          <input type="text" placeholder="Họ và tên">
+        </div>
+        <div class="form-group">
+          <input type="email" placeholder="Email">
+        </div>
+        <div class="form-group">
+          <input type="tel" placeholder="Số điện thoại">
+        </div>
+        <div class="form-group">
+          <textarea placeholder="Nội dung tin nhắn"></textarea>
+        </div>
+        <button type="submit" class="submit-button">Gửi tin nhắn</button>
+      </form>
+    </div>
+  </div>
 </section>

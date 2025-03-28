@@ -22,6 +22,14 @@ export interface ForgotPasswordRequest {
   confirmPassword: string;
 }
 
+export interface CurrentUser {
+  userId: number;
+  name: string;
+  username: string;
+  roleCode: string;
+  departmentId?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -106,6 +114,25 @@ export class AuthService {
       try {
         const decodedToken = jwtDecode(token) as any;
         return decodedToken.role || null;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  getCurrentUser(): CurrentUser | null {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token) as any;
+        return {
+          userId: decodedToken.userId,
+          name: decodedToken.name,
+          username: decodedToken.username,
+          roleCode: decodedToken.role,
+          departmentId: decodedToken.departmentId
+        };
       } catch {
         return null;
       }

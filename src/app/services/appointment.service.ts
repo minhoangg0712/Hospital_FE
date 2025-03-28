@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 export interface Department {
   departmentId: number;
@@ -50,27 +51,37 @@ export interface Appointment {
   providedIn: 'root'
 })
 export class AppointmentService {
-  private apiUrl = 'http://localhost:8080/api/appointments';
+  private apiUrl = 'http://localhost:8080/api';
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) { }
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-    return new HttpHeaders({
+    console.log('Token from localStorage:', token);
+    const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
+    console.log('Headers being sent:', headers);
+    return headers;
   }
 
-  // API cho quản lý viên (ROLE_MGR)
   getAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(this.apiUrl, { 
-      headers: this.getHeaders() 
-    });
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser?.roleCode === 'ROLE_MGR') {
+      // Nếu là bác sĩ, sử dụng endpoint /api/appointments/department
+      return this.http.get<Appointment[]>(`${this.apiUrl}/appointments/department`, { headers: this.getHeaders() });
+    } else {
+      // Nếu là nhân viên, sử dụng endpoint /api/appointments
+      return this.http.get<Appointment[]>(`${this.apiUrl}/appointments`, { headers: this.getHeaders() });
+    }
   }
 
   getAppointmentsByDepartment(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`${this.apiUrl}/department`, { 
+    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments/department`, { 
       headers: this.getHeaders() 
     });
   }
@@ -78,28 +89,28 @@ export class AppointmentService {
   // API cho bác sĩ
   getDoctorAppointments(): Observable<Appointment[]> {
     const params = new HttpParams().set('forSelf', 'true');
-    return this.http.get<Appointment[]>(`${this.apiUrl}`, { 
+    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments`, { 
       headers: this.getHeaders(),
       params: params
     });
   }
 
   getDoctorDepartmentAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`${this.apiUrl}/department`, { 
+    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments/department`, { 
       headers: this.getHeaders() 
     });
   }
 
   createDoctorAppointment(appointment: AppointmentRequest, forSelf: boolean): Observable<Appointment> {
     const params = new HttpParams().set('forSelf', forSelf.toString());
-    return this.http.post<Appointment>(`${this.apiUrl}`, appointment, { 
+    return this.http.post<Appointment>(`${this.apiUrl}/appointments`, appointment, { 
       headers: this.getHeaders(),
       params: params
     });
   }
 
   updateDoctorAppointment(id: number, appointment: Appointment): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, appointment, { 
+    return this.http.put<void>(`${this.apiUrl}/appointments/${id}`, appointment, { 
       headers: this.getHeaders() 
     }).pipe(
       map(() => void 0)
@@ -107,7 +118,7 @@ export class AppointmentService {
   }
 
   deleteDoctorAppointment(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { 
+    return this.http.delete<void>(`${this.apiUrl}/appointments/${id}`, { 
       headers: this.getHeaders() 
     }).pipe(
       map(() => void 0)
@@ -124,14 +135,14 @@ export class AppointmentService {
   // API cho bệnh nhân
   createAppointment(appointmentData: any, forSelf: boolean): Observable<Appointment> {
     const params = new HttpParams().set('forSelf', forSelf.toString());
-    return this.http.post<Appointment>(this.apiUrl, appointmentData, {
+    return this.http.post<Appointment>(`${this.apiUrl}/appointments`, appointmentData, {
       headers: this.getHeaders(),
       params: params
     });
   }
 
   deleteAppointment(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, {
+    return this.http.delete<void>(`${this.apiUrl}/appointments/${id}`, {
       headers: this.getHeaders()
     }).pipe(
       map(() => void 0)
@@ -140,22 +151,30 @@ export class AppointmentService {
 
   // API cho bệnh nhân
   getPatientAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(this.apiUrl, { headers: this.getHeaders() });
+    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments`, { headers: this.getHeaders() });
   }
 
   createPatientAppointment(appointmentData: AppointmentRequest, forSelf: boolean): Observable<Appointment> {
     const params = new HttpParams().set('forSelf', forSelf.toString());
-    return this.http.post<Appointment>(`${this.apiUrl}`, appointmentData, {
+    return this.http.post<Appointment>(`${this.apiUrl}/appointments`, appointmentData, {
       headers: this.getHeaders(),
       params: params
     });
   }
 
   deletePatientAppointment(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, {
+    return this.http.delete<void>(`${this.apiUrl}/appointments/${id}`, {
       headers: this.getHeaders()
     }).pipe(
       map(() => void 0)
+    );
+  }
+
+  updateAppointmentStatus(appointmentId: number, status: string): Observable<void> {
+    return this.http.put<void>(
+      `${this.apiUrl}/appointments/${appointmentId}/status`,
+      { status },
+      { headers: this.getHeaders() }
     );
   }
 }

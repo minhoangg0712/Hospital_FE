@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService, UserDTO } from '../../services/user.service';
-
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -20,16 +20,16 @@ export class ProfileComponent implements OnInit {
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
   isEditing: boolean = false;
-
+  isLogoutModalOpen: boolean = false;
 
   constructor(
     private userService: UserService,
+    private authService: AuthService,
     private router: Router,
     private fb: FormBuilder
   ) {
     this.initializeForms();
   }
-
 
   private initializeForms(): void {
     this.profileForm = this.fb.group({
@@ -42,7 +42,6 @@ export class ProfileComponent implements OnInit {
       insuranceNumber: ['', Validators.required]
     });
 
-
     this.passwordForm = this.fb.group({
       oldPassword: ['', Validators.required],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
@@ -52,18 +51,15 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-
   private passwordMatchValidator(g: FormGroup) {
     return g.get('newPassword')?.value === g.get('confirmPassword')?.value
       ? null
       : { mismatch: true };
   }
 
-
   ngOnInit(): void {
     this.loadUserProfile();
   }
-
 
   loadUserProfile(): void {
     this.isLoading = true;
@@ -112,7 +108,6 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-
   private updateProfileForm(user: UserDTO): void {
     this.profileForm.patchValue({
       cccd: user.cccd,
@@ -125,67 +120,55 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-
   updateProfile(): void {
-    if (this.profileForm.valid && this.currentUser) {
+    if (this.profileForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
+      this.successMessage = '';
 
-
+      // Tạo object UserDTO từ form data
       const updatedUser: UserDTO = {
-        userId: this.currentUser.userId,
-        name: this.profileForm.value.fullName,
-        phone: this.profileForm.value.phone,
-        email: this.profileForm.value.email,
-        gender: this.currentUser.gender,
-        roleCode: this.currentUser.roleCode,
-        departmentId: this.currentUser.departmentId,
-        cccd: this.profileForm.value.cccd,
-        insuranceNumber: this.profileForm.value.insuranceNumber,
-        address: this.profileForm.value.address,
-        createdAt: this.currentUser.createdAt,
-        updatedAt: this.currentUser.updatedAt
+        userId: this.currentUser?.userId || 0,
+        name: this.profileForm.get('fullName')?.value,
+        phone: this.profileForm.get('phone')?.value,
+        email: this.profileForm.get('email')?.value,
+        gender: this.profileForm.get('gender')?.value,
+        roleCode: this.currentUser?.roleCode || 'ROLE_PATIENT',
+        departmentId: this.currentUser?.departmentId || 0,
+        cccd: this.profileForm.get('cccd')?.value,
+        insuranceNumber: this.profileForm.get('insuranceNumber')?.value,
+        address: this.profileForm.get('address')?.value
       };
 
-
-      console.log('Dữ liệu gửi lên:', updatedUser);
-
+      console.log('Sending update request with data:', updatedUser);
 
       this.userService.updateUserProfile(updatedUser).subscribe({
-        next: (response: UserDTO) => {
+        next: (response) => {
+          console.log('Update response:', response);
           this.currentUser = response;
+          this.isEditing = false;
           this.successMessage = 'Cập nhật thông tin thành công!';
-          this.isLoading = false;
-          this.isEditing = false; // Tắt chế độ chỉnh sửa sau khi cập nhật thành công
-          setTimeout(() => this.successMessage = '', 3000);
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 3000);
         },
-        error: (error: any) => {
+        error: (error) => {
           console.error('Lỗi khi cập nhật:', error);
-          if (error.status === 401) {
-            this.errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
-            this.router.navigate(['/login']);
-          } else if (error.status === 403) {
-            this.errorMessage = 'Bạn không có quyền cập nhật thông tin này.';
-          } else if (error.error && error.error.message) {
-            this.errorMessage = error.error.message;
-          } else {
-            this.errorMessage = 'Không thể cập nhật thông tin. Vui lòng thử lại sau.';
-          }
+          this.errorMessage = error.message;
+        },
+        complete: () => {
           this.isLoading = false;
         }
       });
     }
   }
 
-
   changePassword(): void {
     if (this.passwordForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
 
-
       const { oldPassword, newPassword } = this.passwordForm.value;
-
 
       this.userService.changePassword(oldPassword, newPassword).subscribe({
         next: () => {
@@ -207,7 +190,6 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-
   toggleEdit(): void {
     this.isEditing = !this.isEditing;
     if (this.isEditing && this.currentUser) {
@@ -215,11 +197,29 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-
   cancelEdit(): void {
     this.isEditing = false;
     if (this.currentUser) {
       this.updateProfileForm(this.currentUser);
     }
   }
+
+  openLogoutModal(): void {
+    this.isLogoutModalOpen = true;
+  }
+
+  closeLogoutModal(): void {
+    this.isLogoutModalOpen = false;
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['']);
+  }
+
+  goToAppointmentHistory() {
+    this.router.navigateByUrl('/appointment-history');
+  }
+  goToPatientMedicalRecords() {
+    this.router.navigateByUrl('/patient-medical-records');}
 }

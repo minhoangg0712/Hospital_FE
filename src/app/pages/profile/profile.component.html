@@ -1,23 +1,71 @@
 <div class="profile-container">
-  <h2>THÔNG TIN CÁ NHÂN</h2>
-
-  <div *ngIf="isLoading" class="loading">
-    <i class="fas fa-spinner fa-spin"></i>
-    <p>Đang tải thông tin...</p>
+  <div class="profile-sidebar">
+    <ul class="profile-menu">
+      <li>
+        <a routerLink="/profile" routerLinkActive="active">
+          <i class="fas fa-user"></i>
+          Thông tin cá nhân
+        </a>
+      </li>
+      <li>
+        <a (click)="goToAppointmentHistory()">
+          <i class="fas fa-calendar-check"></i>
+          Lịch sử đặt lịch
+        </a>
+      </li>
+      <li>
+        <a (click)="goToPatientMedicalRecords()">
+          <i class="fas fa-history"></i>
+          Lịch sử khám bệnh
+        </a>
+      </li>
+      <li>
+        <a>
+          <i class="fas fa-cog"></i>
+          Cài đặt tài khoản
+        </a>
+      </li>
+      <li>
+        <a href="#" (click)="openLogoutModal(); $event.preventDefault()">
+          <i class="fas fa-sign-out-alt"></i>
+          Đăng xuất
+        </a>
+      </li>
+    </ul>
   </div>
 
-  <div *ngIf="errorMessage" class="error">
-    <i class="fas fa-exclamation-circle"></i>
-    <p>{{ errorMessage }}</p>
+  <!-- Logout Modal -->
+  <div class="modal-overlay" *ngIf="isLogoutModalOpen" (click)="closeLogoutModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>Xác nhận đăng xuất</h3>
+      <p>Bạn có chắc chắn muốn đăng xuất không?</p>
+      <div class="modal-buttons">
+        <button class="btn btn-primary" (click)="logout()">Đăng xuất</button>
+        <button class="btn btn-secondary" (click)="closeLogoutModal()">Hủy</button>
+      </div>
+    </div>
   </div>
 
-  <div *ngIf="successMessage" class="success">
-    <i class="fas fa-check-circle"></i>
-    <p>{{ successMessage }}</p>
-  </div>
+  <!-- Main Content -->
+  <div class="profile-content">
+    <h2>THÔNG TIN CÁ NHÂN</h2>
 
-  <div *ngIf="!isLoading && currentUser" class="profile-content">
-    <div class="info-section" *ngIf="!isEditing">
+    <div *ngIf="isLoading" class="loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Đang tải thông tin...</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error">
+      <i class="fas fa-exclamation-circle"></i>
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <div *ngIf="successMessage" class="success">
+      <i class="fas fa-check-circle"></i>
+      <p>{{ successMessage }}</p>
+    </div>
+
+    <div *ngIf="!isLoading && currentUser && !isEditing" class="info-section">
       <div class="row">
         <label>Mã số CCCD:</label>
         <span>{{ currentUser.cccd }}</span>
@@ -64,7 +112,9 @@
       </div>
 
       <div class="button-group">
-        <button class="btn btn-primary" (click)="toggleEdit()">Cập nhật thông tin</button>
+        <button class="btn btn-primary" (click)="toggleEdit()">
+          <i class="fas fa-edit"></i> Cập nhật thông tin
+        </button>
       </div>
     </div>
 
@@ -73,6 +123,7 @@
         <label for="cccd">Mã số CCCD:</label>
         <input type="text" id="cccd" formControlName="cccd" class="form-control">
         <div *ngIf="profileForm.get('cccd')?.errors?.['required'] && profileForm.get('cccd')?.touched" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
           CCCD không được để trống
         </div>
       </div>
@@ -81,6 +132,7 @@
         <label for="fullName">Họ tên:</label>
         <input type="text" id="fullName" formControlName="fullName" class="form-control">
         <div *ngIf="profileForm.get('fullName')?.errors?.['required'] && profileForm.get('fullName')?.touched" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
           Họ tên không được để trống
         </div>
       </div>
@@ -89,9 +141,11 @@
         <label for="phone">Số điện thoại:</label>
         <input type="text" id="phone" formControlName="phone" class="form-control">
         <div *ngIf="profileForm.get('phone')?.errors?.['required'] && profileForm.get('phone')?.touched" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
           Số điện thoại không được để trống
         </div>
         <div *ngIf="profileForm.get('phone')?.errors?.['pattern'] && profileForm.get('phone')?.touched" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
           Số điện thoại không hợp lệ
         </div>
       </div>
@@ -100,9 +154,11 @@
         <label for="email">Email:</label>
         <input type="email" id="email" formControlName="email" class="form-control">
         <div *ngIf="profileForm.get('email')?.errors?.['required'] && profileForm.get('email')?.touched" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
           Email không được để trống
         </div>
         <div *ngIf="profileForm.get('email')?.errors?.['email'] && profileForm.get('email')?.touched" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
           Email không hợp lệ
         </div>
       </div>
@@ -114,6 +170,7 @@
           <option value="FEMALE">Nữ</option>
         </select>
         <div *ngIf="profileForm.get('gender')?.errors?.['required'] && profileForm.get('gender')?.touched" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
           Giới tính không được để trống
         </div>
       </div>
@@ -122,6 +179,7 @@
         <label for="address">Địa chỉ:</label>
         <input type="text" id="address" formControlName="address" class="form-control">
         <div *ngIf="profileForm.get('address')?.errors?.['required'] && profileForm.get('address')?.touched" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
           Địa chỉ không được để trống
         </div>
       </div>
@@ -130,18 +188,20 @@
         <label for="insuranceNumber">Số BHYT:</label>
         <input type="text" id="insuranceNumber" formControlName="insuranceNumber" class="form-control">
         <div *ngIf="profileForm.get('insuranceNumber')?.errors?.['required'] && profileForm.get('insuranceNumber')?.touched" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
           Số BHYT không được để trống
         </div>
       </div>
 
       <div class="button-group">
         <button type="submit" class="btn btn-primary" [disabled]="!profileForm.valid || isLoading">
+          <i class="fas fa-save"></i>
           {{ isLoading ? 'Đang cập nhật...' : 'Lưu thay đổi' }}
         </button>
-        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Hủy</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
+          <i class="fas fa-times"></i> Hủy
+        </button>
       </div>
     </form>
   </div>
 </div>
-
-

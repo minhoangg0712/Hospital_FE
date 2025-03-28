@@ -98,8 +98,8 @@ export class PatientListComponent implements OnInit {
     });
   }
 
-  viewPatientProfile(patientId: number): void {
-    this.router.navigate(['/create-medical-record'], {
+  viewMedicalRecord(patientId: number): void {
+    this.router.navigate(['/doctor/medical-records'], {
       queryParams: {
         patientId: patientId
       }

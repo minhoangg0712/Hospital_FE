@@ -6,9 +6,8 @@
         </div>
         <div class="account-cart">
             <div class="account">
-                <i class="fas fa-user"></i>
+                <i class="fas fa-user" *ngIf="!isLoggedIn"></i>
                 <button *ngIf="!isLoggedIn" routerLink="/login">Đăng nhập</button>
-                <button *ngIf="isLoggedIn" (click)="openLogoutModal()">Đăng xuất</button>
             </div>
             <div class="cart">
                 <i class="fas fa-shopping-cart"></i>

@@ -1,79 +1,51 @@
 <div class="container">
-  <aside class="sidebar">
-      <nav class="sidebar-nav">
-          <a href="#" class="nav-item active">
-              <i class="fas fa-home"></i>
-              <span>Trang chủ</span>
-          </a>
-          <a [routerLink]="['/medical-records']" class="nav-item">
-              <i class="fas fa-procedures"></i>
-              <span>Khám bệnh & Chuẩn đoán</span>
-          </a>
-          <a [routerLink]="['/patient-list']" class="nav-item">
-              <i class="fas fa-file-medical"></i>
-              <span>Thông tin bệnh nhân</span>
-          </a>
-          <a [routerLink]="['/doctor/schedule']" class="nav-item">
-            <i class="fas fa-calendar-check"></i>
-            <span>Lịch hẹn</span>
-          </a>
-          <a [routerLink]="['/prescription-management']" class="nav-item">
-              <i class="fas fa-capsules"></i>
-              <span>Kê đơn thuốc</span>
-          </a>
-          <a href="#" class="nav-item">
-              <i class="fas fa-clinic-medical"></i>
-              <span>Phòng khám</span>
-          </a>
-      </nav>
-  </aside>
-
-  <main class="content">
-      <h1 class="content-title">Trang chủ</h1>
-      <section class="cards">
-          <div class="card" (click)="GoToMedicalRecords()">
-              <i class="fas fa-user-plus icon green"></i>
-              <div class="card-info">
-                  <h2>TIẾP NHẬN BỆNH NHÂN</h2>
-                  <p>Tiếp nhận thông tin</p>
-              </div>
-          </div>
-          <div class="card">
-              <i class="fas fa-heartbeat icon green"></i>
-              <div class="card-info">
-                  <h2>ĐO CHỈ SỐ</h2>
-                  <p>Nhịp tim, Huyết áp, BMI...</p>
-              </div>
-          </div>
-          <div class="card"(click)="GoToRecordsList()">
-              <i class="fas fa-history icon green"></i>
-              <div class="card-info">
-                  <h2>TIỀN SỬ</h2>
-                  <p>Tiền sử bệnh nhân...</p>
-              </div>
-          </div>
-          <div class="card">
-              <i class="fas fa-stethoscope icon green"></i>
-              <div class="card-info">
-                  <h2>PHÒNG KHÁM</h2>
-                  <p>Phòng chuyên khoa</p>
-              </div>
-          </div>
-          <div class="card" (click)="goToSchedule()">
-            <i class="fas fa-calendar-alt icon green"></i>
-            <div class="card-info">
-              <h2>LỊCH HẸN</h2>
-              <p>Danh sách lịch hẹn của bệnh nhân</p>
+    <main class="content">
+        <h1 class="content-title">Trang chủ</h1>
+        <section class="cards">
+            <div class="card" (click)="GoToMedicalRecords()">
+                <i class="fas fa-user-plus icon green"></i>
+                <div class="card-info">
+                    <h2>TIẾP NHẬN BỆNH NHÂN</h2>
+                    <p>Tiếp nhận thông tin</p>
+                </div>
             </div>
-          </div>
-
-          <div class="card">
-              <i class="fas fa-clock icon green "></i>
+            <div class="card">
+                <i class="fas fa-heartbeat icon green"></i>
+                <div class="card-info">
+                    <h2>ĐO CHỈ SỐ</h2>
+                    <p>Nhịp tim, Huyết áp, BMI...</p>
+                </div>
+            </div>
+            <div class="card"(click)="GoToRecordsList()">
+                <i class="fas fa-history icon green"></i>
+                <div class="card-info">
+                    <h2>TIỀN SỬ</h2>
+                    <p>Tiền sử bệnh nhân...</p>
+                </div>
+            </div>
+            <div class="card">
+                <i class="fas fa-stethoscope icon green"></i>
+                <div class="card-info">
+                    <h2>PHÒNG KHÁM</h2>
+                    <p>Phòng chuyên khoa</p>
+                </div>
+            </div>
+            <div class="card" (click)="goToSchedule()">
+              <i class="fas fa-calendar-alt icon green"></i>
               <div class="card-info">
-                  <h2>THIẾT BỊ ĐEO TAY</h2>
-                  <p>Đo sức khỏe bệnh nhân</p>
+                <h2>LỊCH HẸN</h2>
+                <p>Danh sách lịch hẹn của bệnh nhân</p>
               </div>
-          </div>
-      </section>
-  </main>
-</div>
+            </div>
+  
+            <div class="card">
+                <i class="fas fa-clock icon green "></i>
+                <div class="card-info">
+                    <h2>THIẾT BỊ ĐEO TAY</h2>
+                    <p>Đo sức khỏe bệnh nhân</p>
+                </div>
+            </div>
+        </section>
+    </main>
+  </div>
+  

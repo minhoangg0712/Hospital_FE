@@ -14,7 +14,7 @@
 }
 
 .card-header {
-  padding: 20px;
+  padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,7 +23,7 @@
 .card-header h2 {
   margin: 0;
   color: #2c3e50;
-  font-size: 24px;
+  font-size: 20px;
 }
 
 .header-actions {
@@ -32,17 +32,38 @@
 }
 
 .filter-section {
-  display: flex;
-  gap: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   margin-bottom: 20px;
 }
 
-.search-field {
+.date-filter {
+  position: relative;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.date-filter i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #95a5a6;
+}
+
+.filter-group {
+  display: flex;
+  gap: 15px;
+}
+
+.status-filter {
   flex: 1;
   position: relative;
 }
 
-.search-icon {
+.status-filter i {
   position: absolute;
   left: 12px;
   top: 50%;
@@ -52,7 +73,7 @@
 
 .form-control {
   width: 100%;
-  padding: 10px 12px;
+  padding: 8px 12px;
   padding-left: 35px;
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -61,18 +82,14 @@
 
 .form-control:focus {
   outline: none;
-  border-color: #14656E;
+  border-color: #3498db;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-}
-
-.status-filter {
-  width: 200px;
 }
 
 .appointments-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
+  gap: 15px;
 }
 
 .appointment-card {
@@ -89,7 +106,7 @@
 }
 
 .appointment-card .card-header {
-  padding: 16px;
+  padding: 12px;
   border-bottom: 1px solid #eee;
 }
 
@@ -105,9 +122,25 @@
   background-color: #ffebee;
 }
 
-.patient-info h3 {
-  margin: 0 0 8px 0;
-  font-size: 18px;
+.patient-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.patient-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.patient-name i {
+  color: #3498db;
+}
+
+.patient-name h3 {
+  margin: 0;
+  font-size: 16px;
   color: #2c3e50;
 }
 
@@ -116,13 +149,13 @@
   align-items: center;
   gap: 6px;
   color: #7f8c8d;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .status-badge {
-  padding: 4px 12px;
-  border-radius: 16px;
-  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
   font-weight: 500;
 }
 
@@ -141,51 +174,79 @@
   color: #c62828;
 }
 
-.card-content {
-  padding: 16px;
+.card-body {
+  padding: 12px;
+}
+
+.info-section {
+  margin-bottom: 12px;
+}
+
+.info-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #2c3e50;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #eee;
+}
+
+.section-title i {
+  color: #3498db;
 }
 
 .info-row {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
 }
 
 .info-row i {
-  width: 20px;
-  margin-right: 12px;
+  width: 16px;
+  margin-right: 8px;
   color: #7f8c8d;
 }
 
 .info-row span {
   flex: 1;
-  font-size: 14px;
   color: #2c3e50;
 }
 
 .card-actions {
-  padding: 16px;
+  padding: 12px;
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 6px;
   border-top: 1px solid #eee;
 }
 
 .btn {
-  padding: 8px 16px;
+  padding: 6px 12px;
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
+  border-radius: 4px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   transition: background-color 0.2s;
 }
 
 .btn i {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .btn-primary {
@@ -195,15 +256,6 @@
 
 .btn-primary:hover {
   background-color: #2980b9;
-}
-
-.btn-secondary {
-  background-color: #95a5a6;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background-color: #7f8c8d;
 }
 
 .btn-success {
@@ -224,19 +276,19 @@
   background-color: #c0392b;
 }
 
-.empty-state {
+.no-results {
   text-align: center;
-  padding: 40px 0;
+  padding: 30px 0;
   color: #95a5a6;
 }
 
-.empty-state i {
-  font-size: 48px;
-  margin-bottom: 16px;
+.no-results i {
+  font-size: 40px;
+  margin-bottom: 12px;
 }
 
-.empty-state p {
-  font-size: 16px;
+.no-results p {
+  font-size: 14px;
   margin: 0;
 }
 
@@ -247,20 +299,11 @@
 
   .card-header {
     flex-direction: column;
-    gap: 16px;
-  }
-
-  .header-actions {
-    width: 100%;
-    flex-direction: column;
+    gap: 12px;
   }
 
   .filter-section {
-    flex-direction: column;
-  }
-
-  .status-filter {
-    width: 100%;
+    padding: 12px;
   }
 
   .appointments-grid {

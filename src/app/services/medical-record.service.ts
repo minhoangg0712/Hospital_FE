@@ -67,7 +67,7 @@ export class MedicalRecordService {
 
   getMedicalRecordsByPatientId(patientId: number): Observable<MedicalRecordDTO[]> {
     return this.http.get<MedicalRecordDTO[]>(
-      `${this.baseUrl}/list`,
+      `${this.baseUrl}/patient/${patientId}`,
       { headers: this.getHeaders() }
     );
   }
