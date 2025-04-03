@@ -10,9 +10,6 @@ import { Router } from '@angular/router';
   template: `
     <div class="doctor-layout">
       <nav class="sidebar">
-        <div class="logo">
-          <h2>Bệnh viện</h2>
-        </div>
         <ul class="nav-links">
           <li><a (click)="goToHomeDoctor()">Trang chủ</a></li>
           <li><a (click)="goToProfileDoctor()">Thông tin cá nhân</a></li>
@@ -84,7 +81,7 @@ export class DoctorLayoutComponent {
 
   constructor(private router: Router) { }
     goToHomeDoctor(): void {
-      this.router.navigate(['/doctor/home-doctor']);
+      this.router.navigate(['/doctor']);
   }
     goToProfileDoctor(): void {
     this.router.navigate(['/doctor/profile']);

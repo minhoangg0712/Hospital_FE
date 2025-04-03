@@ -2,6 +2,7 @@
   max-width: 1200px;
   margin: 40px auto;
   padding: 20px;
+  font-family: 'Roboto', sans-serif;
 }
 
 .header {
@@ -9,6 +10,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+  border-bottom: 2px solid #14656E;
+  padding-bottom: 15px;
 }
 
 .header h2 {
@@ -16,123 +19,151 @@
   font-size: 28px;
   font-weight: 700;
   margin: 0;
+  position: relative;
 }
 
-.header button {
-  background: #14656E;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 30px;
-  border: none;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-}
-
-.header button:hover {
-  background: #1a7a85;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(20, 101, 110, 0.2);
-}
-
-.table-container {
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-table {
-  width: 100%;
-}
-
-.mat-column-actions {
+.header h2::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 0;
   width: 80px;
-  text-align: center;
+  height: 3px;
+  background: #14656E;
 }
 
-.mat-column-date {
-  width: 180px;
-}
-
-.mat-column-status {
-  width: 120px;
-}
-
-.status-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.status-scheduled {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-.status-completed {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.status-cancelled {
-  background-color: #ffebee;
-  color: #c62828;
-}
-
-.loading {
+.loading, .error, .no-data {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 40px;
-  gap: 16px;
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
 }
 
-.loading p {
-  color: #666;
-  font-size: 16px;
-}
-
-.error {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 20px;
-  background: #ffebee;
-  border-radius: 8px;
-  color: #c62828;
-  margin-bottom: 20px;
-}
-
-.error mat-icon {
-  font-size: 24px;
-}
-
-.no-data {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  text-align: center;
-  color: #666;
-}
-
-.no-data mat-icon {
+.loading i, .no-data i, .error i {
   font-size: 48px;
-  width: 48px;
-  height: 48px;
   margin-bottom: 16px;
   color: #14656E;
 }
 
-.no-data p {
-  margin: 0;
+.loading p, .no-data p {
+  color: #555;
   font-size: 16px;
+  margin: 0;
+}
+
+.error {
+  background: #fff8f8;
+  border-left: 4px solid #c62828;
+}
+
+.error i {
+  color: #c62828;
+}
+
+.error p {
+  color: #c62828;
+  font-size: 16px;
+  margin: 0;
+}
+
+.table-container {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+}
+
+thead {
+  background-color: #f5f9fa;
+}
+
+th {
+  color: #14656E;
+  font-weight: 600;
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 2px solid #e0f2f4;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+  font-size: 15px;
+}
+
+tbody tr {
+  transition: all 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: #f9fdfe;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.btn-danger {
+  background: #fff;
+  color: #c62828;
+  border: 1px solid #c62828;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+  background: #c62828;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 3px 10px rgba(198, 40, 40, 0.2);
+}
+
+.btn-danger i {
+  font-size: 16px;
+}
+
+/* Format date column nicely */
+td:nth-child(2) {
+  color: #14656E;
+  font-weight: 500;
+}
+
+/* Give department column a subtle background */
+td:nth-child(1) {
+  position: relative;
+}
+
+td:nth-child(1)::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 70%;
+  background: #14656E;
+  border-radius: 2px;
 }
 
 /* Responsive styles */
@@ -141,33 +172,95 @@ table {
     margin: 20px;
     padding: 15px;
   }
-
+  
   .header {
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
+    margin-bottom: 20px;
   }
-
-  .header button {
-    width: 100%;
-    justify-content: center;
+  
+  .header h2 {
+    font-size: 22px;
   }
-
-  .mat-column-reason {
-    display: none;
+  
+  th, td {
+    padding: 12px 15px;
   }
-
-  .mat-column-date {
-    width: 140px;
+  
+  th:nth-child(3), td:nth-child(3) {
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
-@media (max-width: 480px) {
-  .mat-column-status {
+@media (max-width: 600px) {
+  table {
+    display: block;
+  }
+  
+  thead, tbody, th, td, tr {
+    display: block;
+  }
+  
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  
+  tr {
+    border: 1px solid #f0f0f0;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  td {
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+    position: relative;
+    padding-left: 50%;
+    text-align: right;
+  }
+  
+  td:before {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: 600;
+    color: #14656E;
+  }
+  
+  td:nth-child(1):before { content: "Khoa"; }
+  td:nth-child(2):before { content: "Ngày giờ"; }
+  td:nth-child(3):before { content: "Lý do khám"; }
+  td:nth-child(4):before { content: "Thao tác"; }
+  
+  td:nth-child(1)::after {
     display: none;
   }
-
-  .mat-column-actions {
-    width: 60px;
+  
+  .btn-danger {
+    margin-left: auto;
   }
-} 
+}
+
+/* Animation for loading spinner */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.fa-spinner {
+  animation: spin 1.2s linear infinite;
+}
+
+/* Subtle hover effects */
+.table-container:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}

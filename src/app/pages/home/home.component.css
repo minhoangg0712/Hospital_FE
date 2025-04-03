@@ -401,7 +401,7 @@
     right: 20px;
     bottom: 20px;
     border: 2px solid #14656E;
-    border-radius: 30px;
+    border-radius: 40px;
     opacity: 0;
     transition: all 0.5s ease;
 }
@@ -412,6 +412,7 @@
     left: 10px;
     right: 10px;
     bottom: 10px;
+    border-radius: 40px;
 }
 
 .text-box {

@@ -1,9 +1,6 @@
 <div class="appointment-container">
     <div class="header">
-      <h2>Đăng ký lịch khám bệnh</h2>
-      <button mat-raised-button color="primary" routerLink="/appointments">
-        Chi tiết lịch hẹn
-      </button>
+      <h2>Đặt lịch khám bệnh</h2>
     </div>
     <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
       <!-- Phần chọn đăng ký cho ai -->
@@ -15,11 +12,9 @@
               type="radio"
               formControlName="registerFor"
               value="self"
-              (change)="onRegisterForChange()"
-            />
+              (change)="onRegisterForChange()"/>
             <span>Bản thân</span>
           </label>
-  
           <label class="radio-label">
             <input
               type="radio"
@@ -141,4 +136,11 @@
         </button>
       </div>
     </form>
+
+    <div *ngIf="showPopup" class="popup">
+      <div class="popup-content">
+        <p>{{ errorMessage }}</p>
+        <button (click)="showPopup = false">Đóng</button>
+      </div>
+    </div>
   </div>

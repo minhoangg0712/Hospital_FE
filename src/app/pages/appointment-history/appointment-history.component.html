@@ -1,10 +1,6 @@
 <div class="appointment-history-container">
   <div class="header">
     <h2>Lịch sử đặt lịch</h2>
-    <button class="btn-primary" routerLink="/appointment">
-      <i class="fas fa-plus"></i>
-      Đặt lịch mới
-    </button>
   </div>
 
   <div *ngIf="isLoading" class="loading">
@@ -24,7 +20,6 @@
           <th>Khoa</th>
           <th>Ngày giờ</th>
           <th>Lý do khám</th>
-          <th>Trạng thái</th>
           <th>Thao tác</th>
         </tr>
       </thead>
@@ -33,11 +28,6 @@
           <td>{{ appointment.department.departmentName }}</td>
           <td>{{ formatDate(appointment.appointmentDate) }}</td>
           <td>{{ appointment.reason }}</td>
-          <td>
-            <span [class]="'status-badge ' + getStatusClass(appointment.status)">
-              {{ appointment.status }}
-            </span>
-          </td>
           <td>
             <button *ngIf="appointment.status === 'SCHEDULED'" 
                     class="btn-danger" 

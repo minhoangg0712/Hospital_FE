@@ -177,4 +177,11 @@ export class AppointmentService {
       { headers: this.getHeaders() }
     );
   }
+
+  checkDuplicateAppointment(appointmentDate: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/appointments/check`, {
+      params: new HttpParams().set('date', appointmentDate),
+      headers: this.getHeaders()
+    });
+  }
 }
