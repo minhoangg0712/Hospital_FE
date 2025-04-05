@@ -88,10 +88,21 @@ export class RegistrationComponent implements OnInit {
     }
     if (control?.hasError('pattern')) {
       if (controlName === 'phone') {
+        const phoneValue = control.value;
+        if (!/^[0-9]{10}$/.test(phoneValue)) {
+          return 'Số điện thoại phải có 10 chữ số';
+        }
+        if (!/^0[0-9]{9}$/.test(phoneValue)) {
+          return 'Số điện thoại phải bắt đầu bằng số 0';
+        }
         return 'Số điện thoại không hợp lệ';
       }
       if (controlName === 'cccd') {
-        return 'CCCD phải có 12 số';
+        const cccdValue = control.value;
+        if (!/^[0-9]{12}$/.test(cccdValue)) {
+          return 'CCCD phải có đúng 12 chữ số';
+        }
+        return 'CCCD không hợp lệ';
       }
     }
     return '';

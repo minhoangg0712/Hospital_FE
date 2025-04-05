@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AppointmentService, Appointment } from '../../services/appointment.service';
-import { AuthService } from '../../services/auth.service';
+import { UserService, UserDTO } from '../../services/user.service';
+import { MedicalRecordService } from '../../services/medical-record.service';
 
 @Component({
   selector: 'app-doctor-schedule',
@@ -18,91 +19,49 @@ import { AuthService } from '../../services/auth.service';
 export class DoctorScheduleComponent implements OnInit {
   appointments: Appointment[] = [];
   searchTerm: string = '';
-  statusFilter: string = '';
-  dateFilter: string = '';
   isLoading = false;
   errorMessage = '';
-  currentUser: any = null;
+  currentUser: UserDTO | null = null;
+  selectedDate: string = new Date().toISOString().split('T')[0];
+  noAppointmentsMessage: string = '';
 
   constructor(
     private appointmentService: AppointmentService,
-    private authService: AuthService,
+    private userService: UserService,
+    private medicalRecordService: MedicalRecordService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    // Lấy thông tin user từ token
-    this.currentUser = this.authService.getCurrentUser();
-    console.log('Current user from token:', this.currentUser);
-    
-    if (this.currentUser) {
-      this.loadAppointments();
-    } else {
-      this.errorMessage = 'Không tìm thấy thông tin người dùng';
-    }
+    this.userService.getCurrentUserProfile().subscribe({
+      next: (user) => {
+        console.log('Current user:', user);
+        this.currentUser = user;
+        this.loadAppointments();
+      },
+      error: (error) => {
+        console.error('Lỗi khi tải thông tin user:', error);
+        this.errorMessage = 'Có lỗi xảy ra khi tải thông tin người dùng';
+      }
+    });
   }
 
   loadAppointments() {
     this.isLoading = true;
     this.errorMessage = '';
     
-    if (!this.currentUser) {
-      this.errorMessage = 'Không tìm thấy thông tin người dùng';
-      this.isLoading = false;
-      return;
-    }
-
-    // Kiểm tra token
-    const token = this.authService.getToken();
-    if (!token) {
-      this.errorMessage = 'Không tìm thấy token xác thực';
-      this.isLoading = false;
-      return;
-    }
-
-    // Kiểm tra role
-    if (this.currentUser.roleCode !== 'ROLE_MGR') {
-      this.errorMessage = 'Bạn không có quyền xem danh sách lịch hẹn';
-      this.isLoading = false;
-      return;
-    }
-
-    console.log('Current user role:', this.currentUser.roleCode);
-    console.log('Current user department:', this.currentUser.departmentId);
-    console.log('Token:', token);
-    
-    console.log('Đang gọi API getAppointments...');
-    this.appointmentService.getAppointments().subscribe({
+    console.log('Đang gọi API getDoctorDepartmentAppointments...');
+    this.appointmentService.getDoctorDepartmentAppointments().subscribe({
       next: (appointments) => {
         console.log('Dữ liệu lịch hẹn:', appointments);
-        
-        // Hiển thị tất cả lịch hẹn nếu không có departmentId
-        if (!this.currentUser.departmentId) {
-          console.log('Không có departmentId, hiển thị tất cả lịch hẹn');
-          this.appointments = appointments;
-        } else {
-          // Lọc lịch hẹn theo department của bác sĩ
-          this.appointments = appointments.filter(appointment => {
-            console.log('So sánh department:', {
-              appointmentDepartment: appointment.department.departmentId,
-              userDepartment: this.currentUser.departmentId
-            });
-            return appointment.department.departmentId === this.currentUser.departmentId;
-          });
-        }
-        
-        console.log('Lịch hẹn sau khi lọc:', this.appointments);
+        this.appointments = appointments;
         this.isLoading = false;
+        
+        // Kiểm tra xem có lịch hẹn nào cho ngày đã chọn không
+        this.checkAppointmentsForSelectedDate();
       },
       error: (error) => {
-        console.error('Chi tiết lỗi:', {
-          status: error.status,
-          statusText: error.statusText,
-          error: error.error,
-          headers: error.headers,
-          url: error.url
-        });
-        
+        console.error('Lỗi khi tải lịch hẹn:', error);
         if (error.status === 403) {
           this.errorMessage = 'Bạn không có quyền xem danh sách lịch hẹn';
         } else {
@@ -113,78 +72,57 @@ export class DoctorScheduleComponent implements OnInit {
     });
   }
 
-  createMedicalRecord(appointment: Appointment) {
-    // Chuyển hướng đến trang tạo hồ sơ khám bệnh với thông tin lịch hẹn
-    this.router.navigate(['/create-medical-record'], {
+  createMedicalRecord(patientId: number, appointmentId: number): void {
+    this.router.navigate(['/doctor/create-medical-record'], {
       queryParams: {
-        appointmentId: appointment.appointmentId,
-        patientId: appointment.user.userId,
-        patientName: appointment.user.name
+        patientId: patientId,
+        appointmentId: appointmentId
       }
     });
   }
 
-  completeAppointment(appointment: Appointment) {
-    if (confirm('Bạn có chắc chắn muốn hoàn thành lịch hẹn này?')) {
-      this.appointmentService.updateAppointmentStatus(appointment.appointmentId, 'Completed').subscribe({
-        next: () => {
-          this.loadAppointments(); // Tải lại danh sách
-        },
-        error: (error) => {
-          console.error('Lỗi khi hoàn thành lịch hẹn:', error);
-          this.errorMessage = 'Có lỗi xảy ra khi hoàn thành lịch hẹn';
-        }
-      });
+  onDateChange(): void {
+    console.log('Ngày đã chọn:', this.selectedDate);
+    this.checkAppointmentsForSelectedDate();
+  }
+  
+  checkAppointmentsForSelectedDate(): void {
+    const appointmentsForDate = this.appointments.filter(appointment => {
+      const appointmentDate = new Date(appointment.appointmentDate).toISOString().split('T')[0];
+      return appointmentDate === this.selectedDate;
+    });
+    
+    console.log(`Số lịch hẹn cho ngày ${this.selectedDate}: ${appointmentsForDate.length}`);
+    
+    if (appointmentsForDate.length === 0) {
+      this.noAppointmentsMessage = `Không có lịch hẹn nào vào ngày ${this.formatDate(this.selectedDate)}`;
+      console.log(this.noAppointmentsMessage);
+    } else {
+      this.noAppointmentsMessage = '';
     }
   }
-
-  cancelAppointment(appointment: Appointment) {
-    if (confirm('Bạn có chắc chắn muốn hủy lịch hẹn này?')) {
-      this.appointmentService.updateAppointmentStatus(appointment.appointmentId, 'Cancelled').subscribe({
-        next: () => {
-          this.loadAppointments(); // Tải lại danh sách
-        },
-        error: (error) => {
-          console.error('Lỗi khi hủy lịch hẹn:', error);
-          this.errorMessage = 'Có lỗi xảy ra khi hủy lịch hẹn';
-        }
-      });
-    }
-  }
-
-  getStatusText(status: string): string {
-    switch (status) {
-      case 'Scheduled':
-        return 'Chờ khám';
-      case 'Completed':
-        return 'Đã khám';
-      case 'Cancelled':
-        return 'Đã hủy';
-      default:
-        return status;
-    }
+  
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN', { 
+      day: '2-digit', 
+      month: '2-digit', 
+      year: 'numeric' 
+    });
   }
 
   get filteredAppointments(): Appointment[] {
     return this.appointments.filter(appointment => {
-      // Lọc theo tìm kiếm
       const matchesSearch = this.searchTerm ? 
         appointment.user.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         appointment.user.phone.includes(this.searchTerm) ||
         appointment.reason.toLowerCase().includes(this.searchTerm.toLowerCase())
         : true;
 
-      // Lọc theo trạng thái
-      const matchesStatus = this.statusFilter ? 
-        appointment.status === this.statusFilter 
-        : true;
+      const appointmentDate = new Date(appointment.appointmentDate).toISOString().split('T')[0];
+      const matchesDate = appointmentDate === this.selectedDate;
 
-      // Lọc theo ngày
-      const matchesDate = this.dateFilter ? 
-        appointment.appointmentDate.startsWith(this.dateFilter)
-        : true;
-
-      return matchesSearch && matchesStatus && matchesDate;
+      return matchesSearch && matchesDate;
     });
   }
 } 

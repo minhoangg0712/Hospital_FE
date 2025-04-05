@@ -31,7 +31,7 @@ export const routes: Routes = [
   { path: 'register', component: RegistrationComponent },
   { path: 'home', component: HomeComponent },
   { 
-    path: 'doctor', 
+    path: 'doctor',
     component: DoctorLayoutComponent,
     canActivate: [AuthGuard],
     children: [

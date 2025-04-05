@@ -1,146 +1,160 @@
 <div class="appointment-container">
-    <div class="header">
-      <h2>Đặt lịch khám bệnh</h2>
-    </div>
-    <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
-      <!-- Phần chọn đăng ký cho ai -->
-      <div class="form-section">
-        <label>Đăng ký khám cho:</label>
-        <div class="register-for">
-          <label class="radio-label">
-            <input
-              type="radio"
-              formControlName="registerFor"
-              value="self"
-              (change)="onRegisterForChange()"/>
-            <span>Bản thân</span>
-          </label>
-          <label class="radio-label">
-            <input
-              type="radio"
-              formControlName="registerFor"
-              value="relative"
-              (change)="onRegisterForChange()"
-            />
-            <span>Người thân</span>
-          </label>
-        </div>
-      </div>
-  
-      <!-- Thông tin người thân -->
-      <div class="form-section" *ngIf="isRegisterForRelative">
-        <div class="relative-info">
-          <div class="form-group">
-            <label for="relativeName">Tên người thân:</label>
-            <input
-              id="relativeName"
-              type="text"
-              formControlName="relativeName"
-              placeholder="Nhập tên người thân"
-              class="form-control"
-            />
-            <div class="error-message" *ngIf="appointmentForm.get('relativeName')?.errors?.['required'] && appointmentForm.get('relativeName')?.touched">
-              Vui lòng nhập tên người thân
-            </div>
-          </div>
-  
-          <div class="form-group">
-            <label for="relativeCCCD">CCCD:</label>
-            <input
-              id="relativeCCCD"
-              type="text"
-              formControlName="relativeCCCD"
-              placeholder="Nhập CCCD"
-              class="form-control"
-            />
-            <div class="error-message" *ngIf="appointmentForm.get('relativeCCCD')?.errors?.['required'] && appointmentForm.get('relativeCCCD')?.touched">
-              Vui lòng nhập CCCD
-            </div>
-            <div class="error-message" *ngIf="appointmentForm.get('relativeCCCD')?.errors?.['pattern'] && appointmentForm.get('relativeCCCD')?.touched">
-              CCCD phải có 12 số
-            </div>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Chọn chuyên khoa -->
-      <div class="form-section">
-        <div class="form-group">
-          <label for="departmentId">Chuyên khoa:</label>
-          <select id="departmentId" formControlName="departmentId" class="form-control">x
-            <option *ngFor="let dept of departments" [value]="dept.departmentId">
-              {{ dept.departmentName }}
-            </option>
-          </select>
-          <div class="error-message" *ngIf="appointmentForm.get('departmentId')?.errors?.['required'] && appointmentForm.get('departmentId')?.touched">
-            Vui lòng chọn chuyên khoa
-          </div>
-        </div>
-      </div>
-  
-      <!-- Chọn ngày khám -->
-      <div class="form-section">
-        <div class="form-group">
-          <label>Ngày khám:</label>
-          <mat-calendar (selectedChange)="onDateSelect($event)"></mat-calendar>
-          <div class="error-message" *ngIf="appointmentForm.get('date')?.errors?.['required'] && appointmentForm.get('date')?.touched">
-            Vui lòng chọn ngày khám
-          </div>
-        </div>
-      </div>
-  
-      <!-- Chọn giờ khám -->
-      <div class="form-section">
-        <div class="form-group">
-          <label>Giờ khám:</label>
-          <div class="time-slots">
-            <button
-              type="button"
-              *ngFor="let time of getSelectedSlots()"
-              [class.selected-time]="appointmentForm.get('time')?.value === time"
-              (click)="selectTime(time)"
-            >
-              {{ time }}
-            </button>
-          </div>
-          <div class="error-message" *ngIf="appointmentForm.get('time')?.errors?.['required'] && appointmentForm.get('time')?.touched">
-            Vui lòng chọn giờ khám
-          </div>
-        </div>
-      </div>
-  
-      <!-- Lý do khám -->
-      <div class="form-section">
-        <div class="form-group">
-          <label for="reason">Lý do khám:</label>
-          <textarea
-            id="reason"
-            formControlName="reason"
-            placeholder="Nhập lý do khám bệnh"
-            rows="3"
-            class="form-control"
-          ></textarea>
-          <div class="error-message" *ngIf="appointmentForm.get('reason')?.errors?.['required'] && appointmentForm.get('reason')?.touched">
-            Vui lòng nhập lý do khám
-          </div>
-          <div class="error-message" *ngIf="appointmentForm.get('reason')?.errors?.['minlength'] && appointmentForm.get('reason')?.touched">
-            Lý do khám phải có ít nhất 2 ký tự
-          </div>
-        </div>
-      </div>
-  
-      <!-- Nút đăng ký -->
-      <div class="form-section">
-        <button type="submit" [disabled]="appointmentForm.invalid" class="submit-button">
-          Đăng ký lịch khám
-        </button>
-      </div>
-    </form>
+  <div class="header">
+    <h2>Đăng ký lịch khám bệnh</h2>
+  </div>
+  <!-- Loading spinner -->
+  <div class="loading-spinner" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Đang xử lý yêu cầu...</p>
+  </div>
 
-    <div *ngIf="showPopup" class="popup">
-      <div class="popup-content">
-        <p>{{ errorMessage }}</p>
-        <button (click)="showPopup = false">Đóng</button>
+  <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+    <!-- Phần chọn đăng ký cho ai -->
+    <div class="form-section">
+      <label>Đăng ký khám cho:</label>
+      <div class="register-for">
+        <label class="radio-label">
+          <input
+            type="radio"
+            formControlName="registerFor"
+            value="self"
+            (change)="onRegisterForChange()"
+          />
+          <span>Bản thân</span>
+        </label>
+
+        <label class="radio-label">
+          <input
+            type="radio"
+            formControlName="registerFor"
+            value="relative"
+            (change)="onRegisterForChange()"
+          />
+          <span>Người thân</span>
+        </label>
       </div>
+    </div>
+
+    <!-- Thông tin người thân -->
+    <div class="form-section" *ngIf="isRegisterForRelative">
+      <div class="relative-info">
+        <div class="form-group">
+          <label for="relativeName">Tên người thân:</label>
+          <input
+            id="relativeName"
+            type="text"
+            formControlName="relativeName"
+            placeholder="Nhập tên người thân"
+            class="form-control"
+          />
+          <div class="error-message" *ngIf="appointmentForm.get('relativeName')?.errors?.['required'] && appointmentForm.get('relativeName')?.touched">
+            Vui lòng nhập tên người thân
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="relativeCCCD">CCCD:</label>
+          <input
+            id="relativeCCCD"
+            type="text"
+            formControlName="relativeCCCD"
+            placeholder="Nhập CCCD"
+            class="form-control"
+            maxlength="12"
+          />
+          <div class="error-message" *ngIf="appointmentForm.get('relativeCCCD')?.errors?.['required'] && appointmentForm.get('relativeCCCD')?.touched">
+            Vui lòng nhập CCCD
+          </div>
+          <div class="error-message" *ngIf="appointmentForm.get('relativeCCCD')?.errors?.['pattern'] && appointmentForm.get('relativeCCCD')?.touched">
+            CCCD phải có 12 số
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chọn chuyên khoa -->
+    <div class="form-section">
+      <div class="form-group">
+        <label for="departmentId">Chuyên khoa:</label>
+        <select id="departmentId" formControlName="departmentId" class="form-control">
+          <option value="">Chọn chuyên khoa</option>
+          <option *ngFor="let dept of departments" [value]="dept.departmentId">
+            {{ dept.departmentName }}
+          </option>
+        </select>
+        <div class="error-message" *ngIf="appointmentForm.get('departmentId')?.errors?.['required'] && appointmentForm.get('departmentId')?.touched">
+          Vui lòng chọn chuyên khoa
+        </div>
+      </div>
+    </div>
+
+    <!-- Chọn ngày khám -->
+    <div class="form-section">
+      <div class="form-group">
+        <label for="date">Ngày khám:</label>
+        <input
+          id="date"
+          type="date"
+          formControlName="date"
+          class="form-control"
+          [min]="getMinDate()"
+          [max]="getMaxDate()"
+        />
+        <div class="error-message" *ngIf="appointmentForm.get('date')?.errors?.['required'] && appointmentForm.get('date')?.touched">
+          Vui lòng chọn ngày khám
+        </div>
+      </div>
+    </div>
+
+    <!-- Chọn giờ khám -->
+    <div class="form-section">
+      <div class="form-group">
+        <label for="time">Giờ khám:</label>
+        <select id="time" formControlName="time" class="form-control">
+          <option value="">Chọn giờ khám</option>
+          <option *ngFor="let time of getSelectedSlots()" [value]="time">
+            {{ time }}
+          </option>
+        </select>
+        <div class="error-message" *ngIf="appointmentForm.get('time')?.errors?.['required'] && appointmentForm.get('time')?.touched">
+          Vui lòng chọn giờ khám
+        </div>
+      </div>
+    </div>
+
+    <!-- Lý do khám -->
+    <div class="form-section">
+      <div class="form-group">
+        <label for="reason">Lý do khám:</label>
+        <textarea
+          id="reason"
+          formControlName="reason"
+          placeholder="Nhập lý do khám bệnh"
+          rows="3"
+          class="form-control"
+        ></textarea>
+        <div class="error-message" *ngIf="appointmentForm.get('reason')?.errors?.['required'] && appointmentForm.get('reason')?.touched">
+          Vui lòng nhập lý do khám
+        </div>
+        <div class="error-message" *ngIf="appointmentForm.get('reason')?.errors?.['minlength'] && appointmentForm.get('reason')?.touched">
+          Lý do khám phải có ít nhất 2 ký tự
+        </div>
+      </div>
+    </div>
+
+    <!-- Nút đăng ký -->
+    <div class="form-section">
+      <button type="submit" [disabled]="appointmentForm.invalid || isLoading" class="btn btn-primary">
+        {{ isLoading ? 'Đang xử lý...' : 'Đăng ký lịch khám' }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Error popup -->
+  <div *ngIf="showPopup" class="popup">
+    <div class="popup-content">
+      <p>{{ errorMessage }}</p>
+      <button class="btn btn-primary" (click)="showPopup = false">Đóng</button>
     </div>
   </div>
+</div>

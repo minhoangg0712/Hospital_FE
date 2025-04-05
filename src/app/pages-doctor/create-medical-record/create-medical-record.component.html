@@ -1,58 +1,120 @@
 <div class="container">
-  <div class="header">
-    <h2><i class="fas fa-file-medical"></i> Tạo hồ sơ bệnh án mới</h2>
-    <p *ngIf="patientInfo">Bệnh nhân: {{patientInfo.name}}</p>
+  <div class="page-header">
+    <div class="header-content">
+      <h1><i class="fas fa-file-medical"></i> Tạo hồ sơ bệnh án</h1>
+      <div class="patient-info" *ngIf="patientInfo">
+        <div class="patient-avatar">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="patient-details">
+          <h3>{{patientInfo.name}}</h3>
+          <p>Mã bệnh nhân: {{patientId}}</p>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="alert alert-danger" *ngIf="errorMessage">
-    <i class="fas fa-exclamation-circle"></i> {{errorMessage}}
+  <div class="form-container">
+    <form [formGroup]="recordForm" (ngSubmit)="onSubmit()" class="medical-form">
+      <div class="form-section">
+        <div class="section-header">
+          <i class="fas fa-clipboard-list"></i>
+          <h2>Thông tin khám bệnh</h2>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label>
+              <i class="fas fa-exclamation-circle"></i>
+              Triệu chứng
+            </label>
+            <textarea formControlName="symptoms" rows="3" placeholder="Mô tả các triệu chứng của bệnh nhân..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <i class="fas fa-history"></i>
+              Tiền sử bệnh
+            </label>
+            <textarea formControlName="medicalHistory" rows="3" placeholder="Nhập tiền sử bệnh..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <i class="fas fa-allergies"></i>
+              Dị ứng
+            </label>
+            <textarea formControlName="allergies" rows="2" placeholder="Liệt kê các dị ứng (nếu có)..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-header">
+          <i class="fas fa-stethoscope"></i>
+          <h2>Kết quả khám</h2>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>
+              <i class="fas fa-diagnoses"></i>
+              Chẩn đoán
+            </label>
+            <textarea formControlName="diagnosis" rows="3" placeholder="Nhập chẩn đoán bệnh..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <i class="fas fa-flask"></i>
+              Kết quả xét nghiệm
+            </label>
+            <textarea formControlName="testResults" rows="3" placeholder="Nhập kết quả xét nghiệm..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <i class="fas fa-prescription-bottle-alt"></i>
+              Đơn thuốc
+            </label>
+            <textarea formControlName="prescription" rows="3" placeholder="Nhập đơn thuốc..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <i class="fas fa-sticky-note"></i>
+              Ghi chú
+            </label>
+            <textarea formControlName="notes" rows="2" placeholder="Nhập ghi chú thêm..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" routerLink="/doctor/schedule">
+          <i class="fas fa-arrow-left"></i>
+          Quay lại
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="!recordForm.valid || isLoading">
+          <i class="fas fa-save"></i>
+          <span *ngIf="!isLoading">Lưu hồ sơ</span>
+          <span *ngIf="isLoading">Đang lưu...</span>
+        </button>
+      </div>
+    </form>
   </div>
 
-  <form [formGroup]="recordForm" (ngSubmit)="onSubmit()" class="record-form">
-    <div class="form-group">
-      <label>Triệu chứng</label>
-      <textarea formControlName="symptoms" class="form-control" rows="3"></textarea>
+  <!-- Success Popup -->
+  <div class="popup-overlay" *ngIf="showSuccessPopup">
+    <div class="popup-content">
+      <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h3>Tạo hồ sơ thành công!</h3>
+      <p>Đang chuyển hướng về trang danh sách lịch hẹn...</p>
+      <div class="loading-bar">
+        <div class="progress"></div>
+      </div>
     </div>
-
-    <div class="form-group">
-      <label>Tiền sử bệnh</label>
-      <textarea formControlName="medicalHistory" class="form-control" rows="3"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label>Dị ứng</label>
-      <textarea formControlName="allergies" class="form-control" rows="2"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label>Chẩn đoán</label>
-      <textarea formControlName="diagnosis" class="form-control" rows="3"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label>Kết quả xét nghiệm</label>
-      <textarea formControlName="testResults" class="form-control" rows="3"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label>Đơn thuốc</label>
-      <textarea formControlName="prescription" class="form-control" rows="3"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label>Ghi chú</label>
-      <textarea formControlName="notes" class="form-control" rows="2"></textarea>
-    </div>
-
-    <div class="form-actions">
-      <button type="button" class="btn btn-secondary" routerLink="/patient-list">
-        <i class="fas fa-arrow-left"></i> Quay lại
-      </button>
-      <button type="submit" class="btn btn-primary" [disabled]="!recordForm.valid || isLoading">
-        <i class="fas fa-save"></i> 
-        <span *ngIf="!isLoading">Lưu hồ sơ</span>
-        <span *ngIf="isLoading">Đang lưu...</span>
-      </button>
-    </div>
-  </form>
+  </div>
 </div> 

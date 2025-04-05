@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./component/header/header.component";
 import { FooterComponent } from './component/footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { HeaderDoctorComponent } from './component/header-doctor/header-doctor.component';
 import { FooterDoctorComponent } from './component/footer-doctor/footer-doctor.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -20,17 +21,18 @@ import { FooterDoctorComponent } from './component/footer-doctor/footer-doctor.c
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   title = 'Project-angular';
   isAuthPage: boolean = false;
   isDoctor: boolean = false;
   isAdmin: boolean = false;
+  private routerSubscription: Subscription;
 
   constructor(private router: Router) {
     // Cập nhật trạng thái ban đầu
     this.updateLoginStatus();
 
-    this.router.events.subscribe(event => {
+    this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Kiểm tra trang auth
         this.isAuthPage = event.url.includes('/login') 
@@ -63,6 +65,12 @@ export class AppComponent {
     } else {
       this.isDoctor = false;
       this.isAdmin = false;
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
     }
   }
 }

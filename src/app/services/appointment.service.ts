@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AuthService } from './auth.service';
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 export interface Department {
   departmentId: number;
@@ -31,9 +30,9 @@ export interface AppointmentRequest {
   };
   appointmentDate: string;
   reason: string;
-  status: string;
   relativeName: string | null;
   relativeIdCard: string | null;
+  status?: string;
 }
 
 export interface Appointment {
@@ -42,46 +41,36 @@ export interface Appointment {
   user: User;
   reason: string;
   appointmentDate: string;
-  status: string;
   relativeName: string | null;
   relativeIdCard: string | null;
+  status: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppointmentService {
-  private apiUrl = 'http://localhost:8080/api';
+  private apiUrl = 'http://localhost:8080/api/appointments';
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService
-  ) { }
+  constructor(private http: HttpClient) { }
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-    console.log('Token from localStorage:', token);
-    const headers = new HttpHeaders({
+    return new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    console.log('Headers being sent:', headers);
-    return headers;
   }
 
+  // API cho quản lý viên (ROLE_MGR)
   getAppointments(): Observable<Appointment[]> {
-    const currentUser = this.authService.getCurrentUser();
-    if (currentUser?.roleCode === 'ROLE_MGR') {
-      // Nếu là bác sĩ, sử dụng endpoint /api/appointments/department
-      return this.http.get<Appointment[]>(`${this.apiUrl}/appointments/department`, { headers: this.getHeaders() });
-    } else {
-      // Nếu là nhân viên, sử dụng endpoint /api/appointments
-      return this.http.get<Appointment[]>(`${this.apiUrl}/appointments`, { headers: this.getHeaders() });
-    }
+    return this.http.get<Appointment[]>(this.apiUrl, { 
+      headers: this.getHeaders() 
+    });
   }
 
   getAppointmentsByDepartment(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments/department`, { 
+    return this.http.get<Appointment[]>(`${this.apiUrl}/department`, { 
       headers: this.getHeaders() 
     });
   }
@@ -89,60 +78,122 @@ export class AppointmentService {
   // API cho bác sĩ
   getDoctorAppointments(): Observable<Appointment[]> {
     const params = new HttpParams().set('forSelf', 'true');
-    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments`, { 
+    return this.http.get<Appointment[]>(`${this.apiUrl}`, { 
       headers: this.getHeaders(),
       params: params
     });
   }
 
   getDoctorDepartmentAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments/department`, { 
+    return this.http.get<Appointment[]>(`${this.apiUrl}/department`, { 
       headers: this.getHeaders() 
     });
   }
 
   createDoctorAppointment(appointment: AppointmentRequest, forSelf: boolean): Observable<Appointment> {
     const params = new HttpParams().set('forSelf', forSelf.toString());
-    return this.http.post<Appointment>(`${this.apiUrl}/appointments`, appointment, { 
+    return this.http.post<Appointment>(`${this.apiUrl}`, appointment, { 
       headers: this.getHeaders(),
       params: params
     });
   }
 
   updateDoctorAppointment(id: number, appointment: Appointment): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/appointments/${id}`, appointment, { 
-      headers: this.getHeaders() 
-    }).pipe(
-      map(() => void 0)
-    );
+    return this.http.put<void>(`${this.apiUrl}/${id}`, appointment, {
+      headers: this.getHeaders()
+    });
   }
 
   deleteDoctorAppointment(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/appointments/${id}`, { 
-      headers: this.getHeaders() 
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, {
+      headers: this.getHeaders()
     }).pipe(
       map(() => void 0)
     );
   }
 
-  // API cho phòng ban
   getDepartments(): Observable<Department[]> {
-    return this.http.get<Department[]>('http://localhost:8080/api/departments', { 
-      headers: this.getHeaders() 
+    return this.http.get<Department[]>(`${this.apiUrl}/departments`, {
+      headers: this.getHeaders()
     });
   }
 
   // API cho bệnh nhân
-  createAppointment(appointmentData: any, forSelf: boolean): Observable<Appointment> {
+  createAppointment(appointmentData: AppointmentRequest, forSelf: boolean): Observable<Appointment> {
+    // Kiểm tra dữ liệu trước khi gửi
+    console.log('Sending appointment data:', appointmentData);
+    
+    // Đảm bảo departmentId là số
+    if (appointmentData.department && typeof appointmentData.department.departmentId === 'string') {
+      appointmentData.department.departmentId = parseInt(appointmentData.department.departmentId);
+    }
+    
+    // Đảm bảo status là một trong các giá trị hợp lệ theo ENUM trong DB
+    const validStatuses = ['Scheduled', 'Completed', 'Cancelled'];
+    if (!appointmentData.status || !validStatuses.includes(appointmentData.status)) {
+      appointmentData.status = 'Scheduled'; // Giá trị mặc định theo DB
+    }
+    
+    // Đảm bảo các trường bắt buộc có giá trị
+    if (appointmentData.relativeName === undefined) {
+      appointmentData.relativeName = null;
+    }
+    if (appointmentData.relativeIdCard === undefined) {
+      appointmentData.relativeIdCard = null;
+    }
+    
+    // Kiểm tra token
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return throwError(() => new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.'));
+    }
+    
     const params = new HttpParams().set('forSelf', forSelf.toString());
-    return this.http.post<Appointment>(`${this.apiUrl}/appointments`, appointmentData, {
+    return this.http.post<Appointment>(this.apiUrl, appointmentData, {
       headers: this.getHeaders(),
       params: params
-    });
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error creating appointment:', error);
+        
+        // Hiển thị chi tiết lỗi từ server
+        let errorMessage = 'Không thể đăng ký lịch khám.';
+        
+        // Kiểm tra response body
+        if (error.error) {
+          console.log('Error response body:', error.error);
+          
+          if (typeof error.error === 'string') {
+            errorMessage += ` ${error.error}`;
+          } else if (error.error.message) {
+            errorMessage += ` ${error.error.message}`;
+          } else if (error.error.errors) {
+            // Nếu có nhiều lỗi
+            const errorDetails = error.error.errors.map((e: any) => e.message).join(', ');
+            errorMessage += ` ${errorDetails}`;
+          } else if (error.error.error) {
+            errorMessage += ` ${error.error.error}`;
+          }
+        } else if (error.status === 400) {
+          errorMessage += ' Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin.';
+        } else if (error.status === 401) {
+          errorMessage += ' Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
+        } else if (error.status === 403) {
+          errorMessage += ' Bạn không có quyền thực hiện thao tác này.';
+        } else if (error.status === 404) {
+          errorMessage += ' Không tìm thấy tài nguyên.';
+        } else if (error.status === 500) {
+          errorMessage += ' Lỗi máy chủ. Vui lòng thử lại sau.';
+        }
+        
+        console.error('Detailed error:', errorMessage);
+        return throwError(() => new Error(errorMessage));
+      })
+    );
   }
 
   deleteAppointment(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/appointments/${id}`, {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, {
       headers: this.getHeaders()
     }).pipe(
       map(() => void 0)
@@ -151,37 +202,30 @@ export class AppointmentService {
 
   // API cho bệnh nhân
   getPatientAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments`, { headers: this.getHeaders() });
+    return this.http.get<Appointment[]>(`${this.apiUrl}/patient`, { 
+      headers: this.getHeaders() 
+    });
+  }
+
+  getAppointmentsByUserId(userId: number): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`${this.apiUrl}/user/${userId}`, { 
+      headers: this.getHeaders() 
+    });
   }
 
   createPatientAppointment(appointmentData: AppointmentRequest, forSelf: boolean): Observable<Appointment> {
     const params = new HttpParams().set('forSelf', forSelf.toString());
-    return this.http.post<Appointment>(`${this.apiUrl}/appointments`, appointmentData, {
+    return this.http.post<Appointment>(`${this.apiUrl}/patient`, appointmentData, { 
       headers: this.getHeaders(),
       params: params
     });
   }
 
   deletePatientAppointment(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/appointments/${id}`, {
+    return this.http.delete<void>(`${this.apiUrl}/patient/${id}`, {
       headers: this.getHeaders()
     }).pipe(
       map(() => void 0)
     );
-  }
-
-  updateAppointmentStatus(appointmentId: number, status: string): Observable<void> {
-    return this.http.put<void>(
-      `${this.apiUrl}/appointments/${appointmentId}/status`,
-      { status },
-      { headers: this.getHeaders() }
-    );
-  }
-
-  checkDuplicateAppointment(appointmentDate: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this.apiUrl}/appointments/check`, {
-      params: new HttpParams().set('date', appointmentDate),
-      headers: this.getHeaders()
-    });
   }
 }

@@ -6,7 +6,7 @@ import { Router, RouterModule } from '@angular/router';
   standalone: true,
   imports: [RouterModule],
   templateUrl: './home-doctor.component.html',
-  styleUrls: ['./home-doctor.component.css']  // Sửa từ styleUrl thành styleUrls
+  styleUrls: ['./home-doctor.component.css']  
 })
 export class HomeDoctorComponent {
   constructor(private router: Router) { }
@@ -14,13 +14,16 @@ export class HomeDoctorComponent {
   goToSchedule(): void {
     this.router.navigate(['/doctor/schedule']);
   }
+  
   GoToMedicalRecords(): void {
-    this.router.navigate(['/create-medical-record']);
+    this.router.navigate(['/doctor/medical-records']);
   }
+  
   GoToRecordsList(): void {
-    this.router.navigate(['/medical-records']);
+    this.router.navigate(['/doctor/records-list']);
   }
+  
   GoToPrescriptionManagement(): void {
-    this.router.navigate(['/prescription-management']);
+    this.router.navigate(['/doctor/prescription-management']);
   }
 }

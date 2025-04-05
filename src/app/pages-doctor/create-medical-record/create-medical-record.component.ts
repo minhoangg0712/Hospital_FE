@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { MedicalRecordService, CreateMedicalRecordDTO } from '../../services/medical-record.service';
 import { UserService, UserDTO } from '../../services/user.service';
+import { AppointmentService } from '../../services/appointment.service';
 
 @Component({
   selector: 'app-create-medical-record',
@@ -15,14 +16,17 @@ import { UserService, UserDTO } from '../../services/user.service';
 export class CreateMedicalRecordComponent implements OnInit {
   recordForm: FormGroup;
   patientId!: number;
+  appointmentId!: number;
   isLoading = false;
   errorMessage = '';
   patientInfo: UserDTO | null = null;
+  showSuccessPopup = false;
 
   constructor(
     private fb: FormBuilder,
     private medicalRecordService: MedicalRecordService,
     private userService: UserService,
+    private appointmentService: AppointmentService,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -38,8 +42,9 @@ export class CreateMedicalRecordComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Lấy patientId từ query params
+    // Lấy patientId và appointmentId từ query params
     this.patientId = Number(this.route.snapshot.queryParamMap.get('patientId'));
+    this.appointmentId = Number(this.route.snapshot.queryParamMap.get('appointmentId'));
     
     if (!this.patientId) {
       this.errorMessage = 'Không tìm thấy thông tin bệnh nhân';
@@ -80,10 +85,12 @@ export class CreateMedicalRecordComponent implements OnInit {
         .subscribe({
           next: (response) => {
             console.log('Tạo hồ sơ thành công:', response);
-            alert('Tạo hồ sơ bệnh án thành công!');
-            this.router.navigate(['/patient-list']);
+            this.showSuccessPopup = true;
+            setTimeout(() => {
+              this.router.navigate(['/doctor/schedule']);
+            }, 3000);
           },
-          error: (error) => {
+          error: (error: any) => {
             console.error('Lỗi khi tạo hồ sơ:', error);
             if (error.status === 403) {
               this.errorMessage = 'Bạn không có quyền tạo hồ sơ bệnh án';

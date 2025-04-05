@@ -45,11 +45,27 @@ export class CartService {
 
     // Xử lý lỗi 400 (Bad Request)
     if (error.status === 400) {
-      return throwError(() => new Error('Dữ liệu không hợp lệ. Vui lòng thử lại!'));
+      const errorMessage = error.error?.message || 'Dữ liệu không hợp lệ. Vui lòng thử lại!';
+      return throwError(() => new Error(errorMessage));
+    }
+
+    // Xử lý lỗi 404 (Not Found)
+    if (error.status === 404) {
+      return throwError(() => new Error('Không tìm thấy tài nguyên yêu cầu!'));
+    }
+
+    // Xử lý lỗi 500 (Internal Server Error)
+    if (error.status === 500) {
+      return throwError(() => new Error('Lỗi hệ thống. Vui lòng thử lại sau!'));
+    }
+
+    // Xử lý lỗi kết nối
+    if (error.status === 0) {
+      return throwError(() => new Error('Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng!'));
     }
 
     // Xử lý lỗi khác
-    return throwError(() => new Error('Có lỗi xảy ra. Vui lòng thử lại sau.'));
+    return throwError(() => new Error(error.error?.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.'));
   }
 
   // Lấy tất cả sản phẩm trong giỏ hàng

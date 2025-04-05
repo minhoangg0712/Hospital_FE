@@ -16,24 +16,16 @@ export class AuthGuard implements CanActivate {
       return false;
     }
 
-    // Nếu là admin và đang ở trang login, chuyển hướng về trang admin
-    if (userRole === 'ADM' && window.location.pathname === '/login') {
-      this.router.navigate(['/admin-home']);
+    // Kiểm tra quyền admin cho các route admin
+    if (window.location.pathname.startsWith('/admin') && userRole !== 'ADM') {
+      this.router.navigate(['/']);
       return false;
     }
 
-    // Kiểm tra quyền admin cho các route admin
-    if (window.location.pathname.startsWith('/admin')) {
-      if (userRole !== 'ADM') {
-        this.router.navigate(['/login']);
-        return false;
-      }
-      return true;
-    }
-
-    // Nếu là admin, chỉ cho phép truy cập trang admin
-    if (userRole === 'ADM') {
-      this.router.navigate(['/admin-home']);
+    // Kiểm tra quyền doctor cho các route doctor
+    if (window.location.pathname.startsWith('/doctor') && 
+        !['DOCTOR', 'MGR'].includes(userRole || '')) {
+      this.router.navigate(['/']);
       return false;
     }
 
