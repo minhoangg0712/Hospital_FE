@@ -72,7 +72,8 @@ export class CartService {
   getCartItems(): Observable<CartItem[]> {
     try {
       return this.http.get<CartItem[]>(this.apiUrl, { 
-        headers: this.getHeaders()
+        headers: this.getHeaders(),
+        withCredentials: true
       }).pipe(
         catchError(this.handleError)
       );
@@ -94,7 +95,8 @@ export class CartService {
 
       return this.http.post<CartItem>(`${this.apiUrl}/add`, null, { 
         headers: this.getHeaders(),
-        params: params
+        params: params,
+        withCredentials: true
       }).pipe(
         catchError(this.handleError)
       );
@@ -115,7 +117,8 @@ export class CartService {
 
       return this.http.put<CartItem>(`${this.apiUrl}/${cartItemId}`, null, { 
         headers: this.getHeaders(),
-        params: params
+        params: params,
+        withCredentials: true
       }).pipe(
         catchError(this.handleError)
       );
@@ -132,7 +135,8 @@ export class CartService {
       }
 
       return this.http.delete<void>(`${this.apiUrl}/${cartItemId}`, { 
-        headers: this.getHeaders()
+        headers: this.getHeaders(),
+        withCredentials: true
       }).pipe(
         catchError(this.handleError)
       );
@@ -145,7 +149,8 @@ export class CartService {
   clearCart(): Observable<void> {
     try {
       return this.http.delete<void>(`${this.apiUrl}/clear`, { 
-        headers: this.getHeaders()
+        headers: this.getHeaders(),
+        withCredentials: true
       }).pipe(
         catchError(this.handleError)
       );
@@ -156,6 +161,9 @@ export class CartService {
 
   // Lấy thông tin chi tiết của thuốc
   getMedicineDetails(medicineId: number): Observable<any> {
-    return this.http.get(`http://localhost:8080/api/medicine/${medicineId}`);
+    return this.http.get(`http://localhost:8080/api/medicine/${medicineId}`, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    });
   }
 } 

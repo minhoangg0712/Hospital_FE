@@ -46,7 +46,7 @@
                     <!-- Product Info -->
                     <div class="product-col">
                         <div class="product-info">
-                            <img [src]="getMedicineInfo(item.medicineId)?.image || 'https://via.placeholder.com/80x80.png?text=Thuốc'" 
+                            <img [src]="getImageUrl(getMedicineInfo(item.medicineId))" 
                                  [alt]="item.medicineName">
                             <div class="product-details">
                                 <h3>{{ item.medicineName }}</h3>

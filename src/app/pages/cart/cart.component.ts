@@ -118,7 +118,7 @@ export class CartComponent implements OnInit {
     this.medicineService.getAllMedicines().subscribe({
       next: (medicines) => {
         this.cartItems.forEach(item => {
-          const medicine = medicines.find(m => m.id === item.medicineId);
+          const medicine = medicines.find(m => m.medicineId === item.medicineId);
           if (medicine) {
             this.medicineDetails.set(item.medicineId, medicine);
           }
@@ -129,6 +129,19 @@ export class CartComponent implements OnInit {
         this.error = 'Không thể tải thông tin chi tiết sản phẩm';
       }
     });
+  }
+
+  // Phương thức xử lý đường dẫn ảnh
+  getImageUrl(medicine: Medicine | undefined): string {
+    if (!medicine?.imageUrl) {
+      return 'https://via.placeholder.com/80x80.png?text=Thuốc';
+    }
+    // Nếu imageUrl đã là đường dẫn đầy đủ (bắt đầu bằng http hoặc https)
+    if (medicine.imageUrl.startsWith('http://') || medicine.imageUrl.startsWith('https://')) {
+      return medicine.imageUrl;
+    }
+    // Nếu imageUrl là đường dẫn tương đối, thêm base URL
+    return `./assets/${medicine.imageUrl}`;
   }
 
   decreaseQuantity(cartItemId: number, currentQuantity: number): void {

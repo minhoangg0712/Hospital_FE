@@ -51,15 +51,15 @@
     <div class="medicine-grid">
       <div class="medicine-card" *ngFor="let medicine of filteredMedicines">
         <div class="medicine-image">
-          <img [src]="medicine.image || 'https://via.placeholder.com/150x150.png?text=Thuốc'" [alt]="medicine.name || 'Hình ảnh thuốc'">
-          <div class="stock-badge" *ngIf="medicine?.quantity && medicine.quantity > 0">
+          <img [src]="getImageUrl(medicine.imageUrl)" [alt]="medicine.name">
+          <div class="stock-badge" *ngIf="medicine.quantity !== undefined && medicine.quantity > 0">
             Còn {{ medicine.quantity }} {{ medicine.unit || 'Đơn vị' }}
           </div>
         </div>
         
         <div class="medicine-info">
-          <h3 class="medicine-name">{{ medicine.name || 'Chưa có tên' }}</h3>
-          <p class="medicine-description">{{ medicine.description || 'Chưa có mô tả' }}</p>
+          <h3 class="medicine-name">{{ medicine.name }}</h3>
+          <p class="medicine-description">{{ medicine.description }}</p>
           
           <div class="medicine-category" *ngIf="medicine.category">
             <span class="category-tag">{{ medicine.category }}</span>

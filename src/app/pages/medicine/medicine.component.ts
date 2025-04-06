@@ -40,6 +40,7 @@ export class MedicineComponent implements OnInit {
         this.medicines = data;
         this.filteredMedicines = data;
         this.loading = false;
+        console.log('>>> Dữ liệu thuốc trả về từ API:', data); 
       },
       error: (error) => {
         this.error = 'Có lỗi xảy ra khi tải danh sách thuốc';
@@ -47,6 +48,32 @@ export class MedicineComponent implements OnInit {
         console.error('Error loading medicines:', error);
       }
     });
+  }
+
+  // Phương thức xử lý đường dẫn ảnh
+  getImageUrl(imageUrl: string | undefined): string {
+    if (!imageUrl) {
+      return 'https://via.placeholder.com/150x150.png?text=Thuốc';
+    }
+    
+    // Nếu imageUrl đã là đường dẫn đầy đủ (bắt đầu bằng http hoặc https)
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      // Xử lý đường dẫn Google Drive
+      if (imageUrl.includes('drive.google.com')) {
+        // Lấy ID của file từ đường dẫn Google Drive
+        const fileId = imageUrl.match(/\/d\/(.*?)\/view/)?.[1];
+        if (fileId) {
+          // Chuyển đổi sang đường dẫn trực tiếp
+          const directLink = `https://drive.google.com/uc?export=view&id=${fileId}`;
+          console.log('>>> Đường dẫn chuyển đổi từ Drive:', directLink); // 👈 Log link chuyển đổi
+          return directLink;
+        }
+      }
+      return imageUrl;
+    }
+    
+    // Nếu imageUrl là đường dẫn từ database, thêm URL của API
+    return `http://localhost:8080${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
   }
 
   // Các khoảng giá để lọc
@@ -73,7 +100,7 @@ export class MedicineComponent implements OnInit {
   }
 
   // Thêm vào giỏ hàng 
-  addToCart(medicine: any) {
+  addToCart(medicine: Medicine) {
     if (!this.isLoggedIn) {
       alert('Vui lòng đăng nhập để thêm vào giỏ hàng!');
       this.router.navigate(['/login']);
@@ -122,7 +149,7 @@ export class MedicineComponent implements OnInit {
     this.filteredMedicines = this.medicines.filter(medicine => 
       medicine.name.toLowerCase().includes(searchTermLower) ||
       medicine.description.toLowerCase().includes(searchTermLower) ||
-      medicine.category.toLowerCase().includes(searchTermLower)
+      (medicine.category?.toLowerCase().includes(searchTermLower) ?? false)
     );
   }
 }

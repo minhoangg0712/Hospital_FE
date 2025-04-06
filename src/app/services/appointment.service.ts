@@ -202,8 +202,10 @@ export class AppointmentService {
 
   // API cho bệnh nhân
   getPatientAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`${this.apiUrl}/patient`, { 
-      headers: this.getHeaders() 
+    const params = new HttpParams().set('forSelf', 'true');
+    return this.http.get<Appointment[]>(`${this.apiUrl}`, { 
+      headers: this.getHeaders(),
+      params: params
     });
   }
 
