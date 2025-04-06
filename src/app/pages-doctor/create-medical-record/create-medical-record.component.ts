@@ -5,6 +5,7 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { MedicalRecordService, CreateMedicalRecordDTO } from '../../services/medical-record.service';
 import { UserService, UserDTO } from '../../services/user.service';
 import { AppointmentService } from '../../services/appointment.service';
+import { PatientService } from '../../services/patient.service';
 
 @Component({
   selector: 'app-create-medical-record',
@@ -27,6 +28,7 @@ export class CreateMedicalRecordComponent implements OnInit {
     private medicalRecordService: MedicalRecordService,
     private userService: UserService,
     private appointmentService: AppointmentService,
+    private patientService: PatientService,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -53,7 +55,7 @@ export class CreateMedicalRecordComponent implements OnInit {
 
     // Lấy thông tin chi tiết bệnh nhân
     this.isLoading = true;
-    this.userService.getUserById(this.patientId).subscribe({
+    this.patientService.getPatientProfile(this.patientId).subscribe({
       next: (user: UserDTO) => {
         this.patientInfo = user;
         this.isLoading = false;

@@ -10,6 +10,15 @@ interface CartItem {
   price: number;
 }
 
+interface CartResponse {
+  items: CartItem[];
+  summary: {
+    subtotal: number;
+    shippingFee: number;
+    total: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -69,9 +78,9 @@ export class CartService {
   }
 
   // Lấy tất cả sản phẩm trong giỏ hàng
-  getCartItems(): Observable<CartItem[]> {
+  getCartItems(): Observable<CartResponse> {
     try {
-      return this.http.get<CartItem[]>(this.apiUrl, { 
+      return this.http.get<CartResponse>(this.apiUrl, { 
         headers: this.getHeaders(),
         withCredentials: true
       }).pipe(

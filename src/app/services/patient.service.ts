@@ -52,9 +52,19 @@ export class PatientService {
 
   // Lấy chi tiết hồ sơ bệnh nhân
   getPatientProfile(patientId: number): Observable<UserDTO> {
+    console.log('Calling getPatientProfile with patientId:', patientId);
+    console.log('Headers:', this.getHeaders());
+    
     return this.http.get<UserDTO>(`${this.apiUrl}/profile/${patientId}`, {
       headers: this.getHeaders(),
       withCredentials: true
-    }).pipe(catchError(this.handleError));
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Full error response:', error);
+        console.error('Error status:', error.status);
+        console.error('Error message:', error.error);
+        return this.handleError(error);
+      })
+    );
   }
 } 
