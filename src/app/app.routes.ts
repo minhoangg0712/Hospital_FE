@@ -24,12 +24,16 @@ import { ManagerGuard } from './guards/manager.guard';
 import { PatientMedicalRecordsComponent } from './pages/patient-medical-records/patient-medical-records.component';
 import { AppointmentHistoryComponent } from './pages/appointment-history/appointment-history.component';
 import { DoctorLayoutComponent } from './component/doctor-layout/doctor-layout.component';
+import { IntroductionComponent } from './pages/introduction/introduction.component';
+import { AboutComponent } from './pages/about/about.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegistrationComponent },
   { path: 'home', component: HomeComponent },
+  { path: 'introduction', component: IntroductionComponent },
+  { path: 'about', component: AboutComponent },
   { 
     path: 'doctor',
     component: DoctorLayoutComponent,

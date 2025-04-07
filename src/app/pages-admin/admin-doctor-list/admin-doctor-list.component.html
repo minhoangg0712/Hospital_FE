@@ -43,15 +43,23 @@
         <table>
           <thead>
             <tr>
-              <th>Tên đăng nhập</th>
-              <th>Phòng ban</th>
+              <th>Tên bác sĩ</th>
+              <th>Email</th>
+              <th>Số điện thoại</th>
+              <th>Giới tính</th>
+              <th>CCCD</th>
+              <th>Địa chỉ</th>
               <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let doctor of filteredDoctors">
-              <td>{{ doctor.username }}</td>
-              <td>{{ doctor.department }}</td>
+              <td>{{ doctor.name }}</td>
+              <td>{{ doctor.email }}</td>
+              <td>{{ doctor.phone }}</td>
+              <td>{{ doctor.gender }}</td>
+              <td>{{ doctor.cccd }}</td>
+              <td>{{ doctor.address }}</td>
               <td>
                 <button class="delete-btn" (click)="deleteDoctor(doctor)">
                   <i class="fas fa-trash"></i>

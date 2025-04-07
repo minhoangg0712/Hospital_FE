@@ -19,10 +19,12 @@ export class AdminCreateDoctorComponent {
   error: string | null = null;
   success: string | null = null;
   departments: string[] = [
-    'Nội tổng quát', 'Ngoại tổng quát', 'Nhi khoa', 'Sản phụ khoa', 'Tim mạch',
-    'Tai mũi họng', 'Da liễu', 'Mắt (Nhãn khoa)', 'Thần kinh', 'Cơ xương khớp',
-    'Tiết niệu', 'Ung bướu', 'Nội tiết', 'Chấn thương chỉnh hình', 'Phục hồi chức năng',
-    'Răng hàm mặt', 'Tâm thần', 'Y học cổ truyền', 'Dinh dưỡng',
+    'Tim mạch',
+    'Khoa thần kinh',    
+    'Khoa nhi',             
+    'Khoa da liễu',        
+    'Khoa phục hồi chức năng',           
+    'Khoa dinh dưỡng',
   ];
 
   constructor(

@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
   template: `
     <div class="admin-nav">
       <div class="nav-header">
-        <h2>Admin Panel</h2>
+        <h2>Admin</h2>
       </div>
       <nav class="nav-menu">
         <a [routerLink]="['/admin-home']" routerLinkActive="active" class="nav-item">

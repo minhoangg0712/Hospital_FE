@@ -14,11 +14,27 @@ export interface Doctor {
   department: string;
 }
 
+export interface DoctorProfile {
+  userId: number;
+  name: string;
+  phone: string;
+  email: string;
+  gender: string;
+  roleCode: string;
+  departmentId: number;
+  cccd: string;
+  insuranceNumber: string;
+  address: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
   private apiUrl = 'http://localhost:8080/api/admin';
+  private patientApiUrl = 'http://localhost:8080/api/patient';
 
   constructor(private http: HttpClient) { }
 
@@ -37,6 +53,12 @@ export class AdminService {
 
   getDoctorList(): Observable<Doctor[]> {
     return this.http.get<Doctor[]>(`${this.apiUrl}/doctors`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getDoctorProfiles(): Observable<DoctorProfile[]> {
+    return this.http.get<DoctorProfile[]>(`${this.patientApiUrl}/profiles`, {
       headers: this.getHeaders()
     });
   }

@@ -9,40 +9,5 @@ import { CommonModule } from '@angular/common';
   templateUrl: './header-doctor.component.html',
   styleUrl: './header-doctor.component.css'
 })
-export class HeaderDoctorComponent implements OnInit {
-  isLoggedIn: boolean = false;
-  isLogoutModalOpen: boolean = false;
-
-  constructor(private router: Router) {}
-
-  ngOnInit() {
-    // Kiểm tra trạng thái đăng nhập
-    this.checkLoginStatus();
-  }
-
-  private checkLoginStatus() {
-    const token = localStorage.getItem('token');
-    this.isLoggedIn = !!token;
-  }
-
-  openLogoutModal() {
-    this.isLogoutModalOpen = true;
-  }
-
-  closeLogoutModal() {
-    this.isLogoutModalOpen = false;
-  }
-
-  logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('user');
-    this.isLoggedIn = false;
-    this.isLogoutModalOpen = false;
-    this.router.navigate(['/']);
-  }
-
-  goToProfile(){
-    this.router.navigate(['/profile-doctor']);
-  }
+export class HeaderDoctorComponent {
 }

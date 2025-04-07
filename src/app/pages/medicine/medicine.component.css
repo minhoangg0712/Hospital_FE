@@ -41,8 +41,8 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  border-color: #14656E;
+  box-shadow: 0 0 0 3px rgba(20, 101, 110, 0.1);
 }
 
 /* Loading Spinner */
@@ -58,7 +58,7 @@
   width: 50px;
   height: 50px;
   border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
+  border-top: 5px solid #14656E;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -210,7 +210,7 @@
 
 .category-tag {
   background: #e8f4f8;
-  color: #3498db;
+  color: #14656E;
   padding: 0.3rem 0.8rem;
   border-radius: 15px;
   font-size: 0.9rem;
@@ -228,7 +228,7 @@
 
 .add-to-cart-btn {
   width: 100%;
-  background: #3498db;
+  background: #14656E;
   color: white;
   border: none;
   padding: 0.8rem;
@@ -242,7 +242,7 @@
 }
 
 .add-to-cart-btn:hover {
-  background: #2980b9;
+  background: #14656E;
 }
 
 .add-to-cart-btn i {

@@ -1,100 +1,217 @@
-/* Căn giữa tiêu đề */
-.title {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-/* Tổng thể */
-form {
-    max-width: 450px;
-    margin: 40px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+.admin-layout {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-   
-}
-
-/* Căn chỉnh label và input */
-.form-group {
+    min-height: 100vh;
+    width: 100%;
+    background-color: #f0f2f5;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+    background-color: #f0f2f5;
+    margin-left: 250px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  
+  .content-header {
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .content-header h1 {
+    color: #1a237e;
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+  
+  .content-header h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(to right, #1a237e, #3949ab);
+    border-radius: 2px;
+  }
+  
+  .form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .doctor-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #1a237e;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: white;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: #3949ab;
+    box-shadow: 0 0 0 3px rgba(57, 73, 171, 0.1);
+  }
+  
+  .form-control::placeholder {
+    color: #adb5bd;
+  }
+  
+  select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%233949ab' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+  }
+  
+  .error-message {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-}
-
-label {
-    font-weight: bold;
-    width: 50%;  /* Định độ rộng cố định cho label */
-    text-align: right;
-    padding-right: 50px;
-    
-}
-
-input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    font-size: 16px;
-    transition: border 0.3s ease;
-    width: 95%;
-    
-}
-select {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    font-size: 16px;
-    transition: border 0.3s ease;
-    width: 100%;
-}
-
-/* Hiệu ứng khi focus vào input và select */
-input:focus,
-select:focus {
-    border-color: #3498db;
-    outline: none;
-}
-
-/* Style cho dropdown */
-select {
-    background-color: white;
-    cursor: pointer;
-}
-
-/* Thông báo lỗi */
-.error {
-    color: red;
-    font-size: 14px;
-    margin-left: 35%;
-    margin-top: 5px;
-}
-
-/* Nút submit */
-button {
-    background-color: #3498db;
-    color: white;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    color: #dc2626;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .error-message i {
+    font-size: 1rem;
+  }
+  
+  .form-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .submit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
     border: none;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 5px;
+    border-radius: 8px;
+    background: linear-gradient(to right, #1a237e, #3949ab);
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: background 0.3s ease;
-    width: 100%;
-}
-
-button:disabled {
-    background-color: #bdc3c7;
+    transition: all 0.3s ease;
+  }
+  
+  .submit-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(57, 73, 171, 0.2);
+  }
+  
+  .submit-btn:disabled {
+    background: #e9ecef;
+    color: #adb5bd;
     cursor: not-allowed;
-}
-
-button:hover:not(:disabled) {
-    background-color: #2980b9;
-}
+  }
+  
+  .submit-btn i {
+    font-size: 1rem;
+  }
+  
+  .message-container {
+    margin-top: 1.5rem;
+  }
+  
+  .success-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 8px;
+    color: #059669;
+    font-weight: 500;
+  }
+  
+  .success-message i {
+    font-size: 1.25rem;
+  }
+  
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #dc2626;
+    font-weight: 500;
+  }
+  
+  .error-message i {
+    font-size: 1.25rem;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 992px) {
+    .main-content {
+      margin-left: 0;
+      padding: 1rem;
+    }
+    
+    .form-container {
+      padding: 0;
+    }
+    
+    .doctor-form {
+      padding: 1.5rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .content-header h1 {
+      font-size: 1.5rem;
+    }
+    
+    .form-group label {
+      font-size: 0.875rem;
+    }
+    
+    .form-control {
+      font-size: 0.875rem;
+      padding: 0.625rem 0.875rem;
+    }
+    
+    .submit-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 0.625rem 1rem;
+      font-size: 0.875rem;
+    }
+  }

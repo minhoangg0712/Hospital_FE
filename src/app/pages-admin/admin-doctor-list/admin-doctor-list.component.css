@@ -1,71 +1,282 @@
-.container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  margin-left: 250px; /* Điều chỉnh theo chiều rộng của admin-nav */
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.content-header {
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.content-header h1 {
+  color: #2c3e50;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.content-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  margin: 0 1rem;
+}
+
+/* Filter Section */
+.filter-section {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 100px;
+  position: relative;
+}
+
+.search-box i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+}
+
+.search-box input {
+  width: 60%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  background-color: white;
+}
+
+.filter-box {
+  min-width: 250px;
+}
+
+.filter-box select {
+  width: 80%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+
+.filter-box select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  background-color: white;
+}
+
+/* Table Styles */
+.table-container {
+  overflow-x: auto;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1rem;
+  background: white;
+}
+
+thead {
+  background-color: #f8f9fa;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+}
+
+td {
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  color: #495057;
+  vertical-align: middle;
+}
+
+tbody tr {
+  transition: all 0.3s ease;
+}
+
+tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Action Buttons */
+.delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #fee2e2;
+  color: #dc2626;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.delete-btn:hover {
+  background-color: #fecaca;
+  color: #b91c1c;
+}
+
+.delete-btn i {
+  font-size: 0.875rem;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem;
+  color: #6c757d;
+}
+
+.loading-spinner i {
+  font-size: 1.5rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Error Message */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  margin-bottom: 1rem;
+}
+
+.error-message i {
+  font-size: 1.25rem;
+}
+
+/* No Data Message */
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 4rem 2rem;
+  color: #6c757d;
+  text-align: center;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.no-data i {
+  font-size: 3rem;
+  color: #adb5bd;
+}
+
+.no-data p {
+  font-size: 1.125rem;
+  margin: 0;
+  color: #495057;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .main-content {
+    margin-left: 200px;
+  }
+}
+
+@media (max-width: 992px) {
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
   }
   
-  /* Tiêu đề */
-  .title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
+  .content-container {
+    margin: 0;
+    padding: 1.5rem;
   }
   
-  /* Bộ lọc */
-  .filter-container {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+  .filter-section {
+    flex-direction: column;
+    gap: 1rem;
   }
   
-  .filter-container input,
-  .filter-container select {
-    width: 48%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  
-  /* Bảng danh sách */
-  table {
+  .search-box, .filter-box {
     width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-header h1 {
+    font-size: 1.5rem;
   }
   
-  thead {
-    background: #3498db;
-    color: white;
+  .table-container {
+    margin: 0 -0.5rem;
+    padding: 0 0.5rem;
   }
   
   th, td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: center;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
   }
   
-  tbody tr:hover {
-    background: #f1f1f1;
-  }
-  
-  /* Nút xóa */
   .delete-btn {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
   }
-  
-  .delete-btn:hover {
-    background-color: #c0392b;
-  }
+}

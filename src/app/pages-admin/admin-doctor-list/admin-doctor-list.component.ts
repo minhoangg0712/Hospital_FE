@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdminService, Doctor } from '../../services/admin.service';
+import { AdminService, DoctorProfile } from '../../services/admin.service';
 import { AdminNavComponent } from '../../component/admin-nav/admin-nav.component';
 
 @Component({
@@ -13,8 +13,8 @@ import { AdminNavComponent } from '../../component/admin-nav/admin-nav.component
   imports: [CommonModule, FormsModule, AdminNavComponent]
 })
 export class AdminDoctorListComponent implements OnInit {
-  doctors: Doctor[] = [];
-  filteredDoctors: Doctor[] = [];
+  doctors: DoctorProfile[] = [];
+  filteredDoctors: DoctorProfile[] = [];
   departments: string[] = [];
   selectedDepartment: string = '';
   searchText: string = '';
@@ -34,8 +34,8 @@ export class AdminDoctorListComponent implements OnInit {
   loadDoctors() {
     this.loading = true;
     this.error = null;
-    this.adminService.getDoctorList().subscribe({
-      next: (response: Doctor[]) => {
+    this.adminService.getDoctorProfiles().subscribe({
+      next: (response: DoctorProfile[]) => {
         this.doctors = response;
         this.filteredDoctors = response;
         this.loading = false;
@@ -49,19 +49,19 @@ export class AdminDoctorListComponent implements OnInit {
 
   filterDoctors() {
     this.filteredDoctors = this.doctors.filter(doctor => {
-      const matchesSearch = doctor.username.toLowerCase().includes(this.searchText.toLowerCase());
-      const matchesDepartment = !this.selectedDepartment || doctor.department === this.selectedDepartment;
+      const matchesSearch = doctor.name.toLowerCase().includes(this.searchText.toLowerCase());
+      const matchesDepartment = !this.selectedDepartment || doctor.departmentId.toString() === this.selectedDepartment;
       return matchesSearch && matchesDepartment;
     });
   }
 
-  deleteDoctor(doctor: Doctor) {
-    if (confirm(`Bạn có chắc chắn muốn xóa bác sĩ ${doctor.username}?`)) {
+  deleteDoctor(doctor: DoctorProfile) {
+    if (confirm(`Bạn có chắc chắn muốn xóa bác sĩ ${doctor.name}?`)) {
       this.loading = true;
       this.error = null;
-      this.adminService.deleteDoctor(doctor.id).subscribe({
+      this.adminService.deleteDoctor(doctor.userId).subscribe({
         next: () => {
-          this.doctors = this.doctors.filter(d => d.id !== doctor.id);
+          this.doctors = this.doctors.filter(d => d.userId !== doctor.userId);
           this.filterDoctors();
           this.loading = false;
         },

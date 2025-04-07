@@ -1,6 +1,9 @@
 <div class="container">
   <div class="header">
-    <h2><i class="fas fa-file-medical"></i> Danh sách hồ sơ bệnh án</h2>
+    <div class="title-section">
+      <h2><i class="fas fa-file-medical"></i> Danh sách hồ sơ bệnh án</h2>
+      <p class="subtitle">Quản lý và theo dõi hồ sơ bệnh án của bệnh nhân</p>
+    </div>
     <button class="btn btn-primary" routerLink="/create-medical-record">
       <i class="fas fa-plus"></i> Tạo hồ sơ mới
     </button>
@@ -11,81 +14,87 @@
   </div>
 
   <div class="search-box">
-    <input 
-      type="text" 
-      [(ngModel)]="searchTerm" 
-      placeholder="Tìm kiếm theo tên bệnh nhân, số BHYT hoặc chẩn đoán..."
-      class="search-input"
-    >
+    <div class="search-wrapper">
+      <i class="fas fa-search search-icon"></i>
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        placeholder="Tìm kiếm theo tên bệnh nhân, số BHYT hoặc chẩn đoán..."
+        class="search-input"
+      >
+    </div>
   </div>
 
   <div class="loading" *ngIf="isLoading">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Đang tải...</span>
+    <div class="spinner">
+      <i class="fas fa-circle-notch fa-spin"></i>
+      <span>Đang tải dữ liệu...</span>
     </div>
   </div>
 
   <div class="medical-records-list" *ngIf="!isLoading && !errorMessage">
     <div class="card" *ngFor="let record of filteredRecords">
       <div class="card-header">
-        <h5 class="card-title">
-          <i class="fas fa-user"></i> {{record.patientName}}
-        </h5>
-        <span class="badge bg-primary">Mã hồ sơ: {{record.recordId}}</span>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="info-group">
-              <h6>Thông tin cá nhân</h6>
-              <p><strong>Giới tính:</strong> {{record.gender}}</p>
-              <p><strong>Địa chỉ:</strong> {{record.address}}</p>
-              <p><strong>Số BHYT:</strong> {{record.insuranceNumber}}</p>
-            </div>
+        <div class="patient-info">
+          <div class="avatar">
+            <i class="fas fa-user"></i>
           </div>
-          <div class="col-md-6">
-            <div class="info-group">
-              <h6>Thông tin khám bệnh</h6>
-              <p><strong>Triệu chứng:</strong> {{record.symptoms}}</p>
-              <p><strong>Chẩn đoán:</strong> {{record.diagnosis}}</p>
-              <p><strong>Đơn thuốc:</strong> {{record.prescription}}</p>
-            </div>
+          <div class="details">
+            <h5 class="patient-name">{{record.patientName}}</h5>
+            <span class="record-id">Mã hồ sơ: {{record.recordId}}</span>
           </div>
         </div>
-        <div class="row mt-4">
-          <div class="col-md-6">
-            <div class="info-group">
-              <h6>Tiền sử bệnh</h6>
-              <p><strong>Bệnh sử:</strong> {{record.medicalHistory}}</p>
-              <p><strong>Dị ứng:</strong> {{record.allergies}}</p>
+        <div class="actions">
+          <button class="btn btn-info" [routerLink]="['/medical-records', record.recordId]">
+            <i class="fas fa-eye"></i> Chi tiết
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-section">
+            <h6><i class="fas fa-user-circle"></i> Thông tin cá nhân</h6>
+            <div class="info-content">
+              <p><i class="fas fa-venus-mars"></i> <strong>Giới tính:</strong> {{record.gender}}</p>
+              <p><i class="fas fa-map-marker-alt"></i> <strong>Địa chỉ:</strong> {{record.address}}</p>
+              <p><i class="fas fa-id-card"></i> <strong>Số BHYT:</strong> {{record.insuranceNumber}}</p>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="info-group">
-              <h6>Kết quả xét nghiệm</h6>
+          <div class="info-section">
+            <h6><i class="fas fa-stethoscope"></i> Thông tin khám bệnh</h6>
+            <div class="info-content">
+              <p><i class="fas fa-clipboard-list"></i> <strong>Triệu chứng:</strong> {{record.symptoms}}</p>
+              <p><i class="fas fa-diagnoses"></i> <strong>Chẩn đoán:</strong> {{record.diagnosis}}</p>
+              <p><i class="fas fa-prescription"></i> <strong>Đơn thuốc:</strong> {{record.prescription}}</p>
+            </div>
+          </div>
+          <div class="info-section">
+            <h6><i class="fas fa-history"></i> Tiền sử bệnh</h6>
+            <div class="info-content">
+              <p><i class="fas fa-file-medical-alt"></i> <strong>Bệnh sử:</strong> {{record.medicalHistory}}</p>
+              <p><i class="fas fa-allergies"></i> <strong>Dị ứng:</strong> {{record.allergies}}</p>
+            </div>
+          </div>
+          <div class="info-section">
+            <h6><i class="fas fa-vial"></i> Kết quả xét nghiệm</h6>
+            <div class="info-content">
               <p>{{record.testResults}}</p>
             </div>
           </div>
         </div>
-        <div class="row mt-4" *ngIf="record.notes">
-          <div class="col-12">
-            <div class="info-group">
-              <h6>Ghi chú</h6>
-              <p>{{record.notes}}</p>
-            </div>
-          </div>
+        <div class="notes-section" *ngIf="record.notes">
+          <h6><i class="fas fa-sticky-note"></i> Ghi chú</h6>
+          <p>{{record.notes}}</p>
         </div>
-      </div>
-      <div class="card-footer">
-        <button class="btn btn-info btn-sm" [routerLink]="['/medical-records', record.recordId]">
-          <i class="fas fa-eye"></i> Xem chi tiết
-        </button>
       </div>
     </div>
   </div>
 
   <div class="no-records" *ngIf="!isLoading && !errorMessage && filteredRecords.length === 0">
-    <i class="fas fa-search"></i>
-    <p>Không tìm thấy hồ sơ bệnh án nào</p>
+    <div class="empty-state">
+      <i class="fas fa-search"></i>
+      <h3>Không tìm thấy hồ sơ</h3>
+      <p>Không có hồ sơ bệnh án nào phù hợp với tiêu chí tìm kiếm của bạn</p>
+    </div>
   </div>
 </div> 
