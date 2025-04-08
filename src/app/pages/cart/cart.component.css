@@ -630,3 +630,97 @@
         justify-content: center;
     }
 }
+
+/* Overlay style */
+.payment-success {
+    position: fixed;
+    bottom: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 1);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: bottom 0.5s ease, opacity 0.5s ease;
+    z-index: 1000;
+    opacity: 0;
+}
+
+/* Khi show thì pull up */
+.payment-success.show {
+    bottom: 20px;
+    opacity: 1;
+}
+
+/* Inner content */
+.success-content i {
+    font-size: 3rem;
+    color: #14656E;
+    margin-bottom: 1rem;
+}
+
+.success-content h2 {
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.success-content p {
+    color: #64748b;
+    margin-bottom: 1rem;
+}
+
+.primary-button {
+    background-color: #14656E;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Payment Success Notification */
+.payment-success-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #10B981;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  animation: slideInAndFade 2s ease-out forwards;
+  opacity: 0;
+}
+
+.payment-success-notification i {
+  font-size: 1.2rem;
+}
+
+@keyframes slideInAndFade {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  15% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  85% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+}

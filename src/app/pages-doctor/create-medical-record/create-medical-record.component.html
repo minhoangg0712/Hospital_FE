@@ -9,6 +9,10 @@
         <div class="patient-details">
           <h3>{{patientInfo.name}}</h3>
           <p>Mã bệnh nhân: {{patientId}}</p>
+          <div class="relative-info" *ngIf="appointment?.relativeName">
+            <p><i class="fas fa-users"></i> Người thân: {{appointment?.relativeName}}</p>
+            <p><i class="fas fa-id-card"></i> CCCD: {{appointment?.relativeIdCard}}</p>
+          </div>
         </div>
       </div>
     </div>

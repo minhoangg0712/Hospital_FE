@@ -19,6 +19,7 @@ export class MedicineComponent implements OnInit {
   loading: boolean = true;
   error: string = '';
   isLoggedIn: boolean = false;
+  showAddToCartNotification: boolean = false;
 
   constructor(
     private router: Router, 
@@ -102,14 +103,12 @@ export class MedicineComponent implements OnInit {
   // Thêm vào giỏ hàng 
   addToCart(medicine: Medicine) {
     if (!this.isLoggedIn) {
-      alert('Vui lòng đăng nhập để thêm vào giỏ hàng!');
       this.router.navigate(['/login']);
       return;
     }
 
     if (!medicine || !medicine.medicineId) {
       console.error('Dữ liệu sản phẩm không hợp lệ:', medicine);
-      alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
       return;
     }
 
@@ -118,24 +117,21 @@ export class MedicineComponent implements OnInit {
       this.cartService.addToCart(medicine.medicineId, 1).subscribe({
         next: (response) => {
           console.log('Thêm vào giỏ hàng thành công:', response);
-          alert('Đã thêm vào giỏ hàng thành công!');
+          this.showAddToCartNotification = true;
+          setTimeout(() => {
+            this.showAddToCartNotification = false;
+          }, 2000);
         },
         error: (error) => {
           console.error('Lỗi khi thêm vào giỏ hàng:', error);
           if (error.message === 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!') {
             this.isLoggedIn = false;
-            alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!');
             this.router.navigate(['/login']);
-          } else if (error.message === 'Bạn không có quyền thực hiện thao tác này!') {
-            alert('Bạn không có quyền thêm vào giỏ hàng!');
-          } else {
-            alert(error.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng!');
           }
         }
       });
     } catch (error) {
       console.error('Lỗi khi thêm vào giỏ hàng:', error);
-      alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
     }
   }
 

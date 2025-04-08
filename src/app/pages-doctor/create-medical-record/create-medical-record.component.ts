@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { MedicalRecordService, CreateMedicalRecordDTO } from '../../services/medical-record.service';
 import { UserService, UserDTO } from '../../services/user.service';
-import { AppointmentService } from '../../services/appointment.service';
+import { AppointmentService, Appointment } from '../../services/appointment.service';
 import { PatientService } from '../../services/patient.service';
 
 @Component({
@@ -22,6 +22,7 @@ export class CreateMedicalRecordComponent implements OnInit {
   errorMessage = '';
   patientInfo: UserDTO | null = null;
   showSuccessPopup = false;
+  appointment: Appointment | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -66,6 +67,22 @@ export class CreateMedicalRecordComponent implements OnInit {
         this.isLoading = false;
       }
     });
+
+    // Lấy thông tin cuộc hẹn
+    if (this.appointmentId) {
+      this.loadAppointment();
+    }
+  }
+
+  loadAppointment() {
+    this.appointmentService.getAppointmentById(this.appointmentId).subscribe({
+      next: (appointment: Appointment) => {
+        this.appointment = appointment;
+      },
+      error: (error: any) => {
+        console.error('Lỗi khi lấy thông tin cuộc hẹn:', error);
+      }
+    });
   }
 
   onSubmit() {
@@ -83,30 +100,45 @@ export class CreateMedicalRecordComponent implements OnInit {
         notes: this.recordForm.get('notes')?.value
       };
 
-      this.medicalRecordService.createMedicalRecord(this.patientId, recordData)
-        .subscribe({
-          next: (response) => {
-            console.log('Tạo hồ sơ thành công:', response);
-            this.showSuccessPopup = true;
-            setTimeout(() => {
-              this.router.navigate(['/doctor/schedule']);
-            }, 3000);
-          },
-          error: (error: any) => {
-            console.error('Lỗi khi tạo hồ sơ:', error);
-            if (error.status === 403) {
-              this.errorMessage = 'Bạn không có quyền tạo hồ sơ bệnh án';
-            } else if (error.status === 400) {
-              this.errorMessage = error.error?.message || 'Dữ liệu không hợp lệ';
-            } else {
-              this.errorMessage = 'Có lỗi xảy ra khi tạo hồ sơ bệnh án';
-            }
-            this.isLoading = false;
-          },
-          complete: () => {
-            this.isLoading = false;
+      // Đảm bảo patientName được lưu đúng cách
+      if (this.patientInfo) {
+        recordData.patientName = this.patientInfo.name;
+      }
+
+      // Nếu có thông tin người thân, thêm vào recordData
+      if (this.appointment?.relativeName) {
+        recordData.relativeName = this.appointment.relativeName;
+        recordData.relativeIdCard = this.appointment.relativeIdCard || undefined;
+      }
+
+      // Sử dụng createRelativeMedicalRecord nếu có appointmentId
+      const createRecord$ = this.appointmentId 
+        ? this.medicalRecordService.createRelativeMedicalRecord(this.patientId, this.appointmentId, recordData)
+        : this.medicalRecordService.createMedicalRecord(this.patientId, recordData);
+
+      createRecord$.subscribe({
+        next: (response) => {
+          console.log('Tạo hồ sơ thành công:', response);
+          this.showSuccessPopup = true;
+          setTimeout(() => {
+            this.router.navigate(['/doctor/schedule']);
+          }, 3000);
+        },
+        error: (error: any) => {
+          console.error('Lỗi khi tạo hồ sơ:', error);
+          if (error.status === 403) {
+            this.errorMessage = 'Bạn không có quyền tạo hồ sơ bệnh án';
+          } else if (error.status === 400) {
+            this.errorMessage = error.error?.message || 'Dữ liệu không hợp lệ';
+          } else {
+            this.errorMessage = 'Có lỗi xảy ra khi tạo hồ sơ bệnh án';
           }
-        });
+          this.isLoading = false;
+        },
+        complete: () => {
+          this.isLoading = false;
+        }
+      });
     } else {
       this.errorMessage = 'Vui lòng điền đầy đủ thông tin bắt buộc';
     }

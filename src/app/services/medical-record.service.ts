@@ -10,6 +10,9 @@ export interface CreateMedicalRecordDTO {
   testResults: string;
   prescription: string;
   notes?: string;
+  relativeName?: string;
+  relativeIdCard?: string;
+  patientName?: string;
 }
 
 export interface MedicalRecordDTO {
@@ -25,6 +28,8 @@ export interface MedicalRecordDTO {
   testResults: string;
   prescription: string;
   notes?: string;
+  relativeName?: string;
+  relativeIdCard?: string;
 }
 
 @Injectable({
@@ -46,6 +51,14 @@ export class MedicalRecordService {
   createMedicalRecord(patientId: number, record: CreateMedicalRecordDTO): Observable<MedicalRecordDTO> {
     return this.http.post<MedicalRecordDTO>(
       `${this.baseUrl}/create/${patientId}`, 
+      record,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  createRelativeMedicalRecord(patientId: number, appointmentId: number, record: CreateMedicalRecordDTO): Observable<MedicalRecordDTO> {
+    return this.http.post<MedicalRecordDTO>(
+      `${this.baseUrl}/create-relative/${patientId}/${appointmentId}`,
       record,
       { headers: this.getHeaders() }
     );

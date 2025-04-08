@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 interface CartItem {
@@ -24,6 +24,8 @@ interface CartResponse {
 })
 export class CartService {
   private apiUrl = 'http://localhost:8080/api/cart';
+  private paymentStatusSubject = new BehaviorSubject<boolean>(false);
+  paymentStatus$ = this.paymentStatusSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -54,8 +56,17 @@ export class CartService {
 
     // Xử lý lỗi 400 (Bad Request)
     if (error.status === 400) {
-      const errorMessage = error.error?.message || 'Dữ liệu không hợp lệ. Vui lòng thử lại!';
-      return throwError(() => new Error(errorMessage));
+      // Kiểm tra xem có thông báo lỗi cụ thể từ server không
+      if (error.error && error.error.message) {
+        return throwError(() => new Error(error.error.message));
+      }
+      
+      // Kiểm tra xem có phải là lỗi thanh toán không
+      if (error.url && error.url.includes('/checkout')) {
+        return throwError(() => new Error('Không thể thanh toán. Vui lòng kiểm tra lại giỏ hàng của bạn!'));
+      }
+      
+      return throwError(() => new Error('Dữ liệu không hợp lệ. Vui lòng thử lại!'));
     }
 
     // Xử lý lỗi 404 (Not Found)
@@ -166,6 +177,36 @@ export class CartService {
     } catch (error) {
       return throwError(() => error);
     }
+  }
+
+  checkout(): Observable<void> {
+    try {
+      // Kiểm tra token
+      const token = localStorage.getItem('token');
+      if (!token) {
+        return throwError(() => new Error('Vui lòng đăng nhập để thực hiện thanh toán!'));
+      }
+
+      // Kiểm tra quyền truy cập
+      const userRole = localStorage.getItem('userRole');
+      if (userRole !== 'EMP' && userRole !== 'MGR') {
+        return throwError(() => new Error('Bạn không có quyền thực hiện thanh toán!'));
+      }
+
+      return this.http.post<void>(`${this.apiUrl}/checkout`, null, { 
+        headers: this.getHeaders(),
+        withCredentials: true
+      }).pipe(
+        catchError(this.handleError)
+      );
+    } catch (error) {
+      return throwError(() => error);
+    }
+  }
+
+  // Cập nhật trạng thái thanh toán
+  updatePaymentStatus(status: boolean) {
+    this.paymentStatusSubject.next(status);
   }
 
   // Lấy thông tin chi tiết của thuốc

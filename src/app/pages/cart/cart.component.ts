@@ -35,6 +35,7 @@ export class CartComponent implements OnInit {
   isLoggedIn: boolean = false;
   loading: boolean = true;
   error: string | null = null;
+  paymentSuccess: boolean = false;
   cartSummary = {
     subtotal: 0,
     shippingFee: 30000,
@@ -162,7 +163,7 @@ export class CartComponent implements OnInit {
         },
         error: (error) => {
           console.error('Lỗi khi cập nhật số lượng:', error);
-          alert(error.message || 'Có lỗi xảy ra khi cập nhật số lượng!');
+          this.error = error.message || 'Có lỗi xảy ra khi cập nhật số lượng!';
         }
       });
     }
@@ -185,7 +186,7 @@ export class CartComponent implements OnInit {
       },
       error: (error) => {
         console.error('Lỗi khi cập nhật số lượng:', error);
-        alert(error.message || 'Có lỗi xảy ra khi cập nhật số lượng!');
+        this.error = error.message || 'Có lỗi xảy ra khi cập nhật số lượng!';
       }
     });
   }
@@ -204,7 +205,7 @@ export class CartComponent implements OnInit {
       },
       error: (error) => {
         console.error('Lỗi khi xóa sản phẩm:', error);
-        alert(error.message || 'Có lỗi xảy ra khi xóa sản phẩm!');
+        this.error = error.message || 'Có lỗi xảy ra khi xóa sản phẩm!';
       }
     });
   }
@@ -214,20 +215,31 @@ export class CartComponent implements OnInit {
   }
 
   checkout(): void {
-    if (this.cartItems.length === 0) {
-      alert('Giỏ hàng của bạn đang trống!');
+    if (!this.checkUserRole()) {
+      this.error = 'Bạn không có quyền thực hiện thanh toán!';
       return;
     }
 
-    alert('Thanh toán thành công!');
-    this.cartItems = [];
-    this.medicineDetails.clear();
-    this.cartSummary = {
-      subtotal: 0,
-      shippingFee: 30000,
-      total: 0
-    };
-    this.router.navigate(['/']);
+    this.cartService.checkout().subscribe({
+      next: () => {
+        this.paymentSuccess = true;
+        this.cartItems = [];
+        this.cartSummary = {
+          subtotal: 0,
+          shippingFee: 30000,
+          total: 30000
+        };
+        
+        // Tự động ẩn thông báo sau 2 giây
+        setTimeout(() => {
+          this.paymentSuccess = false;
+        }, 2000);
+      },
+      error: (error) => {
+        console.error('Lỗi khi thanh toán:', error);
+        this.error = error.message || 'Có lỗi xảy ra khi thanh toán!';
+      }
+    });
   }
 
   goToShop(): void {
@@ -237,4 +249,10 @@ export class CartComponent implements OnInit {
   getMedicineInfo(medicineId: number): Medicine | undefined {
     return this.medicineDetails.get(medicineId);
   }
+
+  private checkUserRole(): boolean {
+    const userRole = localStorage.getItem('userRole');
+    return userRole === 'EMP' || userRole === 'MGR';
+  }
+
 }

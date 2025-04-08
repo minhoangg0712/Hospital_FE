@@ -51,6 +51,7 @@ export interface Appointment {
 })
 export class AppointmentService {
   private apiUrl = 'http://localhost:8080/api/appointments';
+  private baseUrl = 'http://localhost:8080/api/appointments';
 
   constructor(private http: HttpClient) { }
 
@@ -64,9 +65,7 @@ export class AppointmentService {
 
   // API cho quản lý viên (ROLE_MGR)
   getAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(this.apiUrl, { 
-      headers: this.getHeaders() 
-    });
+    return this.http.get<Appointment[]>(`${this.apiUrl}/list`, { headers: this.getHeaders() });
   }
 
   getAppointmentsByDepartment(): Observable<Appointment[]> {
@@ -229,5 +228,9 @@ export class AppointmentService {
     }).pipe(
       map(() => void 0)
     );
+  }
+
+  getAppointmentById(id: number): Observable<Appointment> {
+    return this.http.get<Appointment>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
 }
