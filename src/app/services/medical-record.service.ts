@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 export interface CreateMedicalRecordDTO {
   symptoms: string;
@@ -49,18 +50,48 @@ export class MedicalRecordService {
   }
 
   createMedicalRecord(patientId: number, record: CreateMedicalRecordDTO): Observable<MedicalRecordDTO> {
+    if (!patientId) {
+      return throwError(() => new Error('ID bệnh nhân không hợp lệ'));
+    }
+    
+    if (!record.symptoms || !record.medicalHistory || !record.diagnosis || !record.prescription) {
+      return throwError(() => new Error('Thiếu thông tin bắt buộc'));
+    }
+    
     return this.http.post<MedicalRecordDTO>(
       `${this.baseUrl}/create/${patientId}`, 
       record,
       { headers: this.getHeaders() }
+    ).pipe(
+      catchError(error => {
+        console.error('Lỗi khi tạo hồ sơ bệnh án:', error);
+        return throwError(() => error);
+      })
     );
   }
 
   createRelativeMedicalRecord(patientId: number, appointmentId: number, record: CreateMedicalRecordDTO): Observable<MedicalRecordDTO> {
+    if (!patientId) {
+      return throwError(() => new Error('ID bệnh nhân không hợp lệ'));
+    }
+    
+    if (!appointmentId) {
+      return throwError(() => new Error('ID cuộc hẹn không hợp lệ'));
+    }
+    
+    if (!record.symptoms || !record.medicalHistory || !record.diagnosis || !record.prescription) {
+      return throwError(() => new Error('Thiếu thông tin bắt buộc'));
+    }
+    
     return this.http.post<MedicalRecordDTO>(
       `${this.baseUrl}/create-relative/${patientId}/${appointmentId}`,
       record,
       { headers: this.getHeaders() }
+    ).pipe(
+      catchError(error => {
+        console.error('Lỗi khi tạo hồ sơ bệnh án cho người thân:', error);
+        return throwError(() => error);
+      })
     );
   }
 
