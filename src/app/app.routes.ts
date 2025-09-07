@@ -26,6 +26,10 @@ import { AppointmentHistoryComponent } from './pages/appointment-history/appoint
 import { DoctorLayoutComponent } from './component/doctor-layout/doctor-layout.component';
 import { IntroductionComponent } from './pages/introduction/introduction.component';
 import { AboutComponent } from './pages/about/about.component';
+import { AssistantHomeComponent } from './page-assistant/ast-home/ast-home.component';
+import { AstDoctorListComponent } from './page-assistant/ast-doctor-list/ast-doctor-schedule.component';
+import { AssistantPatientAppointmentsComponent } from './page-assistant/patient-appointments/ast-patient-appointments.component';
+
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -34,6 +38,16 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'introduction', component: IntroductionComponent },
   { path: 'about', component: AboutComponent },
+  {
+    path: 'assistant',
+    component: AssistantHomeComponent,
+    // canActivate: [AuthGuard], // tùy nếu muốn bảo vệ route
+    children: [
+      { path: '', redirectTo: 'doctor-schedule', pathMatch: 'full' },
+      { path: 'doctor-schedule', component: AstDoctorListComponent },
+      { path: 'patient-appointments', component: AssistantPatientAppointmentsComponent }
+    ]
+  },
   { 
     path: 'doctor',
     component: DoctorLayoutComponent,

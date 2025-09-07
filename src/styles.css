@@ -11,3 +11,4 @@ html, body {
     width: 100%;
   }
   
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
