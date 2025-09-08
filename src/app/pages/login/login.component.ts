@@ -1,36 +1,61 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']   // <- sửa styleUrl -> styleUrls
 })
 export class LoginComponent implements OnInit {
-  username: string = '';
-  password: string = '';
-  errorMessage: string = '';
+  username = '';
+  password = '';
+  errorMessage = '';
 
   constructor(
     private router: Router,
     private authService: AuthService
   ) {}
 
-  ngOnInit() {
-    // Xóa token và thông tin user cũ khi vào trang đăng nhập
+  ngOnInit(): void {
+    // Xóa thông tin cũ khi vào trang đăng nhập
     localStorage.removeItem('token');
     localStorage.removeItem('userRole');
-    localStorage.removeItem('user');
+    localStorage.removeItem('userId');
   }
 
-  onLogin() {
-    // Kiểm tra form trước khi gửi
+  /** Decode phần payload của JWT (hỗ trợ URL-safe + padding) */
+  private decodeJWTPayload(token: string): any {
+    try {
+      const base = token.split('.')[1] ?? '';
+      const fixed = base.replace(/-/g, '+').replace(/_/g, '/');
+      const pad = fixed + '==='.slice((fixed.length + 3) % 4);
+      const json = atob(pad);
+      return JSON.parse(json);
+    } catch {
+      return {};
+    }
+  }
+
+  /** Lấy role từ nhiều field và chuẩn hóa (bỏ prefix ROLE_) */
+  private extractRole(p: any): string {
+    const candidates = [
+      p?.role, p?.role_code, p?.roleCode,
+      p?.role_group, p?.roleGroup,
+      p?.authority, Array.isArray(p?.authorities) ? p.authorities[0] : null,
+      Array.isArray(p?.roles) ? p.roles[0] : null
+    ];
+    let raw = (candidates.find(x => typeof x === 'string' && x.trim().length) ?? 'PATIENT')
+      .toString().toUpperCase().trim();
+    if (raw.startsWith('ROLE_')) raw = raw.slice(5); // ROLE_AST -> AST
+    return raw; // ADM | AST | MGR | EMP | PATIENT | DOCTOR ...
+  }
+
+  onLogin(): void {
     if (!this.username || !this.password) {
       this.errorMessage = 'Vui lòng nhập đầy đủ thông tin';
       return;
@@ -39,97 +64,70 @@ export class LoginComponent implements OnInit {
     console.log('Đang gửi request đăng nhập với:', { username: this.username });
 
     this.authService.login(this.username, this.password).subscribe({
-      next: (response) => {
-        console.log('Response đầy đủ từ API:', response);
-        
+      next: (res) => {
         try {
-          // Kiểm tra response
-          if (!response) {
-            throw new Error('Không nhận được phản hồi từ server');
+          const token = res?.token;
+          if (!token) throw new Error('Không nhận được token');
+          localStorage.setItem('token', token);
+
+          const payload = this.decodeJWTPayload(token);
+          console.log('JWT payload:', payload);
+
+          const role = this.extractRole(payload); // đã chuẩn hóa
+          const uid  = payload?.userId ?? payload?.user_id ?? payload?.sub;
+          if (uid != null) localStorage.setItem('userId', String(uid));
+
+          switch (role) {
+            case 'ADM':
+            case 'ADMIN':
+              localStorage.setItem('userRole', 'ADM');
+              this.router.navigate(['/admin-home']);
+              break;
+
+            case 'AST':
+            case 'ASSISTANT':
+              localStorage.setItem('userRole', 'AST');
+              this.router.navigate(['/assistant']);
+              break;
+
+            case 'MGR':
+            case 'DOCTOR':
+              localStorage.setItem('userRole', 'MGR');
+              this.router.navigate(['/doctor']);
+              break;
+
+            case 'EMP':
+            case 'PATIENT':
+              localStorage.setItem('userRole', 'PATIENT');
+              this.router.navigate(['/patient']);
+              break;
+
+            default:
+              // Fallback an toàn
+              localStorage.setItem('userRole', 'PATIENT');
+              this.router.navigate(['/patient']);
           }
-
-          // Giải mã token để lấy thông tin role
-          const token = response?.token;
-          if (token) {
-            console.log('Token nhận được:', token);
-            localStorage.setItem('token', token);
-            
-            // Giải mã token (phần payload)
-            const tokenParts = token.split('.');
-            if (tokenParts.length === 3) {
-              const payload = JSON.parse(atob(tokenParts[1]));
-              console.log('Token payload:', payload);
-              
-              // Lưu role vào localStorage
-              if (payload.role) {
-                const role = payload.role.toUpperCase();
-                console.log('Role từ payload:', role);
-
-                // Lưu userId
-                if (payload.userId) {
-                  console.log('Lưu userId:', payload.userId);
-                  localStorage.setItem('userId', payload.userId.toString());
-                }
-
-                if (role === 'ADMIN' || role === 'ROLE_ADMIN' || role === 'ROLE_ADM' || role === 'ADM') {
-                  console.log('Đang set role ADMIN...');
-                  localStorage.setItem('userRole', 'ADM');
-                  console.log('Đang chuyển hướng đến /admin-home...');
-                  this.router.navigate(['/admin-home']);
-                } else if (role === 'DOCTOR' || role === 'ROLE_DOCTOR') {
-                  console.log('Đang set role DOCTOR...');
-                  localStorage.setItem('userRole', 'DOCTOR');
-                  this.router.navigate(['/doctor']);
-                } else if (role === 'MGR' || role === 'ROLE_MGR') {
-                  console.log('Đang set role MGR...');
-                  localStorage.setItem('userRole', 'MGR');
-                  this.router.navigate(['/doctor']);
-                } else if (role === 'ROLE_EMP' || role === 'EMP') {
-                  console.log('Đang set role EMP...');
-                  localStorage.setItem('userRole', 'EMP');
-                  this.router.navigate(['/patient']);
-                } else {
-                  console.log('Đang set role PATIENT...');
-                  localStorage.setItem('userRole', 'PATIENT');
-                  this.router.navigate(['/patient']);
-                }
-                
-                console.log('Role sau khi lưu:', localStorage.getItem('userRole'));
-                console.log('UserId sau khi lưu:', localStorage.getItem('userId'));
-              } else {
-                throw new Error('Không tìm thấy role trong token');
-              }
-            } else {
-              throw new Error('Token không hợp lệ');
-            }
-          } else {
-            throw new Error('Không nhận được token từ response');
-          }
-        } catch (error) {
-          console.error('Lỗi khi xử lý token:', error);
+        } catch (e) {
+          console.error('Lỗi khi xử lý token:', e);
           this.errorMessage = 'Có lỗi xảy ra. Vui lòng thử lại.';
-          // Xóa token nếu có lỗi
           localStorage.removeItem('token');
           localStorage.removeItem('userRole');
-          localStorage.removeItem('user');
+          localStorage.removeItem('userId');
         }
       },
-      error: (error) => {
-        console.error('Chi tiết lỗi đăng nhập:', error);
-        if (error.status === 401) {
-          this.errorMessage = 'Tên đăng nhập hoặc mật khẩu không đúng';
-        } else {
-          this.errorMessage = error.error?.message || 'Đăng nhập thất bại. Vui lòng thử lại sau.';
-        }
-        // Xóa token nếu có lỗi
+      error: (err) => {
+        console.error('Chi tiết lỗi đăng nhập:', err);
+        this.errorMessage = err?.status === 401
+          ? 'Tên đăng nhập hoặc mật khẩu không đúng'
+          : (err?.error?.message || 'Đăng nhập thất bại. Vui lòng thử lại sau.');
         localStorage.removeItem('token');
         localStorage.removeItem('userRole');
-        localStorage.removeItem('user');
+        localStorage.removeItem('userId');
       }
     });
   }
 
-  goToRegister() {
+  goToRegister(): void {
     this.router.navigate(['/register']);
   }
 }
