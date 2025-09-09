@@ -43,7 +43,7 @@ export const routes: Routes = [
     component: AssistantHomeComponent,
     // canActivate: [AuthGuard], // tùy nếu muốn bảo vệ route
     children: [
-      { path: '', redirectTo: 'doctor-schedule', pathMatch: 'full' },
+      { path: '', redirectTo: 'assistant', pathMatch: 'full' },
       { path: 'doctor-schedule', component: AstDoctorListComponent },
       { path: 'patient-appointments', component: AssistantPatientAppointmentsComponent }
     ]

@@ -1,0 +1,96 @@
+<div class="assistant-container">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <span class="hospital-name">Medicia</span>
+    </div>
+
+    <div class="navbar-nav">
+      <a class="nav-btn" [routerLink]="['/assistant']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <i class="fas fa-home"></i> Trang chủ
+      </a>
+      
+      <!-- dùng absolute path để đảm bảo chuyển đúng nested route -->
+      <a class="nav-btn" [routerLink]="['/assistant/doctor-schedule']" routerLinkActive="active"> 
+        <i class="fas fa-calendar-alt"></i> Lịch làm việc bác sĩ
+      </a>
+
+      <a class="nav-btn" [routerLink]="['/assistant/patient-appointments']" routerLinkActive="active">
+        <i class="fas fa-user-md"></i> Lịch hẹn khám
+      </a>
+
+      <button class="nav-btn logout-btn" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+      </button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <!-- Welcome + Quick Actions: chỉ hiển thị khi showDashboard = true -->
+    <div *ngIf="showDashboard">
+      <div class="welcome-section">
+        <div class="welcome-content">
+          <h1>Xin chào, {{assistantName}}</h1>
+          <p class="welcome-subtitle">Chào mừng bạn đến với hệ thống quản lý bệnh viện</p>
+          <p class="current-time">
+            <i class="fas fa-clock"></i>
+            {{currentDate | date:'EEEE, dd/MM/yyyy - HH:mm:ss':'vi-VN'}}
+          </p>
+        </div>
+        <div class="welcome-stats">
+          <div class="stat-card" (click)="navigateToAppointments()">
+            <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+            <div class="stat-info">
+              <span class="stat-number">{{todayAppointments}}</span>
+              <span class="stat-label">Lịch hẹn hôm nay</span>
+            </div>
+          </div>
+          <div class="stat-card" (click)="navigateToSchedule()">
+            <div class="stat-icon"><i class="fas fa-user-md"></i></div>
+            <div class="stat-info">
+              <span class="stat-number">{{doctorsOnDuty}}</span>
+              <span class="stat-label">Bác sĩ đang trực</span>
+            </div>
+          </div>
+          <div class="stat-card" (click)="navigateToAppointments()">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-info">
+              <span class="stat-number">{{pendingCheckIns}}</span>
+              <span class="stat-label">Chờ check-in</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <h2>Thao tác nhanh</h2>
+        <div class="action-grid">
+          <a class="action-card" [routerLink]="['/assistant/doctor-schedule']">
+            <div class="action-icon"><i class="fas fa-calendar-alt"></i></div>
+            <h3>Quản lý lịch bác sĩ</h3>
+            <p>Xem và tìm kiếm lịch làm việc của các bác sĩ trong bệnh viện</p>
+            <div class="action-arrow"><i class="fas fa-arrow-right"></i></div>
+          </a>
+
+          <a class="action-card" [routerLink]="['/assistant/patient-appointments']">
+            <div class="action-icon"><i class="fas fa-clipboard-list"></i></div>
+            <h3>Lịch hẹn khám bệnh</h3>
+            <p>Quản lý check-in và đăng ký bác sĩ cho bệnh nhân</p>
+            <div class="action-arrow"><i class="fas fa-arrow-right"></i></div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHỖ RENDER CÁC ROUTE CON: Vì showDashboard=false khi route con active,
+         chỉ component con sẽ hiển thị ở đây (không còn welcome/quick-actions) -->
+    <section class="child-content">
+      <router-outlet></router-outlet>
+    </section>
+
+    <!-- Recent Activities: bạn có thể giữ hoặc hiển thị khi showDashboard = true -->
+    <div *ngIf="showDashboard" class="recent-activities">
+      <h2>Hoạt động gần đây</h2>
+      <!-- ... danh sách hoạt động ... -->
+    </div>
+  </main>
+</div>

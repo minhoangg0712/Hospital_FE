@@ -1,91 +1,206 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { AssistantFakeService, DoctorSchedule, Doctor } from '../../services/assistant-fake.service';
-import { Observable, startWith, map } from 'rxjs';
+// ast-doctor-schedule.component.ts - Updated for standalone components
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatButtonModule } from '@angular/material/button';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+
+interface Doctor {
+  id: number;
+  name: string;
+  specialty: string;
+  department: string;
+  workingHours: string;
+  workingDays: string;
+  status: string;
+  avatar?: string;
+}
 
 @Component({
-    selector: 'app-ast-doctor-schedule',
-    templateUrl: './ast-doctor-schedule.component.html',
-    styleUrls: ['./ast-doctor-schedule.component.css'],
-    standalone: true,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatButtonModule
-    ]
+  selector: 'app-ast-doctor-schedule',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
+  templateUrl: './ast-doctor-schedule.component.html',
+  styleUrls: ['./ast-doctor-schedule.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
-
-export class AstDoctorListComponent implements OnInit, AfterViewInit {
-    @ViewChild(MatPaginator) paginator!: MatPaginator;
-    @ViewChild(MatSort) sort!: MatSort;
-
-    // ví dụ nhỏ:
-    doctorCtrl = new FormControl<Doctor | string | null>(null);
-    filteredDoctors$!: Observable<Doctor[]>;
-    dataSource = new MatTableDataSource<DoctorSchedule>([]);
-    allSchedules: DoctorSchedule[] = [];
-    displayedColumns = ['id','doctorName','date','startTime','endTime','room'];
-
-    constructor(private svc: AssistantFakeService) {}
-
-    ngOnInit(): void {
-        this.svc.getDoctors().subscribe(d => {
-        this.filteredDoctors$ = this.doctorCtrl.valueChanges.pipe(
-            startWith<Doctor | string | null>(''),
-            map(val => typeof val === 'string' ? val : (val ? (val as Doctor).name : '')),
-            map(name => d.filter(doc => doc.name.toLowerCase().includes((name||'').toLowerCase())))
-        );
-        });
-
-        this.svc.getSchedules().subscribe(s => {
-        this.allSchedules = s;
-        this.dataSource.data = s;
-        });
+export class AstDoctorListComponent implements OnInit {
+  searchTerm: string = '';
+  isLoading: boolean = false;
+  
+  doctors: Doctor[] = [
+    {
+      id: 1,
+      name: 'BS. Nguyễn Văn Hùng',
+      specialty: 'Tim mạch',
+      department: 'Khoa Tim mạch',
+      workingHours: '8:00 - 17:00',
+      workingDays: 'Thứ 2 - Thứ 6',
+      status: 'Đang trực',
+      avatar: 'assets/images/doctor-1.jpg'
+    },
+    {
+      id: 2,
+      name: 'BS. Trần Thị Lan',
+      specialty: 'Nhi khoa',
+      department: 'Khoa Nhi',
+      workingHours: '7:30 - 16:30',
+      workingDays: 'Thứ 2 - Thứ 7',
+      status: 'Đang trực',
+      avatar: 'assets/images/doctor-2.jpg'
+    },
+    {
+      id: 3,
+      name: 'BS. Lê Minh Tuấn',
+      specialty: 'Ngoại khoa',
+      department: 'Khoa Ngoại tổng hợp',
+      workingHours: '6:00 - 14:00',
+      workingDays: 'Thứ 3 - Chủ nhật',
+      status: 'Nghỉ phép',
+      avatar: 'assets/images/doctor-3.jpg'
+    },
+    {
+      id: 4,
+      name: 'BS. Phạm Thị Hoa',
+      specialty: 'Sản phụ khoa',
+      department: 'Khoa Sản',
+      workingHours: '8:00 - 17:00',
+      workingDays: 'Thứ 2 - Thứ 6',
+      status: 'Đang trực',
+      avatar: 'assets/images/doctor-4.jpg'
+    },
+    {
+      id: 5,
+      name: 'BS. Hoàng Văn Nam',
+      specialty: 'Thần kinh',
+      department: 'Khoa Thần kinh',
+      workingHours: '9:00 - 18:00',
+      workingDays: 'Thứ 2 - Thứ 7',
+      status: 'Đang phẫu thuật',
+      avatar: 'assets/images/doctor-5.jpg'
+    },
+    {
+      id: 6,
+      name: 'BS. Vũ Thị Kim',
+      specialty: 'Da liễu',
+      department: 'Khoa Da liễu',
+      workingHours: '8:30 - 17:30',
+      workingDays: 'Thứ 2 - Thứ 6',
+      status: 'Đang trực',
+      avatar: 'assets/images/doctor-6.jpg'
+    },
+    {
+      id: 7,
+      name: 'BS. Đỗ Minh Đức',
+      specialty: 'Chấn thương chỉnh hình',
+      department: 'Khoa Chấn thương chỉnh hình',
+      workingHours: '7:00 - 15:00',
+      workingDays: 'Thứ 3 - Chủ nhật',
+      status: 'Đang trực',
+      avatar: 'assets/images/doctor-7.jpg'
+    },
+    {
+      id: 8,
+      name: 'BS. Ngô Thị Bích',
+      specialty: 'Mắt',
+      department: 'Khoa Mắt',
+      workingHours: '8:00 - 16:00',
+      workingDays: 'Thứ 2 - Thứ 6',
+      status: 'Nghỉ phép',
+      avatar: 'assets/images/doctor-8.jpg'
     }
+  ];
+  
+  filteredDoctors: Doctor[] = [];
 
-    ngAfterViewInit(): void {
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-    }
+  constructor(private router: Router) { }
 
-    displayDoctor(doctor: Doctor | string | null): string {
-        return typeof doctor === 'string' ? doctor : (doctor ? doctor.name : '');
-    }
+  ngOnInit(): void {
+    this.filteredDoctors = this.doctors;
+    this.loadDoctorSchedules();
+  }
 
-    onDoctorSelected(selected: Doctor) {
-        if (!selected) { this.dataSource.data = this.allSchedules; return; }
-        this.dataSource.data = this.allSchedules.filter(s => s.doctorName.toLowerCase().includes(selected.name.toLowerCase()));
-        this.paginator.firstPage();
-    }
+  loadDoctorSchedules(): void {
+    this.isLoading = true;
+    
+    // Simulate API call
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 1000);
+  }
 
-    applyFilter(text: string) {
-        const t = (text||'').trim().toLowerCase();
-        this.dataSource.data = t ? this.allSchedules.filter(s => s.doctorName.toLowerCase().includes(t)) : this.allSchedules;
-        if (this.paginator) this.paginator.firstPage();
+  searchDoctors(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredDoctors = this.doctors;
+      return;
     }
+    
+    const searchTermLower = this.searchTerm.toLowerCase();
+    this.filteredDoctors = this.doctors.filter(doctor =>
+      doctor.name.toLowerCase().includes(searchTermLower) ||
+      doctor.specialty.toLowerCase().includes(searchTermLower) ||
+      doctor.department.toLowerCase().includes(searchTermLower)
+    );
+  }
 
-    clearFilter() {
-        this.doctorCtrl.setValue('');
-        this.dataSource.data = this.allSchedules;
-        if (this.paginator) this.paginator.firstPage();
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filteredDoctors = this.doctors;
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'Đang trực': return 'status-active';
+      case 'Đang phẫu thuật': return 'status-surgery';
+      case 'Nghỉ phép': return 'status-leave';
+      default: return 'status-inactive';
     }
+  }
+
+  getStatusIcon(status: string): string {
+    switch (status) {
+      case 'Đang trực': return 'fas fa-check-circle';
+      case 'Đang phẫu thuật': return 'fas fa-user-md';
+      case 'Nghỉ phép': return 'fas fa-calendar-times';
+      default: return 'fas fa-question-circle';
+    }
+  }
+
+  refreshData(): void {
+    this.loadDoctorSchedules();
+  }
+
+  viewDoctorDetail(doctor: Doctor): void {
+    console.log('View doctor detail:', doctor);
+  }
+
+  getActiveDoctorsCount(): number {
+    return this.doctors.filter(d => d.status === 'Đang trực').length;
+  }
+
+  getSurgeryDoctorsCount(): number {
+    return this.doctors.filter(d => d.status === 'Đang phẫu thuật').length;
+  }
+
+  getLeaveDoctorsCount(): number {
+    return this.doctors.filter(d => d.status === 'Nghỉ phép').length;
+  }
+
+  trackByDoctorId(index: number, doctor: Doctor): number {
+    return doctor.id;
+  }
+
+  navigateToHome(): void {
+    this.router.navigate(['/assistant']);
+  }
+
+  navigateToAppointments(): void {
+    this.router.navigate(['/assistant/patient-appointments']);
+  }
+
+  logout(): void {
+    localStorage.clear();
+    sessionStorage.clear();
+    this.router.navigate(['/login']);
+  }
 }

@@ -1,49 +1,317 @@
-<h1 class="page-title">Lịch hẹn bệnh nhân</h1>
+<div class="patient-appointments-container">
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-content">
+        <h1>
+          <i class="fas fa-clipboard-list"></i>
+          Lịch hẹn khám bệnh nhân
+        </h1>
+        <p>Quản lý check-in và đăng ký bác sĩ cho bệnh nhân</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-refresh" (click)="refreshData()" [disabled]="isLoading">
+          <i class="fas fa-sync-alt" [class.fa-spin]="isLoading"></i>
+          Làm mới
+        </button>
+      </div>
+    </div>
 
-<mat-card>
-  <mat-card-content>
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z1 full-width">
-      <!-- ID -->
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef>#</th>
-        <td mat-cell *matCellDef="let r">{{ r.id }}</td>
-      </ng-container>
+    <!-- Quick Stats -->
+    <div class="quick-stats-section">
+      <div class="stats-grid">
+        <div class="stat-card pending">
+          <div class="stat-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-number">{{getPendingCount()}}</span>
+            <span class="stat-label">Chờ xử lý</span>
+          </div>
+        </div>
+        <div class="stat-card checked-in">
+          <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-number">{{getCheckedInCount()}}</span>
+            <span class="stat-label">Đã check-in</span>
+          </div>
+        </div>
+        <div class="stat-card urgent">
+          <div class="stat-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-number">{{getUrgentCount()}}</span>
+            <span class="stat-label">Khẩn cấp</span>
+          </div>
+        </div>
+        <div class="stat-card total">
+          <div class="stat-icon">
+            <i class="fas fa-calendar-day"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-number">{{filteredAppointments.length}}</span>
+            <span class="stat-label">Tổng lịch hẹn</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <!-- Bệnh nhân -->
-      <ng-container matColumnDef="patientName">
-        <th mat-header-cell *matHeaderCellDef>Bệnh nhân</th>
-        <td mat-cell *matCellDef="let r">{{ r.patientName }}</td>
-      </ng-container>
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <div class="filter-container">
+        <div class="filter-group">
+          <label for="departmentSelect" class="filter-label">
+            <i class="fas fa-hospital"></i>
+            Lọc theo khoa:
+          </label>
+          <select
+            id="departmentSelect"
+            [(ngModel)]="selectedDepartment" 
+            (change)="filterAppointments()"
+            class="department-select">
+            <option *ngFor="let dept of departments" [value]="dept.id">
+              {{dept.name}}
+            </option>
+          </select>
+        </div>
+        <div class="filter-stats">
+          <div class="priority-legend">
+            <span class="legend-title">Mức độ ưu tiên:</span>
+            <span class="legend-item urgent">
+              <span class="legend-dot"></span>Khẩn cấp
+            </span>
+            <span class="legend-item high">
+              <span class="legend-dot"></span>Cao
+            </span>
+            <span class="legend-item medium">
+              <span class="legend-dot"></span>Trung bình
+            </span>
+            <span class="legend-item low">
+              <span class="legend-dot"></span>Thấp
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <!-- Bác sĩ -->
-      <ng-container matColumnDef="doctor">
-        <th mat-header-cell *matHeaderCellDef>Bác sĩ</th>
-        <td mat-cell *matCellDef="let r">{{ r.doctor }}</td>
-      </ng-container>
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Đang tải danh sách lịch hẹn...</p>
+      </div>
+    </div>
 
-      <!-- Thời gian -->
-      <ng-container matColumnDef="datetime">
-        <th mat-header-cell *matHeaderCellDef>Thời gian</th>
-        <td mat-cell *matCellDef="let r">{{ r.datetime }}</td>
-      </ng-container>
+    <!-- Appointments Table -->
+    <div *ngIf="!isLoading" class="appointments-table-section">
+      <div class="table-container">
+        <table class="appointments-table" role="table" aria-label="Danh sách lịch hẹn">
+          <colgroup>
+            <col class="col-patient">
+            <col class="col-datetime">
+            <col class="col-reason">
+            <col class="col-department">
+            <col class="col-doctor">
+            <col class="col-status">
+            <col class="col-actions">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="col-patient">Bệnh nhân</th>
+              <th class="col-datetime">Ngày giờ khám</th>
+              <th class="col-reason">Lý do khám bệnh</th>
+              <th class="col-department">Khoa đăng ký</th>
+              <th class="col-doctor">Bác sĩ phụ trách</th>
+              <th class="col-status">Trạng thái</th>
+              <th class="col-actions">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let appointment of filteredAppointments; trackBy: trackByAppointmentId"
+                class="table-row">
 
-      <!-- Trạng thái -->
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Trạng thái</th>
-        <td mat-cell *matCellDef="let r">{{ r.status }}</td>
-      </ng-container>
+              <td class="patient-info">
+                <div class="patient-details">
+                    <span class="patient-name">{{appointment.patientInfo.name}}</span>
+                    <div class="patient-meta">
+                      <span class="age">{{appointment.patientInfo.age}} tuổi</span>
+                      <span class="separator">•</span>
+                      <span class="phone">{{appointment.patientInfo.phone}}</span>
+                    </div>
+                </div>
+              </td>
 
-      <!-- Actions -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let r">
-          <button mat-button (click)="onCheckIn(r)" [disabled]="r.status === 'checked-in'">Check-in</button>
-          <button mat-button color="warn" (click)="onCancel(r)" [disabled]="r.status === 'cancelled'">Hủy</button>
-        </td>
-      </ng-container>
+              <td class="appointment-datetime">
+                <div class="datetime-container">
+                  <div class="date-info"><i class="fas fa-calendar"></i><span>{{appointment.appointmentDateTime | date:'dd/MM/yyyy':'vi-VN'}}</span></div>
+                  <div class="time-info"><i class="fas fa-clock"></i><span>{{appointment.appointmentDateTime | date:'HH:mm':'vi-VN'}}</span></div>
+                </div>
+              </td>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </mat-card-content>
-</mat-card>
+              <td class="reason">
+                <div class="reason-content" [title]="appointment.reason">
+                  <p>{{truncateReason(appointment.reason)}}</p>
+                  <div class="notes" *ngIf="appointment.notes"><i class="fas fa-sticky-note"></i><span>{{appointment.notes}}</span></div>
+                </div>
+              </td>
+
+              <td class="department">
+                <span class="department-badge">{{appointment.department}}</span>
+              </td>
+
+              <td class="assigned-doctor">
+                <div class="doctor-assignment">
+                  <div *ngIf="appointment.assignedDoctor; else noDoctorTemplate" class="doctor-assigned">
+                    <div class="doctor-avatar"><i class="fas fa-user-md"></i></div>
+                    <div class="doctor-info">
+                      <span class="doctor-name">{{appointment.assignedDoctor}}</span>
+                      <span class="assignment-time">Đã phân công</span>
+                    </div>
+                  </div>
+                  <ng-template #noDoctorTemplate>
+                    <div class="no-doctor"><i class="fas fa-user-slash"></i><span>Chưa phân công</span></div>
+                  </ng-template>
+                </div>
+              </td>
+
+              <td class="status">
+                <span class="status-badge" [ngClass]="getStatusClass(appointment.status)">
+                  <i class="fas fa-circle status-dot"></i>
+                  {{appointment.status}}
+                </span>
+              </td>
+
+              <td class="actions">
+                <div class="action-buttons">
+                  <button *ngIf="appointment.status === 'Chờ xử lý'" class="btn btn-sm btn-checkin" (click)="openDoctorModal(appointment)" title="Check-in và phân công bác sĩ"><i class="fas fa-check"></i><span>Đăng ký</span></button>
+                  <button *ngIf="appointment.status === 'Chờ xử lý'" class="btn btn-sm btn-cancel" (click)="cancelAppointment(appointment)" title="Hủy lịch hẹn"><i class="fas fa-times"></i><span>Hủy</span></button>
+                  <div *ngIf="appointment.status !== 'Chờ xử lý'" class="status-indicator"><i class="fas fa-info-circle" [title]="'Trạng thái: ' + appointment.status"></i></div>
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Empty State -->
+        <div *ngIf="filteredAppointments.length === 0 && !isLoading" class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-calendar-times"></i>
+          </div>
+          <h3>Không có lịch hẹn nào</h3>
+          <p>Không tìm thấy lịch hẹn cho khoa đã chọn</p>
+          <button class="btn btn-primary" (click)="selectedDepartment = 0; filterAppointments()">
+            Xem tất cả lịch hẹn
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Doctor Selection Modal -->
+  <div *ngIf="showDoctorModal" class="modal-overlay" (click)="closeDoctorModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fas fa-user-md"></i>
+          <h3>Chọn bác sĩ phụ trách</h3>
+        </div>
+        <button class="close-btn" (click)="closeDoctorModal()" title="Đóng">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body" *ngIf="selectedAppointment">
+        <!-- Patient Summary -->
+        <div class="patient-summary">
+          <div class="summary-header">
+            <h4>
+              <i class="fas fa-user"></i>
+              Thông tin bệnh nhân
+            </h4>
+            <div class="priority-badge" [ngClass]="getPriorityClass(selectedAppointment.priority)">
+              <i class="fas fa-flag"></i>
+              {{selectedAppointment.priority}}
+            </div>
+          </div>
+          <div class="summary-content">
+            <div class="summary-row">
+              <strong>Tên:</strong> {{selectedAppointment.patientInfo.name}}
+            </div>
+            <div class="summary-row">
+              <strong>Tuổi:</strong> {{selectedAppointment.patientInfo.age}}
+              <span class="separator">•</span>
+              <strong>SĐT:</strong> {{selectedAppointment.patientInfo.phone}}
+            </div>
+            <div class="summary-row">
+              <strong>Khoa:</strong> {{selectedAppointment.department}}
+            </div>
+            <div class="summary-row reason-row">
+              <strong>Lý do khám:</strong>
+              <p>{{selectedAppointment.reason}}</p>
+            </div>
+            <div class="summary-row" *ngIf="selectedAppointment.notes">
+              <strong>Ghi chú:</strong> {{selectedAppointment.notes}}
+            </div>
+          </div>
+        </div>
+        
+        <!-- Doctor Selection -->
+        <div class="doctor-selection">
+          <h4>
+            <i class="fas fa-stethoscope"></i>
+            Chọn bác sĩ phù hợp
+          </h4>
+          <div class="doctor-list">
+            <div *ngFor="let doctor of getDoctorsByDepartment()" 
+                 class="doctor-option"
+                 [class.selected]="selectedDoctorId === doctor.id"
+                 [class.unavailable]="!doctor.isAvailable"
+                 (click)="doctor.isAvailable && (selectedDoctorId = doctor.id)">
+              <div class="doctor-avatar">
+                <img *ngIf="doctor.avatar" [src]="doctor.avatar" [alt]="doctor.name">
+                <i *ngIf="!doctor.avatar" class="fas fa-user-md"></i>
+              </div>
+              <div class="doctor-info">
+                <div class="doctor-name">{{doctor.name}}</div>
+                <div class="doctor-specialty">{{doctor.specialty}}</div>
+                <div class="availability-status" [class.available]="doctor.isAvailable">
+                  <i class="fas" [class.fa-check-circle]="doctor.isAvailable" 
+                     [class.fa-times-circle]="!doctor.isAvailable"></i>
+                  {{doctor.isAvailable ? 'Có sẵn' : 'Không có sẵn'}}
+                </div>
+              </div>
+              <div class="selection-indicator" *ngIf="selectedDoctorId === doctor.id">
+                <i class="fas fa-check"></i>
+              </div>
+            </div>
+            
+            <!-- No doctors available -->
+            <div *ngIf="getDoctorsByDepartment().length === 0" class="no-doctors">
+              <i class="fas fa-exclamation-triangle"></i>
+              <p>Không có bác sĩ nào có sẵn cho khoa này</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeDoctorModal()">
+          <i class="fas fa-times"></i>
+          Hủy
+        </button>
+        <button 
+          class="btn btn-primary" 
+          [disabled]="selectedDoctorId === 0"
+          (click)="confirmCheckIn()">
+          <i class="fas fa-check"></i>
+          Xác nhận check-in
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
