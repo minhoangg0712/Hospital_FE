@@ -26,6 +26,7 @@ export class AppComponent implements OnDestroy {
   isAuthPage: boolean = false;
   isDoctor: boolean = false;
   isAdmin: boolean = false;
+  isAssistant = false; 
   private routerSubscription: Subscription;
 
   constructor(private router: Router) {
@@ -41,7 +42,7 @@ export class AppComponent implements OnDestroy {
           || event.url.includes('/admin-home')
           || event.url.includes('/admin-create-doctor')
           || event.url.includes('/admin-doctor-list');
-
+        this.isAssistant = event.url.startsWith('/assistant'); 
         // Cập nhật trạng thái đăng nhập khi có sự kiện navigation
         this.updateLoginStatus();
       }

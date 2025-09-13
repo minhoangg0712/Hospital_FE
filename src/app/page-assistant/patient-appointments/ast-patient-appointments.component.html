@@ -267,21 +267,24 @@
             Chọn bác sĩ phù hợp
           </h4>
           <div class="doctor-list">
-            <div *ngFor="let doctor of getDoctorsByDepartment()" 
-                 class="doctor-option"
-                 [class.selected]="selectedDoctorId === doctor.id"
-                 [class.unavailable]="!doctor.isAvailable"
-                 (click)="doctor.isAvailable && (selectedDoctorId = doctor.id)">
+            <div *ngIf="modalLoading" class="no-doctors">
+              <i class="fas fa-spinner fa-spin"></i>
+              <p>Đang tải danh sách bác sĩ...</p>
+            </div>
+
+            <div *ngFor="let doctor of modalDoctors"
+                class="doctor-option"
+                [class.selected]="selectedDoctorId === doctor.id"
+                [class.unavailable]="!doctor.isAvailable"
+                (click)="doctor.isAvailable && (selectedDoctorId = doctor.id)">
               <div class="doctor-avatar">
-                <img *ngIf="doctor.avatar" [src]="doctor.avatar" [alt]="doctor.name">
-                <i *ngIf="!doctor.avatar" class="fas fa-user-md"></i>
+                <i class="fas fa-user-md"></i>
               </div>
               <div class="doctor-info">
                 <div class="doctor-name">{{doctor.name}}</div>
                 <div class="doctor-specialty">{{doctor.specialty}}</div>
                 <div class="availability-status" [class.available]="doctor.isAvailable">
-                  <i class="fas" [class.fa-check-circle]="doctor.isAvailable" 
-                     [class.fa-times-circle]="!doctor.isAvailable"></i>
+                  <i class="fas" [class.fa-check-circle]="doctor.isAvailable" [class.fa-times-circle]="!doctor.isAvailable"></i>
                   {{doctor.isAvailable ? 'Có sẵn' : 'Không có sẵn'}}
                 </div>
               </div>
@@ -289,11 +292,10 @@
                 <i class="fas fa-check"></i>
               </div>
             </div>
-            
-            <!-- No doctors available -->
-            <div *ngIf="getDoctorsByDepartment().length === 0" class="no-doctors">
+
+            <div *ngIf="!modalLoading && modalDoctors.length === 0" class="no-doctors">
               <i class="fas fa-exclamation-triangle"></i>
-              <p>Không có bác sĩ nào có sẵn cho khoa này</p>
+              <p>Không có bác sĩ nào trong khoa này</p>
             </div>
           </div>
         </div>
@@ -304,12 +306,11 @@
           <i class="fas fa-times"></i>
           Hủy
         </button>
-        <button 
-          class="btn btn-primary" 
-          [disabled]="selectedDoctorId === 0"
-          (click)="confirmCheckIn()">
-          <i class="fas fa-check"></i>
-          Xác nhận check-in
+        <button class="btn btn-primary"
+                [disabled]="selectedDoctorId === 0 || confirming"
+                (click)="confirmCheckIn()">
+          <i class="fas" [class.fa-check]="!confirming" [class.fa-spinner]="confirming" [class.fa-spin]="confirming"></i>
+          {{ confirming ? 'Đang xác nhận...' : 'Xác nhận check-in' }}
         </button>
       </div>
     </div>

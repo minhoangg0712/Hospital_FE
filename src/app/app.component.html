@@ -1,8 +1,8 @@
 <main class="main">
   <!-- Header -->
   <ng-container *ngIf="!isAuthPage">
-    <app-header *ngIf="!isDoctor"></app-header>
-    <app-header-doctor *ngIf="isDoctor"></app-header-doctor>
+    <app-header *ngIf="!isDoctor && !isAssistant"></app-header>
+    <app-header-doctor *ngIf="isDoctor && !isAssistant"></app-header-doctor>
   </ng-container>
 
   <!-- Content -->

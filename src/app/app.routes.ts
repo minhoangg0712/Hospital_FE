@@ -41,6 +41,7 @@ export const routes: Routes = [
   {
     path: 'assistant',
     component: AssistantHomeComponent,
+    data: { hidePublicHeader: true, hidePublicFooter: true },
     // canActivate: [AuthGuard], // tùy nếu muốn bảo vệ route
     children: [
       { path: '', redirectTo: 'assistant', pathMatch: 'full' },
