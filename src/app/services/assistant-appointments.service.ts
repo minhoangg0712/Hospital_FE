@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 const API_BASE = 'http://localhost:8080';
 
 export type AppointmentStatus =
-  'PENDING' | 'CHECKED_IN' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW';
+  'PENDING' | 'CONFIRMED' | 'CHECKED_IN' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW';
 
 export type AppointmentPriority =
   'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT' | undefined;

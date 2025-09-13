@@ -247,7 +247,7 @@ export class AssistantPatientAppointmentsComponent implements OnInit {
   private mapStatusToVi(s: AppointmentStatus): Appointment['status'] {
     switch (s) {
       case 'PENDING':    return 'Chờ xử lý';
-      case 'CHECKED_IN': return 'Đã check-in';
+      case 'CONFIRMED': return 'Đã check-in';
       case 'CANCELLED':  return 'Đã hủy';
       case 'COMPLETED':  return 'Hoàn thành';
       case 'NO_SHOW':    return 'Không đến';
