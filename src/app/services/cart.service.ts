@@ -19,6 +19,12 @@ interface CartResponse {
   };
 }
 
+interface CheckoutResponse {
+  paymentLinkId: string;
+  orderId: number;
+  checkoutUrl: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -43,12 +49,12 @@ export class CartService {
 
   private handleError(error: any) {
     console.error('Lỗi từ server:', error);
-    
+
     // Xử lý lỗi 401 (Unauthorized)
     if (error.status === 401) {
       return throwError(() => new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!'));
     }
-    
+
     // Xử lý lỗi 403 (Forbidden)
     if (error.status === 403) {
       return throwError(() => new Error('Bạn không có quyền thực hiện thao tác này!'));
@@ -60,12 +66,12 @@ export class CartService {
       if (error.error && error.error.message) {
         return throwError(() => new Error(error.error.message));
       }
-      
+
       // Kiểm tra xem có phải là lỗi thanh toán không
       if (error.url && error.url.includes('/checkout')) {
         return throwError(() => new Error('Không thể thanh toán. Vui lòng kiểm tra lại giỏ hàng của bạn!'));
       }
-      
+
       return throwError(() => new Error('Dữ liệu không hợp lệ. Vui lòng thử lại!'));
     }
 
@@ -91,7 +97,7 @@ export class CartService {
   // Lấy tất cả sản phẩm trong giỏ hàng
   getCartItems(): Observable<CartResponse> {
     try {
-      return this.http.get<CartResponse>(this.apiUrl, { 
+      return this.http.get<CartResponse>(this.apiUrl, {
         headers: this.getHeaders(),
         withCredentials: true
       }).pipe(
@@ -113,7 +119,7 @@ export class CartService {
         .set('medicineId', medicineId.toString())
         .set('quantity', quantity.toString());
 
-      return this.http.post<CartItem>(`${this.apiUrl}/add`, null, { 
+      return this.http.post<CartItem>(`${this.apiUrl}/add`, null, {
         headers: this.getHeaders(),
         params: params,
         withCredentials: true
@@ -135,7 +141,7 @@ export class CartService {
       const params = new HttpParams()
         .set('quantity', quantity.toString());
 
-      return this.http.put<CartItem>(`${this.apiUrl}/${cartItemId}`, null, { 
+      return this.http.put<CartItem>(`${this.apiUrl}/${cartItemId}`, null, {
         headers: this.getHeaders(),
         params: params,
         withCredentials: true
@@ -154,7 +160,7 @@ export class CartService {
         throw new Error('ID sản phẩm không hợp lệ');
       }
 
-      return this.http.delete<void>(`${this.apiUrl}/${cartItemId}`, { 
+      return this.http.delete<void>(`${this.apiUrl}/${cartItemId}`, {
         headers: this.getHeaders(),
         withCredentials: true
       }).pipe(
@@ -168,7 +174,7 @@ export class CartService {
   // Xóa toàn bộ giỏ hàng
   clearCart(): Observable<void> {
     try {
-      return this.http.delete<void>(`${this.apiUrl}/clear`, { 
+      return this.http.delete<void>(`${this.apiUrl}/clear`, {
         headers: this.getHeaders(),
         withCredentials: true
       }).pipe(
@@ -179,7 +185,7 @@ export class CartService {
     }
   }
 
-  checkout(): Observable<void> {
+  checkout(): Observable<CheckoutResponse> {
     try {
       // Kiểm tra token
       const token = localStorage.getItem('token');
@@ -189,11 +195,11 @@ export class CartService {
 
       // Kiểm tra quyền truy cập
       const userRole = localStorage.getItem('userRole');
-      if (userRole !== 'EMP' && userRole !== 'MGR') {
+      if (userRole !== 'EMP' && userRole !== 'MGR' && userRole !== 'PATIENT') {
         return throwError(() => new Error('Bạn không có quyền thực hiện thanh toán!'));
       }
 
-      return this.http.post<void>(`${this.apiUrl}/checkout`, null, { 
+      return this.http.post<CheckoutResponse>('http://localhost:8080/api/cart/checkout', null, {
         headers: this.getHeaders(),
         withCredentials: true
       }).pipe(
@@ -216,4 +222,4 @@ export class CartService {
       withCredentials: true
     });
   }
-} 
+}

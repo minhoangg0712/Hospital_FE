@@ -54,7 +54,7 @@ export class CartComponent implements OnInit {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
     this.isLoggedIn = !!token && !!userId;
-    
+
     if (!this.isLoggedIn) {
       this.router.navigate(['/login']);
     }
@@ -69,11 +69,11 @@ export class CartComponent implements OnInit {
   loadCart(): void {
     this.loading = true;
     this.error = null;
-    
+
     this.cartService.getCartItems().subscribe({
       next: (response: any) => {
         console.log('Dữ liệu giỏ hàng:', response);
-        
+
         // Kiểm tra và gán dữ liệu
         if (response && Array.isArray(response.items)) {
           this.cartItems = response.items;
@@ -87,14 +87,14 @@ export class CartComponent implements OnInit {
           console.error('Dữ liệu giỏ hàng không hợp lệ:', response);
           this.error = 'Không thể tải dữ liệu giỏ hàng';
         }
-        
+
         this.loading = false;
       },
       error: (error) => {
         console.error('Lỗi khi tải giỏ hàng:', error);
         this.error = error.message || 'Có lỗi xảy ra khi tải giỏ hàng';
         this.loading = false;
-        
+
         if (error.message?.includes('Phiên đăng nhập đã hết hạn')) {
           this.isLoggedIn = false;
           localStorage.removeItem('token');
@@ -106,7 +106,7 @@ export class CartComponent implements OnInit {
   }
 
   private updateCartSummary(): void {
-    this.cartSummary.subtotal = this.cartItems.reduce((total, item) => 
+    this.cartSummary.subtotal = this.cartItems.reduce((total, item) =>
       total + (item.unitPrice * item.quantity), 0);
     this.cartSummary.total = this.cartSummary.subtotal + this.cartSummary.shippingFee;
   }
@@ -221,7 +221,12 @@ export class CartComponent implements OnInit {
     }
 
     this.cartService.checkout().subscribe({
-      next: () => {
+      next: (response) => {
+        if (response && response.checkoutUrl) {
+          window.location.href = response.checkoutUrl;
+          return;
+        }
+        // Nếu không có link thanh toán, hiển thị thông báo thành công như cũ
         this.paymentSuccess = true;
         this.cartItems = [];
         this.cartSummary = {
@@ -229,8 +234,6 @@ export class CartComponent implements OnInit {
           shippingFee: 30000,
           total: 30000
         };
-        
-        // Tự động ẩn thông báo sau 2 giây
         setTimeout(() => {
           this.paymentSuccess = false;
         }, 2000);
@@ -252,7 +255,7 @@ export class CartComponent implements OnInit {
 
   private checkUserRole(): boolean {
     const userRole = localStorage.getItem('userRole');
-    return userRole === 'EMP' || userRole === 'MGR';
+    return userRole === 'EMP' || userRole === 'MGR' || userRole === 'PATIENT';
   }
 
 }
